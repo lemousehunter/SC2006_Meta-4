@@ -6,6 +6,8 @@ import Search from './tabbedScreens/Search/Search';
 export default class LoggedInScreen extends BaseLoggedInScreen {
   constructor(props) {
     super(props);
+    console.log('logged in props:');
+    console.log(props);
     //console.log('props:' + this.props);
     this.initialParams = {
       bgColor: this.getBgColor(),
@@ -18,17 +20,22 @@ export default class LoggedInScreen extends BaseLoggedInScreen {
     };
   }
 
-  render() {
-    //console.log('User is:' + this.getUser());
-    //console.log('c:');
-    //console.log(this.getScreensArray());
+  getNavBar() {
     return (
       <NavBar
         activeColor={'#e32f45'}
         normalColor={'#748c94'}
         navBarColor={'#ffffff'}
+        user={this.user}
         initialParams={this.initialParams}
       />
     );
+  }
+
+  render() {
+    //console.log('c:');
+    console.log('loggedIn user: ' + this.getUser());
+    //console.log(this.getScreensArray());
+    return this.getNavBar();
   }
 }

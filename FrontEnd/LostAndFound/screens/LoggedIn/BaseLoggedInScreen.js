@@ -6,17 +6,20 @@ export default class BaseLoggedInScreen extends BaseScreen {
     super(props);
     //console.log('props: ' + this.props);
     this.user = this.props.route.params.user;
-    // console.log('u: ' + this.user);
-    this.screensArray = this.props.route.params.screensArray;
-    console.log('s: ');
-    console.log(this.props.route.params.screensArray);
+
   }
 
   getUser() {
     return this.user;
   }
 
-  getScreensArray() {
-    return this.screensArray;
+  navigate(screenName, params) {
+    console.log('current user: ' + this.user);
+    let _params = JSON.parse(params);
+    _params = {
+      ..._params,
+      user: this.user,
+    };
+    super.navigate(screenName, _params);
   }
 }
