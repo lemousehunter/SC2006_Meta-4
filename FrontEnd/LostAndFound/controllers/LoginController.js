@@ -30,17 +30,29 @@ export default class LoginController extends Component {
   }
 
   login(user, password) {
-    // -1: user does not exist, 0: user exists but incorrect password, 1: login successful
-    if (this.checkUser(user)) {
-      if (this.checkPassword(user, password)) {
-        this.user = user;
-        this.loggedIn = true;
-        return 1;
-      } else {
-        return 0;
+    // -4: both username and password left empty, -3: password left empty,-2: user left empty, -1: user does not exist, 0: user exists but incorrect password, 1: login successful
+    console.log('logging in.....');
+    let num = -1;
+    if (user.length === 0 || password.length === 0) {
+      if (user.length === 0) {
+        num -= 1;
       }
+      if (password.length === 0) {
+        num -= 2;
+      }
+      return num;
     } else {
-      return -1;
+      if (this.checkUser(user)) {
+        if (this.checkPassword(user, password)) {
+          this.user = user;
+          this.loggedIn = true;
+          return 1;
+        } else {
+          return 0;
+        }
+      } else {
+        return -1;
+      }
     }
   }
 

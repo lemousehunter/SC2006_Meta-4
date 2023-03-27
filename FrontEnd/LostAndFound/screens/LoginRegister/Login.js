@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   Image,
   Keyboard,
@@ -89,6 +90,8 @@ export default class Login extends BaseScreen {
     };
   }
 
+  validateLogin() {}
+
   render() {
     return (
       // eslint-disable-next-line react/react-in-jsx-scope
@@ -128,25 +131,43 @@ export default class Login extends BaseScreen {
             textColor={this.getBgColor()}
             //onPress={() => this.navigate('LoggedInScreen')}
             onPress={() => {
-              //console.log(this.getLoginController());
-              //console.log(this.getLoginController().getUser());
-              // console.log(refUsn.current.getText());
-              //console.log('loginController');
-              //console.log(this.getLoginController());
-              console.log('refUSN:');
-              console.log(this.usn.current);
+              const username = this.usn.current.getText();
+              const password = this.pwd.current.getText();
+              console.log('User:' + username + '_');
+              console.log('Pwd:' + password + '_');
               const loginState = this.getLoginController().login(
-                this.usn.current.getText(),
-                this.pwd.current.getText(),
+                username,
+                password,
               );
 
-              if (loginState === -1) {
-                alert('Username is invalid');
-              } else if (loginState === 0) {
-                alert('Password is incorrect');
+              if (loginState < -1) {
+                if (loginState === -2) {
+                  Alert.alert(
+                    'Login failed',
+                    'Username is empty. Please try again',
+                  );
+                }
+                if (loginState === -3) {
+                  Alert.alert(
+                    'Login failed',
+                    'Password is empty. Please try again',
+                  );
+                }
+                if (loginState === -4) {
+                  Alert.alert(
+                    'Login failed',
+                    'Username and Password is empty. Please try again',
+                  );
+                }
               } else {
-                // loginState === 1
-                this.navigate('LoggedInScreen');
+                if (loginState === -1) {
+                  Alert.alert('Invalid Credentials', 'Username is invalid');
+                } else if (loginState === 0) {
+                  Alert.alert('Invalid Credentials', 'Password is incorrect');
+                } else {
+                  // loginState === 1
+                  this.navigate('LoggedInScreen');
+                }
               }
             }}
             settings={this.nSettings.loginBtn}
