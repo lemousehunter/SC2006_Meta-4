@@ -7,7 +7,7 @@ require("dotenv").config();
 const authJwt = require("./helpers/jwt");
 const errorHandler = require("./helpers/error-handler");
 //change the database URL in the config file
-const { mongoUri } = require('./helpers/config');
+const { mongoUri } = require("./helpers/config");
 
 app.use(cors());
 app.options("*", cors());
@@ -28,7 +28,7 @@ const pinsRoutes = require("./routes/Pins");
 const api = process.env.API_URL;
 
 app.use(`${api}/categories`, categoriesRoutes);
-app.use(`${api}/post`, postsRoutes);
+app.use(`${api}/posts`, postsRoutes);
 app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/orders`, ordersRoutes);
 app.use(`${api}/pins`, pinsRoutes);

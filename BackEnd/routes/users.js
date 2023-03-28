@@ -114,23 +114,6 @@ router.post("/register", async (req, res, next) => {
     return next(error);
   }
 
-  // // Generating token for user
-  // let token;
-  // // sign returns a string which is just the token
-  // try {
-  //   token = jwt.sign(
-  //     { userId: user.id, email: user.email },
-  //     secret, // for the 2nd arg, it's a private key, never share it elsewhr, only your own server side knows
-  //     { expiresIn: "1h" } //adjust expiry of token as deemed fit
-  //   );
-  // } catch (err) {
-  //   const error = new HttpError(
-  //     "Signing up failed, please try again later.",
-  //     500
-  //   );
-  //   return next(error);
-  // }
-
   res.status(201).send(user);
 });
 
