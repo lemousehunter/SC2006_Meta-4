@@ -39,8 +39,48 @@ router.get(`/`, async (req, res, next) => {
 
   res.send(userList);
 });
-// create new User
+
 router.post("/", async (req, res, next) => {
+  const secret = process.env.secret;
+  let user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    passwordHash: bcrypt.hashSync(req.body.password, 10),
+    phone: req.body.phone,
+    isAdmin: req.body.isAdmin,
+  });
+  try {
+    user = await user.save();
+    if (!user) {
+      return res.status(404).send("the user cannot be created");
+    }
+  } catch (err) {
+    const error = new HttpError("Signing up failed, please retry.", 500);
+    return next(error);
+  }
+
+  // // Generating token for user
+  // let token;
+  // // sign returns a string which is just the token
+  // try {
+  //   token = jwt.sign(
+  //     { userId: user.id, email: user.email },
+  //     secret, // for the 2nd arg, it's a private key, never share it elsewhr, only your own server side knows
+  //     { expiresIn: "1h" } //adjust expiry of token as deemed fit
+  //   );
+  // } catch (err) {
+  //   const error = new HttpError(
+  //     "Signing up failed, please try again later.",
+  //     500
+  //   );
+  //   return next(error);
+  // }
+
+  res.status(201).send(user);
+});
+
+// create new User localhost://3000/users/
+router.post("/register", async (req, res, next) => {
   let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
@@ -60,7 +100,7 @@ router.post("/", async (req, res, next) => {
   let user = new User({
     name: req.body.name,
     email: req.body.email,
-    passwordHash: bcrypt.hashSync(req.body.password, secret),
+    passwordHash: bcrypt.hashSync(req.body.password, 10),
     phone: req.body.phone,
     isAdmin: req.body.isAdmin,
   });
@@ -70,26 +110,26 @@ router.post("/", async (req, res, next) => {
       return res.status(404).send("the user cannot be created");
     }
   } catch (err) {
-    const error = new HttpError("Signing up failed, please try again.", 500);
+    const error = new HttpError("Signing up failed, please retry.", 500);
     return next(error);
   }
 
-  // Generating token for user
-  let token;
-  // sign returns a string which is just the token
-  try {
-    token = jwt.sign(
-      { userId: user.id, email: user.email },
-      secret, // for the 2nd arg, it's a private key, never share it elsewhr, only your own server side knows
-      { expiresIn: "1h" } //adjust expiry of token as deemed fit
-    );
-  } catch (err) {
-    const error = new HttpError(
-      "Signing up failed, please try again later.",
-      500
-    );
-    return next(error);
-  }
+  // // Generating token for user
+  // let token;
+  // // sign returns a string which is just the token
+  // try {
+  //   token = jwt.sign(
+  //     { userId: user.id, email: user.email },
+  //     secret, // for the 2nd arg, it's a private key, never share it elsewhr, only your own server side knows
+  //     { expiresIn: "1h" } //adjust expiry of token as deemed fit
+  //   );
+  // } catch (err) {
+  //   const error = new HttpError(
+  //     "Signing up failed, please try again later.",
+  //     500
+  //   );
+  //   return next(error);
+  // }
 
   res.status(201).send(user);
 });

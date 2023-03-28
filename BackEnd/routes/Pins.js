@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Pin = require('../../../BackEnd/models/pinmodel');
+const Pin = require('../models/pinmodel');
 const axios = require('axios');
-const { onemapApiKey } = require('../../../BackEnd/helpers/config');
+const { onemapApiKey } = require('../helpers/config');
 
 // Get all pins
 router.get('/', async (req, res) => {
