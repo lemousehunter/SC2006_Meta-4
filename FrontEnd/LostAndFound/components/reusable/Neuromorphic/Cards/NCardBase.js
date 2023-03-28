@@ -8,15 +8,9 @@ export default class NCardBase extends React.PureComponent {
     super(props);
     this.settings = this.props.settings;
     this.setDefaults();
-    this.color = this.settings.color;
-    this.width = this.settings.width;
-    this.height = this.settings.height;
-    this.borderRadius = this.settings.borderRadius;
     this.state = {shadowRadius: this.shadowRadius};
     this.innerShadow =
-      this.props.innerShadow == null
-        ? this.innerShadow
-        : this.props.innerShadow;
+      this.props.innerShadow == null ? false : this.props.innerShadow;
     this.createStylesheet();
   }
 
@@ -47,6 +41,12 @@ export default class NCardBase extends React.PureComponent {
   }
 
   setDefaults() {
+    this.width = this.settings.width == null ? 10 : this.settings.width;
+    this.height = this.settings.height == null ? 10 : this.settings.height;
+    this.borderRadius =
+      this.settings.borderRadius == null ? 20 : this.settings.borderRadius;
+    this.color =
+      this.settings.color == null ? '#FFF' : (this.color = this.settings.color);
     this.innerShadow =
       this.settings.innerShadow == null ? false : this.settings.innerShadow;
     this.justifyContent =

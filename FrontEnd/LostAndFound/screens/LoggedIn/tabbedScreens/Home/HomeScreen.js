@@ -1,5 +1,8 @@
-import BaseLoggedInScreen from '../../BaseLoggedInScreen';
+
 import {Text, View} from 'react-native';
+import {AppContext} from '../../../../contexts/Contexts';
+import BaseScreen from '../../../BaseScreen';
+import BaseLoggedInScreen from '../../BaseLoggedInScreen';
 
 export default class HomeScreen extends BaseLoggedInScreen {
   constructor(props) {
@@ -8,8 +11,9 @@ export default class HomeScreen extends BaseLoggedInScreen {
   }
 
   render() {
+    console.log('User is:' + this.getUser());
     //console.log('User is:' + this.getUser());
     //this.getBottomNav();
-    console.log('homeScreen user:' + this.getUser());
+    //console.log('homeScreen user:' + this.getUser());
   }
 }

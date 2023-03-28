@@ -8,11 +8,11 @@ export default class LoginController extends Component {
   }
 
   getUser() {
-    return this.state.user;
+    return this.user;
   }
 
   getLoggedIn() {
-    return this.state.loggedIn;
+    return this.loggedIn;
   }
 
   checkUser(user) {
@@ -24,7 +24,7 @@ export default class LoginController extends Component {
 
   checkPassword(user, password) {
     // checks if the password for user specified is correct
-    let check = (this.checkUser(user) && password === 'world');
+    let check = this.checkUser(user) && password === 'world';
     //let check = true; // to be replaced with checking fn
     return check;
   }

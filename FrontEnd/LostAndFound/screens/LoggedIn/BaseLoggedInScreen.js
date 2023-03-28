@@ -1,25 +1,28 @@
+import {Text, View} from 'react-native';
+import {AppContext} from '../../../../contexts/Contexts';
 import BaseScreen from '../BaseScreen';
-import {Component} from 'react';
 
 export default class BaseLoggedInScreen extends BaseScreen {
   constructor(props) {
     super(props);
-    //console.log('props: ' + this.props);
-    this.user = this.props.route.params.user;
-
+    // console.log(this.props);
   }
+
+  //static contextType = AppContext;
 
   getUser() {
-    return this.user;
+    return this.getLoginController().getUser();
   }
 
-  navigate(screenName, params) {
-    console.log('current user: ' + this.user);
-    let _params = JSON.parse(params);
-    _params = {
-      ..._params,
-      user: this.user,
-    };
-    super.navigate(screenName, _params);
+  logOut() {
+    this.getLoginController().logOut();
+    this.navigate('PreLoginHomepage', this.getParams());
+  }
+
+  render() {
+    console.log('User is:' + this.getLoginController().getUser());
+    //console.log('User is:' + this.getUser());
+    //this.getBottomNav();
+    //console.log('homeScreen user:' + this.getUser());
   }
 }

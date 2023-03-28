@@ -18,7 +18,6 @@ export default class NButton extends React.PureComponent {
     this.textColor = this.props.textColor;
     this.fontFamily = this.props.fontFamily;
     this.onPress = this.props.onPress;
-    this.state = {shadowRadius: this.settings.shadowRadius};
     this.state = {pressing: false};
     this.getDefaults();
     this.settings = {

@@ -1,9 +1,10 @@
-import BaseLoggedInScreen from './BaseLoggedInScreen';
 import NavBar from '../../components/NavBar';
 import HomeScreen from './tabbedScreens/Home/HomeScreen';
 import Map from './tabbedScreens/Search/Map';
 import Search from './tabbedScreens/Search/Search';
-export default class LoggedInScreen extends BaseLoggedInScreen {
+import {AppContext} from '../../contexts/Contexts';
+import BaseScreen from '../BaseScreen';
+export default class LoggedInScreen extends BaseScreen {
   constructor(props) {
     super(props);
     console.log('logged in props:');
@@ -20,6 +21,8 @@ export default class LoggedInScreen extends BaseLoggedInScreen {
     };
   }
 
+  static contextType = AppContext;
+
   getNavBar() {
     return (
       <NavBar
@@ -34,7 +37,7 @@ export default class LoggedInScreen extends BaseLoggedInScreen {
 
   render() {
     //console.log('c:');
-    console.log('loggedIn user: ' + this.getUser());
+    //console.log('loggedIn user: ' + this.getLoginController().getUser());
     //console.log(this.getScreensArray());
     return this.getNavBar();
   }

@@ -3,6 +3,7 @@ import NButton from '../../components/reusable/Neuromorphic/Buttons/NButton';
 import BaseScreen from '../BaseScreen';
 import HomeScreen from '../LoggedIn/tabbedScreens/Home/HomeScreen';
 import BGWithNCard from '../../components/reusable/Neuromorphic/BackgroundWithNCard';
+import {AppContext} from '../../contexts/Contexts';
 
 export default class LoginPage extends BaseScreen {
   constructor(props) {
@@ -10,6 +11,8 @@ export default class LoginPage extends BaseScreen {
     this.createStyleSheet();
     this.getSettings();
   }
+
+  static contextType = AppContext;
   createStyleSheet() {
     this.style = StyleSheet.create({
       mainContainer: {
@@ -68,7 +71,6 @@ export default class LoginPage extends BaseScreen {
         <View style={this.style.btnContainer}>
           <NButton
             settings={this.nSettings.registerBtn}
-            //onPress={() => this.navigate('LoggedInScreen', {user: 'loginnnn'})}
             label={'Register'}
             fontFamily={this.getButtonFont()}
             textColor={this.getBgColor()}

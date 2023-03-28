@@ -1,20 +1,11 @@
-import {
-  Alert,
-  Dimensions,
-  Image,
-  Keyboard,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {Alert, Image, StyleSheet, Text, View} from 'react-native';
 import NCard from '../../components/reusable/Neuromorphic/Cards/NCard';
 import BaseScreen from '../BaseScreen';
 import NButton from '../../components/reusable/Neuromorphic/Buttons/NButton';
 import BGWithNCard from '../../components/reusable/Neuromorphic/BackgroundWithNCard';
 import NTextInput from '../../components/reusable/Neuromorphic/TextInput/NTextInput';
 import React from 'react';
-import {AppContext} from '../../components/Context';
+import {AppContext} from '../../contexts/Contexts';
 
 export default class Login extends BaseScreen {
   constructor(props) {
@@ -90,7 +81,37 @@ export default class Login extends BaseScreen {
     };
   }
 
-  validateLogin() {}
+  validateLogin() {
+    const username = this.usn.current.getText();
+    const password = this.pwd.current.getText();
+    console.log('User:' + username + '_');
+    console.log('Pwd:' + password + '_');
+    const loginState = this.getLoginController().login(username, password);
+
+    if (loginState < -1) {
+      if (loginState === -2) {
+        Alert.alert('Login failed', 'Username is empty. Please try again');
+      }
+      if (loginState === -3) {
+        Alert.alert('Login failed', 'Password is empty. Please try again');
+      }
+      if (loginState === -4) {
+        Alert.alert(
+          'Login failed',
+          'Username and Password is empty. Please try again',
+        );
+      }
+    } else {
+      if (loginState === -1) {
+        Alert.alert('Invalid Credentials', 'Username is invalid');
+      } else if (loginState === 0) {
+        Alert.alert('Invalid Credentials', 'Password is incorrect');
+      } else {
+        // loginState === 1
+        this.navigate('LoggedInScreen');
+      }
+    }
+  }
 
   render() {
     return (
@@ -129,46 +150,8 @@ export default class Login extends BaseScreen {
             label={'LOGIN'}
             fontFamily={this.getButtonFont()}
             textColor={this.getBgColor()}
-            //onPress={() => this.navigate('LoggedInScreen')}
             onPress={() => {
-              const username = this.usn.current.getText();
-              const password = this.pwd.current.getText();
-              console.log('User:' + username + '_');
-              console.log('Pwd:' + password + '_');
-              const loginState = this.getLoginController().login(
-                username,
-                password,
-              );
-
-              if (loginState < -1) {
-                if (loginState === -2) {
-                  Alert.alert(
-                    'Login failed',
-                    'Username is empty. Please try again',
-                  );
-                }
-                if (loginState === -3) {
-                  Alert.alert(
-                    'Login failed',
-                    'Password is empty. Please try again',
-                  );
-                }
-                if (loginState === -4) {
-                  Alert.alert(
-                    'Login failed',
-                    'Username and Password is empty. Please try again',
-                  );
-                }
-              } else {
-                if (loginState === -1) {
-                  Alert.alert('Invalid Credentials', 'Username is invalid');
-                } else if (loginState === 0) {
-                  Alert.alert('Invalid Credentials', 'Password is incorrect');
-                } else {
-                  // loginState === 1
-                  this.navigate('LoggedInScreen');
-                }
-              }
+              this.validateLogin();
             }}
             settings={this.nSettings.loginBtn}
           />

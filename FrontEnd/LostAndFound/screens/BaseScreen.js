@@ -1,5 +1,6 @@
 import {Component} from 'react';
-import {AppContext} from '../components/Context';
+import {AppContext} from '../contexts/Contexts';
+import ProvideCombinedContext from '../contexts/AppContext';
 
 export default class extends Component {
   constructor(props) {
@@ -16,11 +17,6 @@ export default class extends Component {
   }
 
   static contextType = AppContext;
-
-  componentDidMount() {
-    this.controllers = this.context;
-    console.log(this.controllers);
-  }
 
   getBgColor() {
     return this.bgColor;
@@ -49,14 +45,22 @@ export default class extends Component {
     return this.buttonFont;
   }
 
+  getParams() {
+    return this.context.params;
+  }
+
+  getControllers() {
+    return this.context.controllers;
+  }
+
   getLoginController() {
-    console.log('loginController');
-    console.log(this.controllers.loginController);
-    return this.controllers.loginController;
+    console.log('loginController:');
+    console.log(this.getControllers().loginController);
+    return this.getControllers().loginController;
   }
 
   getNav() {
-    return this.controllers.nav.current;
+    return this.getControllers().nav.current;
   }
 
   navigate(screenName, params) {

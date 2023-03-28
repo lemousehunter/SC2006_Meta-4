@@ -24,10 +24,8 @@ export default class NavBar extends React.Component {
     this.activeColor = props.activeColor;
     this.normalColor = props.normalColor;
     this.screensArray = props.screensArray;
-    this.initialParams = {
-      ...this.initialParams,
-      user: props.user,
-    };
+    this.initialParams = props.initialParams;
+    console.log('navBar initial params:' + JSON.stringify(this.initialParams));
     this.children = props.children;
     this.user = props.user;
     this.navigation = props.navigation;
