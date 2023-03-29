@@ -29,6 +29,51 @@ export default class LoginController extends Component {
     return check;
   }
 
+  register(username, email, password, phoneNumber) {
+    console.log(
+      'usn:' +
+        username +
+        ' | email:' +
+        email +
+        ' | pwd:' +
+        password +
+        '| phoneNum: ' +
+        phoneNumber,
+    );
+    const res_array = [];
+    if (
+      username.length === 0 ||
+      email.length === 0 ||
+      password.length === 0 ||
+      phoneNumber.length === 0
+    ) {
+      if (username.length === 0) {
+        res_array.push(', Username');
+      }
+
+      if (email.length === 0) {
+        res_array.push(', Email');
+      }
+
+      if (password.length === 0) {
+        res_array.push(', Password');
+      }
+
+      if (phoneNumber.length === 0) {
+        res_array.push(', Phone Number');
+      }
+
+      return res_array.join('|');
+    } else {
+      if (this.checkUser(username)) {
+        return 'E_USN';
+      } else {
+        // add code for POST-ing data to server
+        return 'S';
+      }
+    }
+  }
+
   login(user, password) {
     // -4: both username and password left empty, -3: password left empty,-2: user left empty, -1: user does not exist, 0: user exists but incorrect password, 1: login successful
     console.log('logging in.....');
