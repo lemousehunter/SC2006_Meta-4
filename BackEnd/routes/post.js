@@ -4,6 +4,18 @@ const { Category } = require("../models/category");
 const router = express.Router();
 const mongoose = require("mongoose");
 const { User } = require("../models/user");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/uploads");
+  },
+  filename: function (req, file, cb) {
+    const fileName = file.originalname.replace(" ", "-");
+    cb(null, file.fieldname + "-" + Date.now());
+  },
+});
+const uploadOptions = multer({ storage: storage });
 
 // show all posts or filtered by category posts
 router.get(`/`, async (req, res) => {
@@ -21,7 +33,7 @@ router.get(`/`, async (req, res) => {
   res.send(postList);
 });
 //show post found by id, can use .select(<attribute>) to show selected attribute
-router.get("/:id", async (req, res) => {
+router.get("/get/:id", async (req, res) => {
   const post = await Post.findById(req.params.id)
     .populate("category")
     .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
@@ -31,13 +43,15 @@ router.get("/:id", async (req, res) => {
   res.send(post);
 });
 // upload new post
-router.post(`/`, async (req, res) => {
+router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send("invalid Category");
-
+  const fileName = req.file.filename;
+  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
   let post = new Post({
     itemName: req.body.itemName,
     isLost: req.body.isLost,
+    image: `${basePath}${fileName}`,
     location: req.body.location,
     listedBy: req.body.listedBy,
     date: req.body.date,
@@ -105,13 +119,18 @@ router.delete("/:id", (req, res) => {
 
 // get the count of posts
 router.get("/count", async (req, res) => {
-  const postCount = await Post.find().countDocuments((count) => count);
-  if (!postCount) {
-    res.status(500).json({ success: false });
+  let postCount;
+  try {
+    postCount = await Post.find().countDocuments({});
+    if (!postCount) {
+      res.status(404).json({ success: false, message: "No posts found" });
+    } else {
+      res.send({ count: postCount });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
-  res.send({
-    count: postCount,
-  });
 });
 
 //display  unresolved posts
@@ -143,7 +162,7 @@ router.get("/get/LostPosts", async (req, res) => {
 
 //display user posts
 router.get("/userposts/:userid", async (req, res) => {
-  const userPosts = await Post.find({ user: req.params.userid })
+  const userPosts = await Post.find({ listedBy: req.params.userid })
     .populate("category")
     .sort({ date: -1 });
   if (!userPosts) {

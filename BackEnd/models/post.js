@@ -18,7 +18,7 @@ const postSchema = mongoose.Schema(
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "category",
+      ref: "Category",
       required: [true, ""],
     },
     location: {
@@ -31,7 +31,7 @@ const postSchema = mongoose.Schema(
     },
     listedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
       required: true,
     },
 

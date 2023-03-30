@@ -33,6 +33,7 @@ router.post("/", async (req, res) => {
   }
   res.send(category);
 });
+
 //update category found by id
 router.put("/:id", async (req, res) => {
   const category = await Category.findByIdAndUpdate(req.params.id, {

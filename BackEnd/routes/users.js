@@ -1,12 +1,14 @@
 const { User } = require("../models/user");
+const { Post } = require("../models/post");
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const HttpError = require("../models/http-error");
+const { Schema } = require("mongoose");
 
 //get single user by ID
-router.get(`/:id`, async (req, res, next) => {
+router.get(`/get/:id`, async (req, res, next) => {
   let user;
   try {
     user = await User.findById(req.params.id).select("-passwordHash");
@@ -36,7 +38,6 @@ router.get(`/`, async (req, res, next) => {
     const error = new HttpError("Fetching user list failed, please retry", 500);
     return next(error);
   }
-
   res.send(userList);
 });
 
@@ -83,7 +84,7 @@ router.post("/", async (req, res, next) => {
 router.post("/register", async (req, res, next) => {
   let existingUser;
   try {
-    existingUser = await User.findOne({ email: email });
+    existingUser = await User.findOne({ email: req.body.email });
   } catch (err) {
     const error = new HttpError("Signing up failed, please retry", 500);
     return next(error);
@@ -128,6 +129,7 @@ router.post("/login", async (req, res, next) => {
     token = jwt.sign(
       {
         userId: user.id,
+        isAdmin: user.isAdmin,
       },
       secret
       //{expiresIn:"1d"} for eg, jwt token expires in 1day
@@ -136,13 +138,6 @@ router.post("/login", async (req, res, next) => {
   } else {
     res.status(401).send("Password is wrong");
   }
-
-  res.json({
-    message: "Logged in!",
-    userId: user.id,
-    email: user.email,
-    token: token,
-  });
 });
 
 router.get("/search", async (req, res) => {
@@ -178,6 +173,52 @@ router.get("/search", async (req, res) => {
   } catch (err) {
     const error = new HttpError("Could not find the searched user.");
   }
+});
+
+//get count of users
+router.get("/count", async (req, res) => {
+  let userCount;
+  try {
+    userCount = await User.find().countDocuments({});
+    if (!userCount) {
+      res.status(404).json({ success: false, message: "No users found" });
+    } else {
+      res.send({ count: userCount });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+//delete user
+router.delete("/:id", (req, res) => {
+  User.findByIdAndRemove(req.params.id)
+    .then((user) => {
+      if (user) {
+        return res
+          .status(200)
+          .json({ success: true, message: "User is deleted" });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+    })
+    .catch((err) => {
+      return res.status(400).json({ success: false, error: err });
+    });
+});
+
+//display user posts
+router.get("/userposts/:userid", async (req, res) => {
+  const userPosts = await Post.find({ user: req.params.userid })
+    .populate("category")
+    .sort({ date: -1 });
+  if (!userPosts) {
+    res.status(500).json({ success: false });
+  }
+  res.send(userPosts);
 });
 
 module.exports = router;
