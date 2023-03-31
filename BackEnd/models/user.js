@@ -23,6 +23,12 @@ const userSchema = mongoose.Schema({
     default: false,
     required: [true, ""],
   },
+  // To bind the posts of this user to this user. makes an empty array of posts initially
+  posts: [{
+    type: mongoose.Types.ObjectId, 
+    required: true,
+    ref: "Post"
+  }]
 });
 
 userSchema.virtual("id").get(function () {
