@@ -212,7 +212,7 @@ router.delete("/:id", (req, res) => {
 
 //display user posts
 router.get("/userposts/:userid", async (req, res) => {
-  const userPosts = await Post.find({ user: req.params.userid })
+  const userPosts = await Post.find({ listedBy: req.params.userid })
     .populate("category")
     .sort({ date: -1 });
   if (!userPosts) {

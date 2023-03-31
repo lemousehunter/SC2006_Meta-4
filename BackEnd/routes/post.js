@@ -6,13 +6,24 @@ const mongoose = require("mongoose");
 const { User } = require("../models/user");
 const multer = require("multer");
 
+const FILE_TYPE_MAP = {
+  "image/png": "png",
+  "image/jpeg": "jpeg",
+  "image/jpg": "jpg",
+};
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/uploads");
+    const isValid = FILE_TYPE_MAP[file.mimetype];
+    let uploadError = new Error("invalid image type");
+    if (isValid) {
+      uploadError = null;
+    }
+    cb(uploadError, "public/uploads");
   },
   filename: function (req, file, cb) {
     const fileName = file.originalname.replace(" ", "-");
-    cb(null, file.fieldname + "-" + Date.now());
+    const extension = FILE_TYPE_MAP[file.mimetype];
+    cb(null, `${fileName}-${Date.now()}.${extension}`);
   },
 });
 const uploadOptions = multer({ storage: storage });
@@ -43,15 +54,23 @@ router.get("/get/:id", async (req, res) => {
   res.send(post);
 });
 // upload new post
-router.post(`/`, uploadOptions.single("image"), async (req, res) => {
+router.post(`/`, uploadOptions.array("images", 4), async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send("invalid Category");
-  const fileName = req.file.filename;
+  const files = req.files;
   const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+  let imagePaths = [];
+  if (files) {
+    files.map((file) => {
+      imagePaths.push(`${basePath}${file.filename}`);
+    });
+  } else{
+    return res.status(400).send("No image in the request");
+  }
   let post = new Post({
     itemName: req.body.itemName,
     isLost: req.body.isLost,
-    image: `${basePath}${fileName}`,
+    images: imagePaths,
     location: req.body.location,
     listedBy: req.body.listedBy,
     date: req.body.date,
@@ -67,14 +86,28 @@ router.post(`/`, uploadOptions.single("image"), async (req, res) => {
   res.send(post);
 });
 //update post found by id and if post has been resolved, remove it from listing
-router.put("/:id", async (req, res) => {
+router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
   // check if the id in the url is valid
   if (!mongoose.isValidObjectId(req.params.id)) {
     res.status(400).send("Invalid Post ID");
   }
+
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send("invalid Category");
-  const post = await Post.findByIdAndUpdate(
+  const post = await Post.findById(req.params.id);
+  if (!post) return res.status(400).send("invalid post");
+  const files = req.files;
+  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+
+  let imagePaths = [];
+  if (files) {
+    files.map((file) => {
+      imagePaths.push(`${basePath}${file.filename}`);
+    });
+  } else {
+    imagePaths = post.images;
+  }
+  const updatedPost = await Post.findByIdAndUpdate(
     req.params.id,
     {
       itemName: req.body.itemName,
@@ -89,14 +122,14 @@ router.put("/:id", async (req, res) => {
     },
     { new: true }
   );
-  if (!post) {
+  if (!updatedPost) {
     return res.status(404).send("the post cannot be updated");
   }
-  if (post.isResolved === true) {
-    Post.findByIdAndDelete(post.id);
+  if (updatedPost.isResolved === true) {
+    Post.findByIdAndDelete(updatedPost.id);
     return res.status(200).send("Post has been resolved");
   }
-  res.send(post);
+  res.send(updatedPost);
 });
 //delete post found by id
 router.delete("/:id", (req, res) => {
