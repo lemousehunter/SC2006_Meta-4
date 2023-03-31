@@ -23,7 +23,6 @@ app.use(errorHandler);
 const categoriesRoutes = require("./routes/categories");
 const postsRoutes = require("./routes/post");
 const usersRoutes = require("./routes/users");
-const ordersRoutes = require("./routes/orders");
 const pinsRoutes = require("./routes/Pins");
 
 const api = process.env.API_URL;
@@ -31,7 +30,6 @@ const api = process.env.API_URL;
 app.use(`${api}/categories`, categoriesRoutes);
 app.use(`${api}/posts`, postsRoutes);
 app.use(`${api}/users`, usersRoutes);
-app.use(`${api}/orders`, ordersRoutes);
 app.use(`${api}/pins`, pinsRoutes);
 
 //Database

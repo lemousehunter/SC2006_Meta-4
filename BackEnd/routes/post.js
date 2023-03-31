@@ -3,7 +3,6 @@ const express = require("express");
 const { Category } = require("../models/category");
 const router = express.Router();
 const mongoose = require("mongoose");
-const { User } = require("../models/user");
 const multer = require("multer");
 
 const FILE_TYPE_MAP = {
@@ -64,7 +63,7 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res) => {
     files.map((file) => {
       imagePaths.push(`${basePath}${file.filename}`);
     });
-  } else{
+  } else {
     return res.status(400).send("No image in the request");
   }
   let post = new Post({
