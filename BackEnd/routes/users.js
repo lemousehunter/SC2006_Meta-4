@@ -86,7 +86,10 @@ router.post("/register", async (req, res, next) => {
   try {
     existingUser = await User.findOne({ email: req.body.email });
   } catch (err) {
-    const error = new HttpError("Signing up failed as user exists, please retry", 500);
+    const error = new HttpError(
+      "Signing up failed as user exists, please retry",
+      500
+    );
     return next(error);
   }
 

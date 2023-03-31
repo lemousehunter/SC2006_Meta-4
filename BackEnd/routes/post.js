@@ -5,7 +5,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require("multer");
 const HttpError = require("../models/http-error");
-
+const { User } = require("../models/user");
 const FILE_TYPE_MAP = {
   "image/png": "png",
   "image/jpeg": "jpeg",
@@ -54,7 +54,7 @@ router.get("/get/:id", async (req, res) => {
   res.send(post);
 });
 // upload new post
-router.post(`/`, uploadOptions.array("images", 4), async (req, res) => {
+router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send("invalid Category");
   const files = req.files;
@@ -80,35 +80,35 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res) => {
     isResolved: req.body.isResolved,
   });
 
-  // We also need to ensure that if there exists a userid with the provided id
+  //We also need to ensure that if there exists a userid with the provided id
   let user;
 
   try {
-    user = await User.findById(listedBy);
+    user = await User.findById(post.listedBy);
   } catch (err) {
-    const error = new HttpError(' Creating place failed, please retry.', 500);
+    const error = new HttpError(" Creating place failed, please retry.", 500);
     return next(error);
   }
 
   if (!user) {
-    const error = new HttpError('Could not find user for the provided id', 404);
+    const error = new HttpError("Could not find user for the provided id", 404);
     return next(error);
   }
 
-  // post = await post.save();
-  // if (!post) {
-  //   return res.status(404).send("the post cannot be created");
+  post = await post.save();
+  if (!post) {
+    return res.status(404).send("the post cannot be created");
+  }
+
+  // try {
+  //   const sess = await mongoose.startSession();
+  //   sess.startTransaction();
+  //   await post.save({ session: sess }); // save the place
+  //   await sess.commitTransaction(); // only at this point will the final record be stored in db
+  // } catch (err) {
+  //   const error = new HttpError("Creating post failed, please retry.", 500);
+  //   return next(error);
   // }
-
-  try {
-    const sess = await mongoose.startSession();
-    sess.startTransaction();
-    await post.save({ session: sess}); // save the place
-    await sess.commitTransaction(); // only at this point will the final record be stored in db
-  } catch(err) {
-    const error = new HttpError('Creating post failed, please retry.', 500);
-    return next(error);
-  }
 
   res.send(post);
 });
@@ -126,12 +126,15 @@ router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
   let postcheck;
   try {
     postcheck = await Post.findById(req.params.id);
-  } catch(err) {
-    const error = new HttpError('Something went wrong could not update post.', 500);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong could not update post.",
+      500
+    );
     return next(error);
   }
   if (postcheck.listedBy.toString() !== req.userData.userId) {
-    const error = new HttpError('You are not allowed to edit this place.', 401); // 401 is auth error code
+    const error = new HttpError("You are not allowed to edit this place.", 401); // 401 is auth error code
     return next(error);
   }
 
