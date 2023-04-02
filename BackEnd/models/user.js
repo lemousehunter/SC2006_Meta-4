@@ -26,7 +26,6 @@ const userSchema = mongoose.Schema({
   // To bind the posts of this user to this user. makes an empty array of posts initially
   posts: [{
     type: mongoose.Types.ObjectId, 
-    required: true,
     ref: "Post"
   }]
 });

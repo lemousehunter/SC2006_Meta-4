@@ -102,7 +102,7 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
     const title = post.itemName;
     const description = post.itemDescription;
     const location = post.location;
-
+    post = await post.save();
     if (!title || !description || !location) {
       return res.status(400).json({
         message: "Please provide a title, description, and location.",
@@ -135,15 +135,13 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
         description,
         latitude: LATITUDE,
         longitude: LONGITUDE,
+        postid: post.id,
       });
 
       await pin.save();
-
-
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
-    post = await post.save();
   } else {
     return res.status(404).send("the post cannot be created");
   }
@@ -157,7 +155,7 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
   //   const error = new HttpError("Creating post failed, please retry.", 500);
   //   return next(error);
   // }
-      res.send([pin, post]);
+  res.send([pin, post]);
 });
 //update post found by id and if post has been resolved, remove it from listing
 router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
@@ -178,10 +176,6 @@ router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
       "Something went wrong could not update post.",
       500
     );
-    return next(error);
-  }
-  if (postcheck.listedBy.toString() !== req.userData.userId) {
-    const error = new HttpError("You are not allowed to edit this place.", 401); // 401 is auth error code
     return next(error);
   }
 
@@ -213,23 +207,96 @@ router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
     },
     { new: true }
   );
+
   if (!updatedPost) {
     return res.status(404).send("the post cannot be updated");
   }
   if (updatedPost.isResolved === true) {
-    Post.findByIdAndDelete(updatedPost.id);
-    return res.status(200).send("Post has been resolved");
+    Post.findByIdAndRemove(req.params.id).then((post) => {
+      if (post) {
+        Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {
+          if (pin) {
+            return res
+              .status(200)
+              .json({ success: true, message: "post is deleted" });
+          } else {
+            return res
+              .status(404)
+              .json({ success: false, message: "pin not found" });
+          }
+        });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: "post not found" });
+      }
+    });
+  } else {
+    const title = updatedPost.itemName;
+    const description = updatedPost.itemDescription;
+    const location = updatedPost.location;
+    if (!title || !description || !location) {
+      return res.status(400).json({
+        message: "Please provide a title, description, and location.",
+      });
+    }
+
+    // Geocode the location using the OneMap API
+    try {
+      const response = await axios.get(
+        "https://developers.onemap.sg/commonapi/search",
+        {
+          params: {
+            searchVal: location,
+            returnGeom: "Y",
+            getAddrDetails: "N",
+            pageNum: 1,
+            apiKey: onemapApiKey,
+          },
+        }
+      );
+
+      if (response.data.results.length === 0) {
+        return res.status(400).json({ message: "Location not found." });
+      }
+
+      const { LATITUDE, LONGITUDE } = response.data.results[0];
+
+      const updatedPin = await Pin.findOneAndUpdate(
+        { postid: req.params.id },
+        {
+          title: title,
+          location: location,
+          latitude: LATITUDE,
+          longitude: LONGITUDE,
+          postid: req.params.id,
+        },
+        { new: true }
+      );
+
+      res.send([updatedPin, updatedPost]);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
   }
-  res.send(updatedPost);
 });
+
 //delete post found by id
 router.delete("/:id", (req, res) => {
   Post.findByIdAndRemove(req.params.id)
     .then((post) => {
       if (post) {
-        return res
-          .status(200)
-          .json({ success: true, message: "post is deleted" });
+        Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {
+          if (pin) {
+            return res
+              .status(200)
+              .json({ success: true, message: "post is deleted" });
+          } else {
+            return res
+              .status(404)
+              .json({ success: false, message: "pin not found" });
+          }
+        });
       } else {
         return res
           .status(404)
