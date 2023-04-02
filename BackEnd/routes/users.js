@@ -36,7 +36,7 @@ router.get(`/`, async (req, res, next) => {
     }
   } catch (err) {
     const error = new HttpError("Fetching user list failed, please retry", 500);
-    return next(error);
+    return next(error); 
   }
   res.send(userList);
 });
@@ -143,55 +143,73 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/search", async (req, res) => {
-  try {
-    const query = req.query;
-    let results;
+// router.get("/search", async (req, res) => {
+//   try {
+//     const query = req.query;
+//     let results;
 
-    results = await User.aggregate([
-      {
-        $search: {
-          index: "users", // depends on the atlas search index used
-          autocomplete: {
-            query: `${query.name}`,
-            path: "name",
-            tokenOrder: "sequential",
-            fuzzy: { maxEdits: 2 },
-          },
-        },
-      },
-      {
-        $project: { name: 1, email: 1 },
-      },
-      {
-        facet: {
-          docs: [{ $limit: 10 }],
-        },
-      },
-    ]);
-    if (results) {
-      return res.status(200).json({ results: results });
-    }
-    res.status(404).json({ message: "error" });
-  } catch (err) {
-    const error = new HttpError("Could not find the searched user.");
-  }
-});
+//     results = await User.aggregate([
+//       {
+//         $search: {
+//           index: "users", // depends on the atlas search index used
+//           autocomplete: {
+//             query: `${query.name}`,
+//             path: "name",
+//             tokenOrder: "sequential",
+//             fuzzy: { maxEdits: 2 },
+//           },
+//         },
+//       },
+//       {
+//         $project: { name: 1, email: 1 },
+//       },
+//       {
+//         facet: {
+//           docs: [{ $limit: 10 }],
+//         },
+//       },
+//     ]);
+//     if (results) {
+//       return res.status(200).json({ results: results });
+//     }
+//     res.status(404).json({ message: "error" });
+//   } catch (err) {
+//     const error = new HttpError("Could not find the searched user.");
+//   }
+// });
 
-//get count of users
-router.get("/count", async (req, res) => {
-  let userCount;
-  try {
-    userCount = await User.find().countDocuments({});
-    if (!userCount) {
-      res.status(404).json({ success: false, message: "No users found" });
-    } else {
-      res.send({ count: userCount });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server error" });
+// //get count of users
+// router.get("/count", async (req, res) => {
+//   let userCount;
+//   try {
+//     userCount = await User.find().countDocuments({});
+//     if (!userCount) {
+//       res.status(404).json({ success: false, message: "No users found" });
+//     } else {
+//       res.send({ count: userCount });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, message: "Server error" });
+//   }
+// });
+
+// Search via name (Case sensitive)
+router.get(`/search/:name`, async(req, res, next) => {
+  let data;
+  try{
+    data = await User.find(
+      {
+        "$or": [
+          {name:{$regex:req.params.name}}
+        ]
+      }
+    );
+  } catch (err){
+    const error = new HttpError("Could not find the specified user given the name.", 500);
+    return next(error);
   }
+  res.status(201).send(data);
 });
 
 //delete user
