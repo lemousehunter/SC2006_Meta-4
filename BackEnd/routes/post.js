@@ -82,7 +82,9 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
     category: req.body.category,
     isResolved: req.body.isResolved,
   });
-
+  if (post.isResolved === true) {
+    return res.status(404).send("the post cannot be created");
+  }
   //We also need to ensure that if there exists a userid with the provided id
   let user;
   let pin;
@@ -103,6 +105,12 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
     const description = post.itemDescription;
     const location = post.location;
     post = await post.save();
+    // add post created to user
+    let postList = user.posts;
+    postList.push(post.id);
+    user.posts = postList;
+    user.save();
+    console.log(user);
     if (!title || !description || !location) {
       return res.status(400).json({
         message: "Please provide a title, description, and location.",
@@ -155,9 +163,12 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
   //   const error = new HttpError("Creating post failed, please retry.", 500);
   //   return next(error);
   // }
+
   res.send([pin, post]);
 });
-//update post found by id and if post has been resolved, remove it from listing
+
+//update post found by id and if post has been resolved, remove pin from map
+//keep resolved post for history
 router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
   // check if the id in the url is valid
   if (!mongoose.isValidObjectId(req.params.id)) {
@@ -167,7 +178,6 @@ router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send("invalid Category");
 
-  // Since the place has a listedBy field, if the creator of post != user trying to access this put function, then deny auth
   let postcheck;
   try {
     postcheck = await Post.findById(req.params.id);
@@ -212,23 +222,15 @@ router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
     return res.status(404).send("the post cannot be updated");
   }
   if (updatedPost.isResolved === true) {
-    Post.findByIdAndRemove(req.params.id).then((post) => {
-      if (post) {
-        Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {
-          if (pin) {
-            return res
-              .status(200)
-              .json({ success: true, message: "post is deleted" });
-          } else {
-            return res
-              .status(404)
-              .json({ success: false, message: "pin not found" });
-          }
-        });
+    Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {
+      if (pin) {
+        return res
+          .status(200)
+          .json({ success: true, message: "post is deleted" });
       } else {
         return res
           .status(404)
-          .json({ success: false, message: "post not found" });
+          .json({ success: false, message: "pin not found" });
       }
     });
   } else {
@@ -282,7 +284,27 @@ router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
 });
 
 //delete post found by id
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
+  let post;
+  try {
+    post = await Post.findById(req.params.id);
+  } catch (err) {
+    const error = new HttpError(" no post found, please retry.", 500);
+    return next(error);
+  }
+
+  let user;
+  try {
+    user = await User.findById(post.listedBy);
+  } catch (err) {
+    const error = new HttpError(" no user found, please retry.", 500);
+    return next(error);
+  }
+  let postList = user.posts;
+  console.log(user);
+  const index = postList.indexOf(req.params.id);
+  user.posts = postList.splice(index, 1);
+  user.save();
   Post.findByIdAndRemove(req.params.id)
     .then((post) => {
       if (post) {
