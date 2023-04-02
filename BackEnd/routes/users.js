@@ -198,7 +198,7 @@ router.get(`/search/:name`, async (req, res, next) => {
   try {
     data = await User.find({
       $or: [{ name: { $regex: req.params.name } }],
-    });
+    }).select({ name: 1, email: 1, phone: 1, posts: 1 });
   } catch (err) {
     const error = new HttpError(
       "Could not find the specified user given the name.",
@@ -209,7 +209,7 @@ router.get(`/search/:name`, async (req, res, next) => {
   res.status(201).send(data);
 });
 
-router.put("/:id", async (req, res,next) => {
+router.put("/:id", async (req, res, next) => {
   try {
     let updatedUser = await User.findByIdAndUpdate(
       req.params.id,
@@ -238,25 +238,25 @@ router.delete("/:id", async (req, res) => {
     return res.status(400).send("invalid user");
   }
   let postList = user.posts;
-  if(postList.length>0){
-  for (let index = 0; index < postList.length; index++) {
-    const delpostid = postList[index].toString();
-    console.log(delpostid);
-    Post.findByIdAndRemove(delpostid).then((post) => {
-      if (!post) {
-        return res
-          .status(404)
-          .json({ success: false, message: "post not found" });
-      }
-    });
-    Pin.findOneAndDelete({ postid: delpostid }).then((pin) => {
-      if (!pin) {
-        return res
-          .status(404)
-          .json({ success: false, message: "pin not found" });
-      }
-    });
-  }
+  if (postList.length > 0) {
+    for (let index = 0; index < postList.length; index++) {
+      const delpostid = postList[index].toString();
+      console.log(delpostid);
+      Post.findByIdAndRemove(delpostid).then((post) => {
+        if (!post) {
+          return res
+            .status(404)
+            .json({ success: false, message: "post not found" });
+        }
+      });
+      Pin.findOneAndDelete({ postid: delpostid }).then((pin) => {
+        if (!pin) {
+          return res
+            .status(404)
+            .json({ success: false, message: "pin not found" });
+        }
+      });
+    }
   }
   User.findByIdAndRemove(req.params.id)
     .then((user) => {

@@ -271,6 +271,7 @@ router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
           latitude: LATITUDE,
           longitude: LONGITUDE,
           postid: req.params.id,
+          description: description,
         },
         { new: true }
       );
