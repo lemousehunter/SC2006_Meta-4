@@ -284,7 +284,7 @@ router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
 });
 
 //delete post found by id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   let post;
   try {
     post = await Post.findById(req.params.id);
@@ -305,6 +305,7 @@ router.delete("/:id", async (req, res) => {
   const index = postList.indexOf(req.params.id);
   user.posts = postList.splice(index, 1);
   user.save();
+
   Post.findByIdAndRemove(req.params.id)
     .then((post) => {
       if (post) {
