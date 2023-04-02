@@ -1,5 +1,6 @@
 const { User } = require("../models/user");
 const { Post } = require("../models/post");
+const Pin = require("../models/pinmodel");
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
@@ -8,7 +9,7 @@ const HttpError = require("../models/http-error");
 const { Schema } = require("mongoose");
 
 //get single user by ID
-router.get(`/get/:id`, async (req, res, next) => {
+router.get(`/:id`, async (req, res, next) => {
   let user;
   try {
     user = await User.findById(req.params.id).select("-passwordHash");
@@ -36,7 +37,7 @@ router.get(`/`, async (req, res, next) => {
     }
   } catch (err) {
     const error = new HttpError("Fetching user list failed, please retry", 500);
-    return next(error); 
+    return next(error);
   }
   res.send(userList);
 });
@@ -48,7 +49,6 @@ router.post("/", async (req, res, next) => {
     email: req.body.email,
     passwordHash: bcrypt.hashSync(req.body.password, 10),
     phone: req.body.phone,
-    isAdmin: req.body.isAdmin,
   });
   try {
     user = await user.save();
@@ -106,7 +106,6 @@ router.post("/register", async (req, res, next) => {
     email: req.body.email,
     passwordHash: bcrypt.hashSync(req.body.password, 10),
     phone: req.body.phone,
-    isAdmin: req.body.isAdmin,
   });
   try {
     user = await user.save();
@@ -121,7 +120,7 @@ router.post("/register", async (req, res, next) => {
   res.status(201).send(user);
 });
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   const secret = process.env.secret;
   if (!user) {
@@ -132,7 +131,6 @@ router.post("/login", async (req, res, next) => {
     token = jwt.sign(
       {
         userId: user.id,
-        isAdmin: user.isAdmin,
       },
       secret
       //{expiresIn:"1d"} for eg, jwt token expires in 1day
@@ -195,25 +193,71 @@ router.post("/login", async (req, res, next) => {
 // });
 
 // Search via name (Case sensitive)
-router.get(`/search/:name`, async(req, res, next) => {
+router.get(`/search/:name`, async (req, res, next) => {
   let data;
-  try{
-    data = await User.find(
-      {
-        "$or": [
-          {name:{$regex:req.params.name}}
-        ]
-      }
+  try {
+    data = await User.find({
+      $or: [{ name: { $regex: req.params.name } }],
+    });
+  } catch (err) {
+    const error = new HttpError(
+      "Could not find the specified user given the name.",
+      500
     );
-  } catch (err){
-    const error = new HttpError("Could not find the specified user given the name.", 500);
     return next(error);
   }
   res.status(201).send(data);
 });
 
+router.put("/:id", async (req, res,next) => {
+  try {
+    let updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        email: req.body.email,
+        passwordHash: bcrypt.hashSync(req.body.password, 10),
+        phone: req.body.phone,
+      },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).send("user cannot be updated");
+    }
+    res.status(201).send(updatedUser);
+  } catch (err) {
+    const error = new HttpError(" no user found, please retry.", 500);
+    return next(error);
+  }
+});
+
 //delete user
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(400).send("invalid user");
+  }
+  let postList = user.posts;
+  if(postList.length>0){
+  for (let index = 0; index < postList.length; index++) {
+    const delpostid = postList[index].toString();
+    console.log(delpostid);
+    Post.findByIdAndRemove(delpostid).then((post) => {
+      if (!post) {
+        return res
+          .status(404)
+          .json({ success: false, message: "post not found" });
+      }
+    });
+    Pin.findOneAndDelete({ postid: delpostid }).then((pin) => {
+      if (!pin) {
+        return res
+          .status(404)
+          .json({ success: false, message: "pin not found" });
+      }
+    });
+  }
+  }
   User.findByIdAndRemove(req.params.id)
     .then((user) => {
       if (user) {

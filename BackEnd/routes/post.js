@@ -47,7 +47,7 @@ router.get(`/`, async (req, res) => {
   res.send(postList);
 });
 //show post found by id, can use .select(<attribute>) to show selected attribute
-router.get("/get/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   const post = await Post.findById(req.params.id)
     .populate("category")
     .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
@@ -110,7 +110,6 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
     postList.push(post.id);
     user.posts = postList;
     user.save();
-    console.log(user);
     if (!title || !description || !location) {
       return res.status(400).json({
         message: "Please provide a title, description, and location.",
@@ -301,7 +300,6 @@ router.delete("/:id", async (req, res, next) => {
     return next(error);
   }
   let postList = user.posts;
-  console.log(user);
   const index = postList.indexOf(req.params.id);
   user.posts = postList.splice(index, 1);
   user.save();
@@ -349,11 +347,11 @@ router.get("/count", async (req, res) => {
 
 //display  unresolved posts
 router.get("/get/UrgentPosts", async (req, res) => {
-  const posts = await Post.find({ isResolved: false });
-  if (!posts) {
+  const urgentPost = await Post.find({ isResolved: "false" });
+  if (!urgentPost) {
     res.status(500).json({ success: false });
   }
-  res.send(posts);
+  res.send(urgentPost);
 });
 
 //display found posts
