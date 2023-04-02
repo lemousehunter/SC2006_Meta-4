@@ -33,20 +33,30 @@ app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/pins`, pinsRoutes);
 
 //Database
-mongoose
-  .connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    dbName: "LostnFoundDB",
-  })
+// mongoose
+//   .connect(mongoUri, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     dbName: "LostnFoundDB",
+//   })
+//   .then(() => {
+//     console.log("Database Connection is ready...");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+
+  mongoose
+  .connect('mongodb+srv://sc2006ntu:fksc2006@lostnfounddb.8cmjwja.mongodb.net/?retryWrites=true&w=majority')
   .then(() => {
     console.log("Database Connection is ready...");
+    app.listen(3000);
   })
-  .catch((err) => {
+  .catch(err => {
     console.log(err);
   });
 
 //Server
-app.listen(3000, () => {
-  console.log("server is running http://localhost:3000");
-});
+// app.listen(3000, () => {
+//   console.log("server is running http://localhost:3000");
+// });
