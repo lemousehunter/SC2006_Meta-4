@@ -6,6 +6,9 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const HttpError = require("../models/http-error");
 const { User } = require("../models/user");
+const Pin = require("../models/pinmodel");
+const axios = require("axios");
+const { onemapApiKey } = require("../helpers/config");
 const FILE_TYPE_MAP = {
   "image/png": "png",
   "image/jpeg": "jpeg",
@@ -82,7 +85,7 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
 
   //We also need to ensure that if there exists a userid with the provided id
   let user;
-
+  let pin;
   try {
     user = await User.findById(post.listedBy);
   } catch (err) {
@@ -94,9 +97,54 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
     const error = new HttpError("Could not find user for the provided id", 404);
     return next(error);
   }
+  if (post) {
+    // Create a new pin
+    const title = post.itemName;
+    const description = post.itemDescription;
+    const location = post.location;
 
-  post = await post.save();
-  if (!post) {
+    if (!title || !description || !location) {
+      return res.status(400).json({
+        message: "Please provide a title, description, and location.",
+      });
+    }
+
+    // Geocode the location using the OneMap API
+    try {
+      const response = await axios.get(
+        "https://developers.onemap.sg/commonapi/search",
+        {
+          params: {
+            searchVal: location,
+            returnGeom: "Y",
+            getAddrDetails: "N",
+            pageNum: 1,
+            apiKey: onemapApiKey,
+          },
+        }
+      );
+
+      if (response.data.results.length === 0) {
+        return res.status(400).json({ message: "Location not found." });
+      }
+
+      const { LATITUDE, LONGITUDE } = response.data.results[0];
+
+      pin = new Pin({
+        title,
+        description,
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+      });
+
+      await pin.save();
+
+
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+    post = await post.save();
+  } else {
     return res.status(404).send("the post cannot be created");
   }
 
@@ -109,8 +157,7 @@ router.post(`/`, uploadOptions.array("images", 4), async (req, res, next) => {
   //   const error = new HttpError("Creating post failed, please retry.", 500);
   //   return next(error);
   // }
-
-  res.send(post);
+      res.send([pin, post]);
 });
 //update post found by id and if post has been resolved, remove it from listing
 router.put("/:id", uploadOptions.array("images", 4), async (req, res) => {
