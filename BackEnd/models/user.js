@@ -18,6 +18,11 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, ""],
   },
+  creditScore: {
+    type: Number,
+    required: [true, ""],
+  },
+
   // To bind the posts of this user to this user. makes an empty array of posts initially
   posts: [{
     type: mongoose.Types.ObjectId, 
