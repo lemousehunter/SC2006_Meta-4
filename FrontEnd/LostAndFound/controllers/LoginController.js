@@ -3,8 +3,8 @@ import {Component} from 'react';
 export default class LoginController extends Component {
   constructor(props) {
     super(props);
-    this.user = '';
-    this.loggedIn = false;
+    this.user = 'test';
+    this.loggedIn = true;
   }
 
   getUser() {

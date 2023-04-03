@@ -9,7 +9,7 @@ export default class NCard extends Component {
     this.settings = this.props.settings;
     //console.log(this.settings);
     this.circle = this.props.circle == null ? false : this.props.circle;
-    this.innerShadow = this.props.innerShadow;
+    //this.innerShadow = this.props.innerShadow;
     console.log('innerShadow:');
     console.log(this.innerShadow);
   }
@@ -19,7 +19,7 @@ export default class NCard extends Component {
     //console.log('NComponent?');
     //console.log(NComponent);
     return (
-      <NComponent innerShadow={this.innerShadow} settings={this.settings}>
+      <NComponent settings={this.settings}>
         {this.props.children}
       </NComponent>
     );

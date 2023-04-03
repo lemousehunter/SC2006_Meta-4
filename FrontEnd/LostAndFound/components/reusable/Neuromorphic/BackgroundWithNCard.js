@@ -1,5 +1,10 @@
 import {Component} from 'react';
-import {Keyboard, StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import NCard from './Cards/NCard';
 
 export default class BGWithNCard extends Component {

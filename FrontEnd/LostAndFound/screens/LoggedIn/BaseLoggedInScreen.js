@@ -1,5 +1,3 @@
-import {Text, View} from 'react-native';
-import {AppContext} from '../../../../contexts/Contexts';
 import BaseScreen from '../BaseScreen';
 
 export default class BaseLoggedInScreen extends BaseScreen {
@@ -19,8 +17,16 @@ export default class BaseLoggedInScreen extends BaseScreen {
     this.navigate('PreLoginHomepage', this.getParams());
   }
 
+  getPostsController() {
+    return this.getControllers().postsController;
+  }
+
+  nav = (tabScreenName, params) => {
+    this.props.navigation.jumpTo(tabScreenName, params);
+  };
+
   render() {
-    console.log('User is:' + this.getLoginController().getUser());
+    console.log('TabUser is:' + this.getLoginController().getUser());
     //console.log('User is:' + this.getUser());
     //this.getBottomNav();
     //console.log('homeScreen user:' + this.getUser());

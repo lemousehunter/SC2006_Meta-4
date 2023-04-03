@@ -1,15 +1,15 @@
-import Login from './screens/LoginRegister/Login';
+import LoginPage from './screens/LoginRegister/Login';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import LoginPage from './screens/LoginRegister/Login';
 import RegisterPage from './screens/LoginRegister/Register';
 import {Dimensions, Keyboard, TouchableWithoutFeedback} from 'react-native';
-import HomeScreen from './screens/LoggedIn/tabbedScreens/Home/HomeScreen';
 import LoggedInScreen from './screens/LoggedIn/LoggedInScreen';
 import LoginController from './controllers/LoginController';
 import React from 'react';
 import {ParamContext, ControllerContext} from './contexts/Contexts';
 import ProvideCombinedContext from './contexts/AppContext';
+import {MenuProvider} from 'react-native-popup-menu';
+import PostsController from './controllers/PostsController';
 
 const Stack = createNativeStackNavigator();
 const winH = Dimensions.get('window').height;
@@ -26,6 +26,7 @@ export default function App() {
   const ControllersContext = ControllerContext;
   const controllers = {
     nav: nav,
+    postsController: new PostsController(),
     loginController: new LoginController(),
   };
   const params = {
@@ -41,48 +42,50 @@ export default function App() {
     ? 'LoggedInScreen'
     : 'PreLoginHomepage';
   const screenDetails = [
-    {name: 'PreLoginHomepage', component: Login},
+    {name: 'PreLoginHomepage', component: LoginPage},
     {name: 'RegisterPage', component: RegisterPage},
     {name: 'LoggedInScreen', component: LoggedInScreen},
   ];
-  const Screens = screenDetails.map(s => {
-    return (
-      <Stack.Screen
-        name={s.name}
-        component={s.component}
-        initialParams={params}
-      />
-    );
-  });
+  // const Screens = screenDetails.map(s => {
+  //   return (
+  //     <Stack.Screen
+  //       name={s.name}
+  //       component={s.component}
+  //       initialParams={params}
+  //     />
+  //   );
+  // });
   return (
-    <ControllersContext.Provider value={controllers}>
-      <ParamsContext.Provider value={params}>
-        <ProvideCombinedContext>
-          <NavigationContainer ref={nav}>
-            <Stack.Navigator
-              initialRouteName={landingScreen}
-              screenOptions={{
-                headerShown: false,
-              }}>
-              <Stack.Screen
-                name={screenDetails[0].name}
-                component={screenDetails[0].component}
-                initialParams={params}
-              />
-              <Stack.Screen
-                name={screenDetails[1].name}
-                component={screenDetails[1].component}
-                initialParams={params}
-              />
-              <Stack.Screen
-                name={screenDetails[2].name}
-                component={screenDetails[2].component}
-                initialParams={params}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </ProvideCombinedContext>
-      </ParamsContext.Provider>
-    </ControllersContext.Provider>
+    <MenuProvider>
+      <ControllersContext.Provider value={controllers}>
+        <ParamsContext.Provider value={params}>
+          <ProvideCombinedContext>
+            <NavigationContainer ref={nav}>
+              <Stack.Navigator
+                initialRouteName={landingScreen}
+                screenOptions={{
+                  headerShown: false,
+                }}>
+                <Stack.Screen
+                  name={screenDetails[0].name}
+                  component={screenDetails[0].component}
+                  initialParams={params}
+                />
+                <Stack.Screen
+                  name={screenDetails[1].name}
+                  component={screenDetails[1].component}
+                  initialParams={params}
+                />
+                <Stack.Screen
+                  name={screenDetails[2].name}
+                  component={screenDetails[2].component}
+                  initialParams={params}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </ProvideCombinedContext>
+        </ParamsContext.Provider>
+      </ControllersContext.Provider>
+    </MenuProvider>
   );
 }

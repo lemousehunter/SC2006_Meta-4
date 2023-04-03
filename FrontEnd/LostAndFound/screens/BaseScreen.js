@@ -1,6 +1,5 @@
 import {Component} from 'react';
 import {AppContext} from '../contexts/Contexts';
-import ProvideCombinedContext from '../contexts/AppContext';
 
 export default class extends Component {
   constructor(props) {

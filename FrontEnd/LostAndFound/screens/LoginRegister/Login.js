@@ -7,7 +7,7 @@ import NTextInput from '../../components/reusable/Neuromorphic/TextInput/NTextIn
 import React from 'react';
 import {AppContext} from '../../contexts/Contexts';
 
-export default class Login extends BaseScreen {
+export default class LoginPage extends BaseScreen {
   constructor(props) {
     super(props);
     this.props = props;
@@ -75,8 +75,10 @@ export default class Login extends BaseScreen {
       nTextField: {
         color: this.getBgColor(),
         width: this.winW * 0.8 * 0.8,
-        height: this.winH * 0.8 * 0.1,
-        shadowRadius: 2,
+        height: this.winH * 0.8 * 0.08,
+        shadowRadius: 3,
+        innerShadow: false,
+        blur: false,
       },
     };
   }

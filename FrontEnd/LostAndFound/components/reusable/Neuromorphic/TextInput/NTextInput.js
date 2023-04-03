@@ -5,6 +5,8 @@ import {TextInput, StyleSheet, ScrollView} from 'react-native';
 export default class NTextInput extends Component {
   constructor(props) {
     super(props);
+    this.state = {text: '', pressing: false};
+    this.props = props;
     this.label = this.props.label;
     this.maxLen = this.props.maxLen;
     this.getDefault();
@@ -17,21 +19,21 @@ export default class NTextInput extends Component {
     this.value = this.props.value;
     this.self = this.props.self;
     this.textInputRef = React.createRef();
-    this.autocapitalize = this.props.autocapitalize == null ? 'none' : this.props.autocapitalize;
+    this.autocapitalize =
+      this.props.autocapitalize == null ? 'none' : this.props.autocapitalize;
     this.settings = {
       ...this.settings,
-      innerShadow: true,
-      blur: this._blur,
-      shadowRadius: this.shadowRadius,
+      //blur: !!this.state.pressing,
     };
-
-    this.state = {text: '', pressing: false};
+    this.inputMode = this.props.inputMode;
   }
 
   getDefault() {
+    //console.log('blur:' + this._blur);
     this.editable = this.props.editable == null ? true : this.props.editable;
-    this._blur = this.props.blur == null ? true : this.props.blur;
-    this.shadowRadius = this.shadowRadius == null ? 4 : this.shadowRadius;
+    //this._blur = this.props.blur == null ? true : this.props.blur;
+    //this.innerShadow = this.props.innerShadow == null ? true : this.props.blur;
+    this.shadowRadius = this.shadowRadius == null ? -3 : this.shadowRadius;
   }
 
   createStyleSheet() {
@@ -49,23 +51,31 @@ export default class NTextInput extends Component {
     return this.state.text;
   }
 
+  setText(text) {
+    this.setState({text: text});
+  }
+
   render() {
     //this.settings.innerShadow = !!this.state.pressing;
 
     return (
-      <NCard circle={this.circle} settings={this.settings}>
+      <NCard
+        circle={this.circle}
+        innerShadow={this.innerShadow}
+        settings={this.settings}>
         <TextInput
           ref={this.textInputRef}
           onFocus={() => {
-            // this.setState({pressing: true});
+            this.setState({pressing: true});
             //this.settings.blur = !this.settings.blur;
+            //this.textInputRef.current.focus();
             //this.textInputRef.current.blur();
             //this.settings.innerShadow = true;
             // this.settings.shadowRadius = -this.settings.shadowRadius;
             console.log('pressedIn');
           }}
           onBlur={() => {
-            //this.setState({pressing: false});
+            this.setState({pressing: false});
             //this.settings.blur = !this.settings.blur;
             //this.textInputRef.current.focus();
             //this.settings.innerShadow = false;
@@ -75,6 +85,7 @@ export default class NTextInput extends Component {
           onChangeText={text => {
             this.setState({text: text});
           }}
+          inputMode={this.inputMode}
           value={this.state.text}
           style={this.styles.input}
           maxLength={this.maxLen}

@@ -3,11 +3,11 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {Component} from 'react';
 import HomeScreen from '../screens/LoggedIn/tabbedScreens/Home/HomeScreen';
 import Search from '../screens/LoggedIn/tabbedScreens/Search/Search';
-import Post from '../screens/LoggedIn/tabbedScreens/Post/Post';
+import CreatePost from '../screens/LoggedIn/tabbedScreens/CreatePost/CreatePost';
 import ChatScreen from '../screens/LoggedIn/tabbedScreens/Chat/Chat';
 import AccountScreen from '../screens/LoggedIn/tabbedScreens/Account/Account';
 
-let tab = createBottomTabNavigator();
+let Tab = createBottomTabNavigator();
 
 function HS() {
   return (
@@ -28,7 +28,6 @@ export default class NavBar extends React.Component {
     console.log('navBar initial params:' + JSON.stringify(this.initialParams));
     this.children = props.children;
     this.user = props.user;
-    this.navigation = props.navigation;
     // console.log(this.navBarColor);
     // console.log(this.activeColor);
     // console.log(this.normalColor);
@@ -92,13 +91,13 @@ export default class NavBar extends React.Component {
   render() {
     return (
       // eslint-disable-next-line react/react-in-jsx-scope
-      <tab.Navigator
+      <Tab.Navigator
         screenOptions={{
           tabBarShowLabel: false,
           tabBarStyle: this.styleSheet.bottomNavStyle,
           headerShown: false,
         }}>
-        <tab.Screen
+        <Tab.Screen
           name={'Home'}
           component={HomeScreen}
           options={{
@@ -129,7 +128,7 @@ export default class NavBar extends React.Component {
           }}
           initialParams={this.initialParams}
         />
-        <tab.Screen
+        <Tab.Screen
           name={'Search'}
           component={Search}
           options={{
@@ -160,9 +159,9 @@ export default class NavBar extends React.Component {
           }}
           initialParams={this.initialParams}
         />
-        <tab.Screen
-          name={'Post'}
-          component={Post}
+        <Tab.Screen
+          name={'CreatePost'}
+          component={CreatePost}
           options={{
             tabBarIcon: ({focused}) => {
               return (
@@ -175,13 +174,13 @@ export default class NavBar extends React.Component {
                     tintColor: this.navBarColor,
                   }}
                 />
-              )
+              );
             },
             tabBarButton: props => <this.PlusButton {...props} />,
           }}
           initialParams={this.initialParams}
         />
-        <tab.Screen
+        <Tab.Screen
           name={'Chat'}
           component={ChatScreen}
           options={{
@@ -212,7 +211,7 @@ export default class NavBar extends React.Component {
           }}
           initialParams={this.initialParams}
         />
-        <tab.Screen
+        <Tab.Screen
           name={'Account'}
           component={AccountScreen}
           options={{
@@ -243,7 +242,7 @@ export default class NavBar extends React.Component {
           }}
           initialParams={this.initialParams}
         />
-      </tab.Navigator>
+      </Tab.Navigator>
     );
   }
 }

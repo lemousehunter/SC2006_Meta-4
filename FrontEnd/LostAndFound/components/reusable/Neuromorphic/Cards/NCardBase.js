@@ -9,8 +9,6 @@ export default class NCardBase extends React.PureComponent {
     this.settings = this.props.settings;
     this.setDefaults();
     this.state = {shadowRadius: this.shadowRadius};
-    this.innerShadow =
-      this.props.innerShadow == null ? false : this.props.innerShadow;
     this.createStylesheet();
   }
 

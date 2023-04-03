@@ -6,6 +6,7 @@ export const AppContext = React.createContext({
 });
 export const ControllerContext = React.createContext({
   loginController: null,
+  postsController: null,
   nav: null,
 });
 export const ParamContext = React.createContext({
