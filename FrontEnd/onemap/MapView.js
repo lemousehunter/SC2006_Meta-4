@@ -20,7 +20,7 @@ export default function App() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:3000/api/pins',
+        'http://192.168.1.76:3000/api/pins',
         config
       );
       console.log(response);

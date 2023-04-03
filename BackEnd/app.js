@@ -26,6 +26,7 @@ const postsRoutes = require("./routes/post");
 const usersRoutes = require("./routes/users");
 const pinsRoutes = require("./routes/Pins");
 const chatRoutes = require("./routes/chat");
+const searchAllRoutes = require("./routes/search-all");
 
 const api = process.env.API_URL;
 
