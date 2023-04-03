@@ -192,23 +192,6 @@ router.post("/login", async (req, res) => {
 //   }
 // });
 
-// Search via name (Case sensitive)
-router.get(`/search/:name`, async (req, res, next) => {
-  let data;
-  try {
-    data = await User.find({
-      $or: [{ name: { $regex: req.params.name } }],
-    }).select({ name: 1, email: 1, phone: 1, posts: 1 });
-  } catch (err) {
-    const error = new HttpError(
-      "Could not find the specified user given the name.",
-      500
-    );
-    return next(error);
-  }
-  res.status(201).send(data);
-});
-
 router.put("/:id", async (req, res, next) => {
   try {
     let updatedUser = await User.findByIdAndUpdate(
@@ -230,6 +213,23 @@ router.put("/:id", async (req, res, next) => {
     return next(error);
   }
 });
+
+  // Search via name (Case sensitive)
+  router.get(`/search/:name`, async (req, res, next) => {
+    let data;
+    try {
+      data = await User.find({
+        $or: [{ name: { $regex: req.params.name } }],
+      }).select({ name: 1, email: 1, phone: 1, posts: 1 });
+    } catch (err) {
+      const error = new HttpError(
+        "Could not find the specified user given the name.",
+        500
+      );
+      return next(error);
+    }
+    res.status(201).send(data);
+  });
 
 //delete user
 router.delete("/:id", async (req, res) => {
