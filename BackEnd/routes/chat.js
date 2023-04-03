@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Chat = require('../models/chat');
 
-console.log("hello");
-
 // Handle chat messages
 router.post('/', async (req, res) => {
   try {
