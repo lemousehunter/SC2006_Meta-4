@@ -31,7 +31,7 @@ router.get(`/:id`, async (req, res, next) => {
 router.get(`/`, async (req, res, next) => {
   let userList;
   try {
-    userList = await User.find().select("-passwordHash");
+    userList = await User.find().sort({ creditScore: -1 }).select("-passwordHash");
     if (!userList) {
       res.status(500).json({ success: false });
     }
