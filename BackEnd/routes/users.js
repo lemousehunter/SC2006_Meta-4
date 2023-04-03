@@ -31,7 +31,7 @@ router.get(`/:id`, async (req, res, next) => {
 router.get(`/`, async (req, res, next) => {
   let userList;
   try {
-    userList = await User.find().select("-passwordHash");
+    userList = await User.find().sort({ creditScore: -1 }).select("-passwordHash");
     if (!userList) {
       res.status(500).json({ success: false });
     }
@@ -106,6 +106,7 @@ router.post("/register", async (req, res, next) => {
     email: req.body.email,
     passwordHash: bcrypt.hashSync(req.body.password, 10),
     phone: req.body.phone,
+    creditScore: 0
   });
   try {
     user = await user.save();
@@ -135,7 +136,7 @@ router.post("/login", async (req, res) => {
       secret
       //{expiresIn:"1d"} for eg, jwt token expires in 1day
     );
-    res.status(200).send({ user: user.email, token: token });
+    res.status(200).send({ user: user.email, token: token, id: user.id });
   } else {
     res.status(401).send("Password is wrong");
   }
@@ -201,6 +202,31 @@ router.put("/:id", async (req, res, next) => {
         email: req.body.email,
         passwordHash: bcrypt.hashSync(req.body.password, 10),
         phone: req.body.phone,
+      },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).send("user cannot be updated");
+    }
+    res.status(201).send(updatedUser);
+  } catch (err) {
+    const error = new HttpError(" no user found, please retry.", 500);
+    return next(error);
+  }
+});
+
+// change creditScore
+router.put("/credit/:id", async (req, res, next) => {
+  try {
+    user = await User.findById(req.params.id).select("-passwordHash");
+    let updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: user.name,
+        email: user.email,
+        passwordHash: user.passwordHash,
+        phone: user.phone,
+        creditScore: req.body.amount + user.creditScore
       },
       { new: true }
     );
