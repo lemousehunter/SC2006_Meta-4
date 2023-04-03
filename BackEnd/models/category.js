@@ -5,12 +5,6 @@ const categorySchema = mongoose.Schema({
     type: String,
     required: [true, ""],
   },
-  icon: {
-    type: String,
-  },
-  // image: {
-  //   type: String,
-  // },
 });
 
 categorySchema.virtual("id").get(function () {
