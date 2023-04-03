@@ -384,4 +384,25 @@ router.get("/userposts/:userid", async (req, res) => {
   res.send(userPosts);
 });
 
+// Search posts
+router.get(`/search/:name`, async (req, res, next) => {
+  let data;
+  try {
+    data = await Post.find({
+      $or: [
+        { itemName: { $regex: req.params.name } },
+        { category: {$regex: req.params.name} },
+        { listedBy: {$regex: req.params.name} },
+      ],
+    });
+  } catch (err) {
+    const error = new HttpError(
+      "Could not find the specified post.",
+      500
+    );
+    return next(error);
+  }
+  res.status(201).send(data);
+});
+
 module.exports = router;
