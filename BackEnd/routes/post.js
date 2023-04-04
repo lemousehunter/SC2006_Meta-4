@@ -386,15 +386,24 @@ router.get("/userposts/:userid", async (req, res) => {
 
 // Search posts
 router.get(`/search/:name`, async (req, res, next) => {
+  const { name } = req.params;
+  const { category, listedBy } = req.query;
+
   let data;
   try {
+    const filter = new RegExp(name, 'i');
+    const categoryFilter = category ? mongoose.Types.ObjectId(category) : undefined;
+    const listedByFilter = listedBy ? { $regex: listedBy, $options: 'i' } : undefined;
+
     data = await Post.find({
       $or: [
-        { itemName: { $regex: req.params.name } },
-        { category: {$regex: req.params.name} },
-        { listedBy: {$regex: req.params.name} },
-      ],
-    });
+        { itemName: filter },
+        { category: categoryFilter },
+        { listedBy: listedByFilter }
+      ]
+    })
+    .populate("category")
+    .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
   } catch (err) {
     const error = new HttpError(
       "Could not find the specified post.",

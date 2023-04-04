@@ -35,6 +35,7 @@ app.use(`${api}/posts`, postsRoutes);
 app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/pins`, pinsRoutes);
 app.use(`${api}/chat`, chatRoutes);
+app.use(`${api}/searchall`, searchAllRoutes)
 
 
 //Database
