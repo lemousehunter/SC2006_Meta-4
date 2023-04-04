@@ -42,6 +42,7 @@ router.get(`/`, showAllPosts);
 
 //show post found by id, can use .select(<attribute>) to show selected attribute
 router.get("/:id", getPostById);
+
 // upload new post
 router.post(`/`,uploadOptions.array("images", 4), uploadPost);
 
