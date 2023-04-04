@@ -12,11 +12,7 @@ const getUserId =  async (req, res, next) => {
   try {
     user = await User.findById(req.params.id).select("-passwordHash");
   } catch (err) {
-    const error = new HttpError(
-      "Fetching of specified user failed, please retry.",
-      500
-    );
-    return next(error);
+    return res.status(500).send({message:"Fetching of specified user failed, please retry."});
   }
 
   if (!user) {
@@ -36,8 +32,7 @@ const getUserList = async (req, res, next) => {
       res.status(500).json({ success: false });
     }
   } catch (err) {
-    const error = new HttpError("Fetching user list failed, please retry", 500);
-    return next(error);
+    return res.status(500).send({message:"Fetching user list failed, please retry."});
   }
   res.send(userList);
 };
@@ -49,19 +44,11 @@ const registerUser = async (req, res, next) => {
   try {
     existingUser = await User.findOne({ email: req.body.email });
   } catch (err) {
-    const error = new HttpError(
-      "Signing up failed as user exists, please retry",
-      500
-    );
-    return next(error);
+    return res.status(500).send({message:"Signing up failed as user exists, please retry"});
   }
 
   if (existingUser) {
-    const error = new HttpError(
-      "User exists already, please login instead.",
-      422
-    );
-    return next(error);
+    return res.status(422).send({message:"User exists already, please login instead."});
   }
   const secret = process.env.secret;
   let user = new User({
@@ -76,8 +63,7 @@ const registerUser = async (req, res, next) => {
       return res.status(404).send({message:"the user cannot be created"});
     }
   } catch (err) {
-    const error = new HttpError("Signing up failed, please retry.", 500);
-    return next(error);
+    return res.status(500).send({message:"Signing up failed, please retry."});
   }
 
   res.status(201).send(user);
@@ -142,8 +128,7 @@ const updateUser = async (req, res, next) => {
     }
     res.status(201).send(updatedUser);
   } catch (err) {
-    const error = new HttpError(" no user found, please retry.", 500);
-    return next(error);
+    return res.status(500).send({message:"no user found, please retry."});
   }
 };
 
@@ -167,8 +152,7 @@ const editCreditScore = async (req, res, next) => {
     }
     res.status(201).send(updatedUser);
   } catch (err) {
-    const error = new HttpError(" no user found, please retry.", 500);
-    return next(error);
+    return res.status(500).send({message:"no user found, please retry."});
   }
 };
 
@@ -180,11 +164,7 @@ const findUserByName = async (req, res, next) => {
       $or: [{ name: { $regex: req.params.name } }],
     }).select({ name: 1, email: 1, phone: 1, posts: 1 });
   } catch (err) {
-    const error = new HttpError(
-      "Could not find the specified user given the name.",
-      500
-    );
-    return next(error);
+    return res.status(500).send({message:"Could not find the specified user given the name."});
   }
   res.status(201).send(data);
 };

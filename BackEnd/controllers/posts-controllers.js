@@ -69,16 +69,11 @@ const uploadPost =
     try {
       user = await User.findById(post.listedBy);
     } catch (err) {
-      const error = new HttpError(" Creating place failed, please retry.", 500);
-      return next(error);
+      return res.status(500).send({message:"Creating place failed, please retry."});
     }
 
     if (!user) {
-      const error = new HttpError(
-        "Could not find user for the provided id",
-        404
-      );
-      return next(error);
+      return res.status(404).send({message:"Could not find user for the provided id"});
     }
     if (post) {
       // Create a new pin
@@ -153,11 +148,7 @@ const updatePostById =
     try {
       postcheck = await Post.findById(req.params.id);
     } catch (err) {
-      const error = new HttpError(
-        "Something went wrong could not update post.",
-        500
-      );
-      return next(error);
+      return res.status(500).send({message:"Something went wrong could not update post."});
     }
 
     const post = await Post.findById(req.params.id);
@@ -261,16 +252,14 @@ const deletePostById = async (req, res, next) => {
   try {
     post = await Post.findById(req.params.id);
   } catch (err) {
-    const error = new HttpError(" no post found, please retry.", 500);
-    return next(error);
+    return res.status(500).send("no post found, please retry.");
   }
 
   let user;
   try {
     user = await User.findById(post.listedBy);
   } catch (err) {
-    const error = new HttpError(" no user found, please retry.", 500);
-    return next(error);
+    return res.status(500).send({message:"no user found, please retry."});
   }
   let postList = user.posts;
   const index = postList.indexOf(req.params.id);
@@ -381,8 +370,7 @@ const searchPosts = async (req, res, next) => {
       .populate("category")
       .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
   } catch (err) {
-    const error = new HttpError("Could not find the specified post.", 500);
-    return next(error);
+    return res.status(500).send({message:"Could not find the specified post."});
   }
   res.status(201).send(data);
 };

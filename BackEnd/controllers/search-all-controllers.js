@@ -23,11 +23,7 @@ const search =  async (req, res, next) => {
       .populate({ path: "category", select: { name: 1 } })
       .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
     } catch (err) {
-      const error = new HttpError(
-        "Could not find the specified user given the name.",
-        500
-      );
-      return next(error);
+      return res.status(500).send({message:"Could not find the specified user given the name."});
     }
 
     postData = postData.filter((post) => {
