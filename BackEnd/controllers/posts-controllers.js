@@ -7,7 +7,6 @@ const Pin = require("../models/pinmodel");
 const axios = require("axios");
 const { onemapApiKey } = require("../helpers/config");
 
-
 // show all posts or filtered by category posts
 const showAllPosts = async (req, res) => {
   let filter = {};
@@ -34,24 +33,145 @@ const getPostById = async (req, res) => {
   res.send(post);
 };
 // upload new post
-const uploadPost =
-  async (req, res, next) => {
-    const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send("invalid Category");
-    const files = req.files;
-    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
-    let imagePaths = [];
-    if (files) {
-      files.map((file) => {
-        imagePaths.push(`${basePath}${file.filename}`);
+const uploadPost = async (req, res, next) => {
+  const category = await Category.findById(req.body.category);
+  if (!category) return res.status(400).send("invalid Category");
+  const files = req.files;
+  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+  let imagePaths = [];
+  if (files) {
+    files.map((file) => {
+      imagePaths.push(`${basePath}${file.filename}`);
+    });
+  } else {
+    return res.status(400).send("No image in the request");
+  }
+  let post = new Post({
+    itemName: req.body.itemName,
+    isLost: req.body.isLost,
+    images: imagePaths,
+    location: req.body.location,
+    listedBy: req.body.listedBy,
+    date: req.body.date,
+    time: req.body.time,
+    itemDescription: req.body.itemDescription,
+    category: req.body.category,
+    isResolved: req.body.isResolved,
+  });
+  if (post.isResolved === true) {
+    return res.status(404).send("the post cannot be created");
+  }
+  //We also need to ensure that if there exists a userid with the provided id
+  let user;
+  let pin;
+  try {
+    user = await User.findById(post.listedBy);
+  } catch (err) {
+    const error = new HttpError(" Creating place failed, please retry.", 500);
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new HttpError("Could not find user for the provided id", 404);
+    return next(error);
+  }
+  if (post) {
+    // Create a new pin
+    const title = post.itemName;
+    const description = post.itemDescription;
+    const location = post.location;
+    post = await post.save();
+    // add post created to user
+    let postList = user.posts;
+    postList.push(post.id);
+    user.posts = postList;
+    user.save();
+    if (!title || !description || !location) {
+      return res.status(400).json({
+        message: "Please provide a title, description, and location.",
       });
-    } else {
-      return res.status(400).send("No image in the request");
     }
-    let post = new Post({
+
+    // Geocode the location using the OneMap API
+    try {
+      const response = await axios.get(
+        "https://developers.onemap.sg/commonapi/search",
+        {
+          params: {
+            searchVal: location,
+            returnGeom: "Y",
+            getAddrDetails: "N",
+            pageNum: 1,
+            apiKey: onemapApiKey,
+          },
+        }
+      );
+
+      if (response.data.results.length === 0) {
+        return res.status(400).json({ message: "Location not found." });
+      }
+
+      const { LATITUDE, LONGITUDE } = response.data.results[0];
+
+      pin = new Pin({
+        title,
+        description,
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+        postid: post.id,
+      });
+
+      await pin.save();
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  } else {
+    return res.status(404).send("the post cannot be created");
+  }
+
+  res.send([pin, post]);
+};
+
+//update post found by id and if post has been resolved, remove pin from map
+//keep resolved post for history
+const updatePostById = async (req, res) => {
+  // check if the id in the url is valid
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    res.status(400).send("Invalid Post ID");
+  }
+
+  const category = await Category.findById(req.body.category);
+  if (!category) return res.status(400).send("invalid Category");
+
+  let postcheck;
+  try {
+    postcheck = await Post.findById(req.params.id);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong could not update post.",
+      500
+    );
+    return next(error);
+  }
+
+  const post = await Post.findById(req.params.id);
+  if (!post) return res.status(400).send("invalid post");
+  const files = req.files;
+  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+
+  let imagePaths = [];
+  if (files) {
+    files.map((file) => {
+      imagePaths.push(`${basePath}${file.filename}`);
+    });
+  } else {
+    imagePaths = post.images;
+  }
+  const updatedPost = await Post.findByIdAndUpdate(
+    req.params.id,
+    {
       itemName: req.body.itemName,
       isLost: req.body.isLost,
-      images: imagePaths,
       location: req.body.location,
       listedBy: req.body.listedBy,
       date: req.body.date,
@@ -59,201 +179,75 @@ const uploadPost =
       itemDescription: req.body.itemDescription,
       category: req.body.category,
       isResolved: req.body.isResolved,
+    },
+    { new: true }
+  );
+
+  if (!updatedPost) {
+    return res.status(404).send("the post cannot be updated");
+  }
+  if (updatedPost.isResolved === true) {
+    Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {
+      if (pin) {
+        return res
+          .status(200)
+          .json({ success: true, message: "post is deleted" });
+      } else {
+        return res
+          .status(404)
+          .json({ success: false, message: "pin not found" });
+      }
     });
-    if (post.isResolved === true) {
-      return res.status(404).send("the post cannot be created");
-    }
-    //We also need to ensure that if there exists a userid with the provided id
-    let user;
-    let pin;
-    try {
-      user = await User.findById(post.listedBy);
-    } catch (err) {
-      const error = new HttpError(" Creating place failed, please retry.", 500);
-      return next(error);
+  } else {
+    const title = updatedPost.itemName;
+    const description = updatedPost.itemDescription;
+    const location = updatedPost.location;
+    if (!title || !description || !location) {
+      return res.status(400).json({
+        message: "Please provide a title, description, and location.",
+      });
     }
 
-    if (!user) {
-      const error = new HttpError(
-        "Could not find user for the provided id",
-        404
+    // Geocode the location using the OneMap API
+    try {
+      const response = await axios.get(
+        "https://developers.onemap.sg/commonapi/search",
+        {
+          params: {
+            searchVal: location,
+            returnGeom: "Y",
+            getAddrDetails: "N",
+            pageNum: 1,
+            apiKey: onemapApiKey,
+          },
+        }
       );
-      return next(error);
-    }
-    if (post) {
-      // Create a new pin
-      const title = post.itemName;
-      const description = post.itemDescription;
-      const location = post.location;
-      post = await post.save();
-      // add post created to user
-      let postList = user.posts;
-      postList.push(post.id);
-      user.posts = postList;
-      user.save();
-      if (!title || !description || !location) {
-        return res.status(400).json({
-          message: "Please provide a title, description, and location.",
-        });
+
+      if (response.data.results.length === 0) {
+        return res.status(400).json({ message: "Location not found." });
       }
 
-      // Geocode the location using the OneMap API
-      try {
-        const response = await axios.get(
-          "https://developers.onemap.sg/commonapi/search",
-          {
-            params: {
-              searchVal: location,
-              returnGeom: "Y",
-              getAddrDetails: "N",
-              pageNum: 1,
-              apiKey: onemapApiKey,
-            },
-          }
-        );
+      const { LATITUDE, LONGITUDE } = response.data.results[0];
 
-        if (response.data.results.length === 0) {
-          return res.status(400).json({ message: "Location not found." });
-        }
-
-        const { LATITUDE, LONGITUDE } = response.data.results[0];
-
-        pin = new Pin({
-          title,
-          description,
+      const updatedPin = await Pin.findOneAndUpdate(
+        { postid: req.params.id },
+        {
+          title: title,
+          location: location,
           latitude: LATITUDE,
           longitude: LONGITUDE,
-          postid: post.id,
-        });
-
-        await pin.save();
-      } catch (err) {
-        res.status(500).json({ message: err.message });
-      }
-    } else {
-      return res.status(404).send("the post cannot be created");
-    }
-
-    res.send([pin, post]);
-  };
-
-//update post found by id and if post has been resolved, remove pin from map
-//keep resolved post for history
-const updatePostById =
-  async (req, res) => {
-    // check if the id in the url is valid
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      res.status(400).send("Invalid Post ID");
-    }
-
-    const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send("invalid Category");
-
-    let postcheck;
-    try {
-      postcheck = await Post.findById(req.params.id);
-    } catch (err) {
-      const error = new HttpError(
-        "Something went wrong could not update post.",
-        500
+          postid: req.params.id,
+          description: description,
+        },
+        { new: true }
       );
-      return next(error);
+
+      res.send([updatedPin, updatedPost]);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(400).send("invalid post");
-    const files = req.files;
-    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
-
-    let imagePaths = [];
-    if (files) {
-      files.map((file) => {
-        imagePaths.push(`${basePath}${file.filename}`);
-      });
-    } else {
-      imagePaths = post.images;
-    }
-    const updatedPost = await Post.findByIdAndUpdate(
-      req.params.id,
-      {
-        itemName: req.body.itemName,
-        isLost: req.body.isLost,
-        location: req.body.location,
-        listedBy: req.body.listedBy,
-        date: req.body.date,
-        time: req.body.time,
-        itemDescription: req.body.itemDescription,
-        category: req.body.category,
-        isResolved: req.body.isResolved,
-      },
-      { new: true }
-    );
-
-    if (!updatedPost) {
-      return res.status(404).send("the post cannot be updated");
-    }
-    if (updatedPost.isResolved === true) {
-      Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {
-        if (pin) {
-          return res
-            .status(200)
-            .json({ success: true, message: "post is deleted" });
-        } else {
-          return res
-            .status(404)
-            .json({ success: false, message: "pin not found" });
-        }
-      });
-    } else {
-      const title = updatedPost.itemName;
-      const description = updatedPost.itemDescription;
-      const location = updatedPost.location;
-      if (!title || !description || !location) {
-        return res.status(400).json({
-          message: "Please provide a title, description, and location.",
-        });
-      }
-
-      // Geocode the location using the OneMap API
-      try {
-        const response = await axios.get(
-          "https://developers.onemap.sg/commonapi/search",
-          {
-            params: {
-              searchVal: location,
-              returnGeom: "Y",
-              getAddrDetails: "N",
-              pageNum: 1,
-              apiKey: onemapApiKey,
-            },
-          }
-        );
-
-        if (response.data.results.length === 0) {
-          return res.status(400).json({ message: "Location not found." });
-        }
-
-        const { LATITUDE, LONGITUDE } = response.data.results[0];
-
-        const updatedPin = await Pin.findOneAndUpdate(
-          { postid: req.params.id },
-          {
-            title: title,
-            location: location,
-            latitude: LATITUDE,
-            longitude: LONGITUDE,
-            postid: req.params.id,
-            description: description,
-          },
-          { new: true }
-        );
-
-        res.send([updatedPin, updatedPost]);
-      } catch (err) {
-        res.status(500).json({ message: err.message });
-      }
-    }
-  };
+  }
+};
 
 //delete post found by id
 const deletePostById = async (req, res, next) => {

@@ -4,10 +4,10 @@ const Pin = require("../models/pinmodel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const HttpError = require("../models/http-error");
-
+const { Report } = require("../models/report");
 
 //get single user by ID
-const getUserId =  async (req, res, next) => {
+const getUserId = async (req, res, next) => {
   let user;
   try {
     user = await User.findById(req.params.id).select("-passwordHash");
@@ -41,7 +41,6 @@ const getUserList = async (req, res, next) => {
   }
   res.send(userList);
 };
-
 
 // create new User localhost://3000/users/
 const registerUser = async (req, res, next) => {
@@ -223,4 +222,25 @@ const displayUserPosts = async (req, res) => {
   res.send(userPosts);
 };
 
-module.exports = {getUserId,getUserList,registerUser,loginUser,updateUser,editCreditScore,findUserByName,displayUserPosts,deleteUser};
+const displayUserReports = async (req, res) => {
+  const user = await User.findById(req.params.userid);
+  if(!user){
+    res.status(500).json({ success: false });
+  }
+  
+const reportAgainst = user.gotReported;
+const reportby = user.reportedOthers;
+  res.send([reportAgainst,reportby]);
+};
+
+module.exports = {
+  getUserId,
+  getUserList,
+  registerUser,
+  loginUser,
+  updateUser,
+  editCreditScore,
+  findUserByName,
+  displayUserPosts,
+  deleteUser,displayUserReports
+};
