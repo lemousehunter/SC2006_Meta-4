@@ -36,7 +36,7 @@ const getPostById = async (req, res) => {
 const uploadPost =
   async (req, res, next) => {
     const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send("invalid Category");
+    if (!category) return res.status(400).send({message:"invalid Category"});
     const files = req.files;
     const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
     let imagePaths = [];
@@ -60,7 +60,7 @@ const uploadPost =
       isResolved: req.body.isResolved,
     });
     if (post.isResolved === true) {
-      return res.status(404).send("the post cannot be created");
+      return res.status(404).send({message:"the post cannot be created"});
     }
     //We also need to ensure that if there exists a userid with the provided id
     let user;
