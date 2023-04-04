@@ -27,17 +27,21 @@ export default class CreatePost extends BaseLoggedInScreen {
       {label: 'Found', value: 'found'},
       {label: 'Lost', value: 'lost'},
     ];
+    this.addImgList = React.createRef(null);
     this.categories = [
       {label: 'Electronics', value: 'e1'},
       {label: 'Clothing', value: 'e2'},
     ];
-    this.addImgList = React.createRef(null);
     this.state = {
       open: false,
       type: null,
       date: new Date(),
       category: null,
       location: null,
+      categories: [
+        {label: 'Electronics', value: 'e1'},
+        {label: 'Clothing', value: 'e2'},
+      ],
     };
     this.datePicker = React.createRef(null);
     //this.validatePost = this.validatePost.bind(this);
@@ -240,19 +244,34 @@ export default class CreatePost extends BaseLoggedInScreen {
       desc,
       category,
     );
-  }
+  };
 
   componentDidMount() {
     console.log('navProps:' + JSON.stringify(this.props.navigation));
     console.log('controllers:' + JSON.stringify(this.getControllers()));
     console.log('postID: ' + this.postID);
-    if (this.postID != null) {
+    console.log(
+      'categories: ' +
+        this.getControllers().categoriesController.getCategories(),
+    );
+    this.setState({
+      categories: this.getControllers().categoriesController.getCategories(),
+    });
+    if (!(this.postID === undefined)) {
       console.log('edit mode');
       this.setPost();
+    } else {
+
     }
   }
 
   render() {
+    if (this.postID === undefined) {
+      console.log('postID is null');
+    }
+    else {
+      console.log('postID is not null');
+    }
     console.log('User is:' + this.getLoginController().getUser());
     return (
       <View style={{flex: 1, backgroundColor: this.getBgColor()}}>
@@ -350,7 +369,7 @@ export default class CreatePost extends BaseLoggedInScreen {
                           itemContainerStyle={this.styles.dropdownListContainer}
                           containerStyle={this.styles.dropdownListContainer}
                           style={this.styles.dropdown}
-                          data={this.categories}
+                          data={this.state.categories}
                           itemTextStyle={this.styles.styledText2}
                           selectedTextStyle={this.styles.styledText2}
                           placeholderStyle={this.styles.styledText2}
@@ -374,9 +393,11 @@ export default class CreatePost extends BaseLoggedInScreen {
                   style={{flex: 1}}
                   settings={this.nSettings.postBtn}
                   onPress={
-                    this.postID === null ? this.validatePost : this.validateEdit
+                    this.postID === undefined
+                      ? this.validatePost
+                      : this.validateEdit
                   }
-                  label={this.postID === null ? 'Post' : 'Save'}
+                  label={this.postID === undefined ? 'Post' : 'Save'}
                   fontFamily={this.getButtonFont()}
                   textColor={this.getSecondaryColor()}
                 />

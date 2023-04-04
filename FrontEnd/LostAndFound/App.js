@@ -10,6 +10,7 @@ import {ParamContext, ControllerContext} from './contexts/Contexts';
 import ProvideCombinedContext from './contexts/AppContext';
 import {MenuProvider} from 'react-native-popup-menu';
 import PostsController from './controllers/PostsController';
+import CategoriesController from './controllers/CategoriesController';
 
 const Stack = createNativeStackNavigator();
 const winH = Dimensions.get('window').height;
@@ -28,6 +29,7 @@ export default function App() {
     nav: nav,
     postsController: new PostsController(),
     loginController: new LoginController(),
+    categoriesController: new CategoriesController(),
   };
   const params = {
     bgColor: bgColor,

@@ -21,6 +21,42 @@ export default class PostsController extends Component {
     };
   }
 
+  getMarkers() {
+    const markers = [
+      {
+        title: 'Test1',
+        latitude: 1.343082,
+        longitude: 1.680181,
+        description: 'Jerome',
+      },
+      {
+        title: 'Test2',
+        latitude: 1.343654,
+        longitude: 103.682199,
+        description: 'Rodmond',
+      },
+      {
+        title: 'Test3',
+        latitude: 1.343586,
+        longitude: 103.683148,
+        description: 'Bernard',
+      },
+      {
+        title: 'Test4',
+        latitude: 1.342513,
+        longitude: 103.683003,
+        description: 'Jia Rong',
+      },
+      {
+        title: 'Test5',
+        latitude: 1.344181,
+        longitude: 103.680224,
+        description: 'YuanLin',
+      },
+    ];
+    return markers;
+  }
+
   getPosts(user) {
     // to replace with fetch function call
     return [

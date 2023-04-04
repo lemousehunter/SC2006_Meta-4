@@ -19,6 +19,7 @@ export default class NTextInput extends Component {
     this.value = this.props.value;
     this.self = this.props.self;
     this.textInputRef = React.createRef();
+    this.onSubmit = this.props.onSubmit;
     this.autocapitalize =
       this.props.autocapitalize == null ? 'none' : this.props.autocapitalize;
     this.settings = {
@@ -85,6 +86,7 @@ export default class NTextInput extends Component {
           onChangeText={text => {
             this.setState({text: text});
           }}
+          onSubmitEditing={this.onSubmit}
           inputMode={this.inputMode}
           value={this.state.text}
           style={this.styles.input}

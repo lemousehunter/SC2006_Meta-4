@@ -1,7 +1,4 @@
 import NavBar from '../../components/NavBar';
-import HomeScreen from './tabbedScreens/Home/HomeScreen';
-import Map from './tabbedScreens/Search/Map';
-import Search from './tabbedScreens/Search/Search';
 import {AppContext} from '../../contexts/Contexts';
 import BaseScreen from '../BaseScreen';
 export default class LoggedInScreen extends BaseScreen {
