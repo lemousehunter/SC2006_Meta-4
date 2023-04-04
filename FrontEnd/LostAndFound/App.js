@@ -4,13 +4,14 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import RegisterPage from './screens/LoginRegister/Register';
 import {Dimensions, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import LoggedInScreen from './screens/LoggedIn/LoggedInScreen';
-import LoginController from './controllers/LoginController';
+import LoginController from './controllers/local/LoginController';
 import React from 'react';
 import {ParamContext, ControllerContext} from './contexts/Contexts';
 import ProvideCombinedContext from './contexts/AppContext';
 import {MenuProvider} from 'react-native-popup-menu';
-import PostsController from './controllers/PostsController';
-import CategoriesController from './controllers/CategoriesController';
+import PostsController from './controllers/local/PostsController';
+import CategoriesController from './controllers/local/CategoriesController';
+import DataController from './controllers/remote/DataController';
 
 const Stack = createNativeStackNavigator();
 const winH = Dimensions.get('window').height;
@@ -25,12 +26,18 @@ export default function App() {
   const nav = React.useRef(null);
   const ParamsContext = ParamContext;
   const ControllersContext = ControllerContext;
+  const url = 'http://localhost:3000/';
+  const dataController = new DataController(url);
+  const postController = new PostsController(dataController);
+  const loginController = new LoginController(dataController);
+  const categoriesController = new CategoriesController(dataController);
   const controllers = {
     nav: nav,
-    postsController: new PostsController(),
-    loginController: new LoginController(),
-    categoriesController: new CategoriesController(),
+    postsController: postController,
+    loginController: loginController,
+    categoriesController: categoriesController,
   };
+
   const params = {
     bgColor: bgColor,
     winW: winW,

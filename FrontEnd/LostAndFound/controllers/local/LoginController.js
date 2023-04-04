@@ -1,10 +1,12 @@
 import {Component} from 'react';
 
 export default class LoginController extends Component {
-  constructor(props) {
-    super(props);
-    this.user = 'test';
-    this.loggedIn = true;
+  constructor(dataC) {
+    super(dataC);
+    this.user = '';
+    this.loggedIn = false;
+    this.dataController = dataC;
+    this.urlBase = 'users';
   }
 
   getUser() {
@@ -74,9 +76,10 @@ export default class LoginController extends Component {
     }
   }
 
-  login(user, password) {
+  async login(user, password) {
     // -4: both username and password left empty, -3: password left empty,-2: user left empty, -1: user does not exist, 0: user exists but incorrect password, 1: login successful
     console.log('logging in.....');
+    console.log('dataController:' + this.dataController);
     let num = -1;
     if (user.length === 0 || password.length === 0) {
       if (user.length === 0) {
@@ -87,16 +90,35 @@ export default class LoginController extends Component {
       }
       return num;
     } else {
-      if (this.checkUser(user)) {
-        if (this.checkPassword(user, password)) {
-          this.user = user;
-          this.loggedIn = true;
-          return 1;
+      const response = await this.dataController
+        .post(this.urlBase + '/login', {
+          email: user,
+          password: password,
+        })
+        .then(res => {
+          console.log('loginControllerRes:' + JSON.stringify(res));
+          return res;
+        })
+        .catch(error =>
+          console.log('loginControllerError:' + JSON.stringify(error)),
+        );
+      const status = response.status;
+      const body = response.data;
+      console.log('body is:' + JSON.stringify(body));
+      const msg = body.message;
+      console.log('status is:' + JSON.stringify(status));
+      console.log('msg is: ' + JSON.stringify(msg));
+      if (status === 401) {
+        if (msg === 'User not found') {
+          return -1;
         } else {
+          console.log('returning 0');
           return 0;
         }
-      } else {
-        return -1;
+      }
+      if (status === 200) {
+        console.log('returning 1');
+        return 1;
       }
     }
   }

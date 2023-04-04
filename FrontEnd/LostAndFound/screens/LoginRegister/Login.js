@@ -83,12 +83,16 @@ export default class LoginPage extends BaseScreen {
     };
   }
 
-  validateLogin() {
+  async validateLogin() {
     const username = this.usn.current.getText();
     const password = this.pwd.current.getText();
     console.log('User:' + username + '_');
     console.log('Pwd:' + password + '_');
-    const loginState = this.getLoginController().login(username, password);
+    const loginState = await this.getLoginController()
+      .login(username, password)
+      .then(loginState => {
+        return loginState;
+      });
 
     if (loginState < -1) {
       if (loginState === -2) {
