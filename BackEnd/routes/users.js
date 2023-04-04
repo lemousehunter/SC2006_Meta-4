@@ -9,6 +9,7 @@ const {
   findUserByName,
   displayUserPosts,
   deleteUser,
+  displayUserReports,
 } = require("../controllers/users-controllers");
 const express = require("express");
 const router = express.Router();
@@ -42,5 +43,8 @@ router.delete("/:id", deleteUser);
 
 //display user posts
 router.get("/userposts/:userid", displayUserPosts);
+
+//display user reports
+router.get("/userreports/:id", displayUserReports);
 
 module.exports = router;

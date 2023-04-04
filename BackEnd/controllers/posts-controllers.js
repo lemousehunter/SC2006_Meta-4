@@ -7,7 +7,6 @@ const Pin = require("../models/pinmodel");
 const axios = require("axios");
 const { onemapApiKey } = require("../helpers/config");
 
-
 // show all posts or filtered by category posts
 const showAllPosts = async (req, res) => {
   let filter = {};
@@ -37,7 +36,7 @@ const getPostById = async (req, res) => {
 const uploadPost =
   async (req, res, next) => {
     const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send({message:"invalid Category"});
+    if (!category) return res.status(400).send("invalid Category");
     const files = req.files;
     const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
     let imagePaths = [];
@@ -46,7 +45,7 @@ const uploadPost =
         imagePaths.push(`${basePath}${file.filename}`);
       });
     } else {
-      return res.status(400).send({message:"No image in the request"});
+      return res.status(400).send("No image in the request");
     }
     let post = new Post({
       itemName: req.body.itemName,
@@ -61,7 +60,7 @@ const uploadPost =
       isResolved: req.body.isResolved,
     });
     if (post.isResolved === true) {
-      return res.status(404).send({message:"the post cannot be created"});
+      return res.status(404).send("the post cannot be created");
     }
     //We also need to ensure that if there exists a userid with the provided id
     let user;
@@ -92,45 +91,45 @@ const uploadPost =
         });
       }
 
-      // Geocode the location using the OneMap API
-      try {
-        const response = await axios.get(
-          "https://developers.onemap.sg/commonapi/search",
-          {
-            params: {
-              searchVal: location,
-              returnGeom: "Y",
-              getAddrDetails: "N",
-              pageNum: 1,
-              apiKey: onemapApiKey,
-            },
-          }
-        );
-
-        if (response.data.results.length === 0) {
-          return res.status(400).json({ message: "Location not found." });
+    // Geocode the location using the OneMap API
+    try {
+      const response = await axios.get(
+        "https://developers.onemap.sg/commonapi/search",
+        {
+          params: {
+            searchVal: location,
+            returnGeom: "Y",
+            getAddrDetails: "N",
+            pageNum: 1,
+            apiKey: onemapApiKey,
+          },
         }
+      );
 
-        const { LATITUDE, LONGITUDE } = response.data.results[0];
+      if (response.data.results.length === 0) {
+        return res.status(400).json({ message: "Location not found." });
+      }
 
-        pin = new Pin({
-          title,
-          description,
-          latitude: LATITUDE,
-          longitude: LONGITUDE,
-          postid: post.id,
-        });
+      const { LATITUDE, LONGITUDE } = response.data.results[0];
+
+      pin = new Pin({
+        title,
+        description,
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+        postid: post.id,
+      });
 
         await pin.save();
       } catch (err) {
         res.status(500).json({ message: err.message });
       }
     } else {
-      return res.status(404).send({message:"the post cannot be created"});
+      return res.status(404).send("the post cannot be created");
     }
 
-    res.send([pin, post]);
-  };
+  res.send([pin, post]);
+};
 
 //update post found by id and if post has been resolved, remove pin from map
 //keep resolved post for history
@@ -138,11 +137,11 @@ const updatePostById =
   async (req, res) => {
     // check if the id in the url is valid
     if (!mongoose.isValidObjectId(req.params.id)) {
-      res.status(400).send({message:"Invalid Post ID"});
+      res.status(400).send("Invalid Post ID");
     }
 
     const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send({message:"invalid Category"});
+    if (!category) return res.status(400).send("invalid Category");
 
     let postcheck;
     try {
@@ -152,36 +151,36 @@ const updatePostById =
     }
 
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(400).send({message:"invalid post"});
+    if (!post) return res.status(400).send("invalid post");
     const files = req.files;
     const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
-    let imagePaths = [];
-    if (files) {
-      files.map((file) => {
-        imagePaths.push(`${basePath}${file.filename}`);
-      });
-    } else {
-      imagePaths = post.images;
-    }
-    const updatedPost = await Post.findByIdAndUpdate(
-      req.params.id,
-      {
-        itemName: req.body.itemName,
-        isLost: req.body.isLost,
-        location: req.body.location,
-        listedBy: req.body.listedBy,
-        date: req.body.date,
-        time: req.body.time,
-        itemDescription: req.body.itemDescription,
-        category: req.body.category,
-        isResolved: req.body.isResolved,
-      },
-      { new: true }
-    );
+  let imagePaths = [];
+  if (files) {
+    files.map((file) => {
+      imagePaths.push(`${basePath}${file.filename}`);
+    });
+  } else {
+    imagePaths = post.images;
+  }
+  const updatedPost = await Post.findByIdAndUpdate(
+    req.params.id,
+    {
+      itemName: req.body.itemName,
+      isLost: req.body.isLost,
+      location: req.body.location,
+      listedBy: req.body.listedBy,
+      date: req.body.date,
+      time: req.body.time,
+      itemDescription: req.body.itemDescription,
+      category: req.body.category,
+      isResolved: req.body.isResolved,
+    },
+    { new: true }
+  );
 
     if (!updatedPost) {
-      return res.status(404).send({message:"the post cannot be updated"});
+      return res.status(404).send("the post cannot be updated");
     }
     if (updatedPost.isResolved === true) {
       Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {
@@ -205,46 +204,46 @@ const updatePostById =
         });
       }
 
-      // Geocode the location using the OneMap API
-      try {
-        const response = await axios.get(
-          "https://developers.onemap.sg/commonapi/search",
-          {
-            params: {
-              searchVal: location,
-              returnGeom: "Y",
-              getAddrDetails: "N",
-              pageNum: 1,
-              apiKey: onemapApiKey,
-            },
-          }
-        );
-
-        if (response.data.results.length === 0) {
-          return res.status(400).json({ message: "Location not found." });
-        }
-
-        const { LATITUDE, LONGITUDE } = response.data.results[0];
-
-        const updatedPin = await Pin.findOneAndUpdate(
-          { postid: req.params.id },
-          {
-            title: title,
-            location: location,
-            latitude: LATITUDE,
-            longitude: LONGITUDE,
-            postid: req.params.id,
-            description: description,
+    // Geocode the location using the OneMap API
+    try {
+      const response = await axios.get(
+        "https://developers.onemap.sg/commonapi/search",
+        {
+          params: {
+            searchVal: location,
+            returnGeom: "Y",
+            getAddrDetails: "N",
+            pageNum: 1,
+            apiKey: onemapApiKey,
           },
-          { new: true }
-        );
+        }
+      );
 
-        res.send([updatedPin, updatedPost]);
-      } catch (err) {
-        res.status(500).json({ message: err.message });
+      if (response.data.results.length === 0) {
+        return res.status(400).json({ message: "Location not found." });
       }
+
+      const { LATITUDE, LONGITUDE } = response.data.results[0];
+
+      const updatedPin = await Pin.findOneAndUpdate(
+        { postid: req.params.id },
+        {
+          title: title,
+          location: location,
+          latitude: LATITUDE,
+          longitude: LONGITUDE,
+          postid: req.params.id,
+          description: description,
+        },
+        { new: true }
+      );
+
+      res.send([updatedPin, updatedPost]);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-  };
+  }
+};
 
 //delete post found by id
 const deletePostById = async (req, res, next) => {

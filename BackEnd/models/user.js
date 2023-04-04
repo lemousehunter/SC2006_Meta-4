@@ -26,8 +26,20 @@ const userSchema = mongoose.Schema({
   // To bind the posts of this user to this user. makes an empty array of posts initially
   posts: [
     {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
+    },
+  ],
+  reportedOthers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Report",
+    },
+  ],
+  gotReported: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Report",
     },
   ],
 });

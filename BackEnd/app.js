@@ -6,7 +6,7 @@ const cors = require("cors");
 require("dotenv").config();
 const authJwt = require("./helpers/jwt");
 const errorHandler = require("./helpers/error-handler");
-const io = require('socket.io');
+const io = require("socket.io");
 //change the database URL in the config file
 const { mongoUri } = require("./helpers/config");
 
@@ -27,6 +27,7 @@ const usersRoutes = require("./routes/users");
 const pinsRoutes = require("./routes/Pins");
 const chatRoutes = require("./routes/chat");
 const searchAllRoutes = require("./routes/search-all");
+const reportRoutes = require("./routes/report");
 
 const api = process.env.API_URL;
 
@@ -35,8 +36,8 @@ app.use(`${api}/posts`, postsRoutes);
 app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/pins`, pinsRoutes);
 app.use(`${api}/chat`, chatRoutes);
-app.use(`${api}/searchall`, searchAllRoutes);
-
+app.use(`${api}/searchall`, searchAllRoutes);;
+app.use(`${api}/reports`, reportRoutes);
 
 //Database
 // mongoose
@@ -52,13 +53,15 @@ app.use(`${api}/searchall`, searchAllRoutes);
 //     console.log(err);
 //   });
 
-  mongoose
-  .connect('mongodb+srv://sc2006ntu:fksc2006@lostnfounddb.8cmjwja.mongodb.net/?retryWrites=true&w=majority')
+mongoose
+  .connect(
+    "mongodb+srv://sc2006ntu:fksc2006@lostnfounddb.8cmjwja.mongodb.net/?retryWrites=true&w=majority"
+  )
   .then(() => {
     console.log("Database Connection is ready...");
     app.listen(3000);
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
   });
 
