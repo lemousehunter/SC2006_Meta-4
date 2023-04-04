@@ -1,10 +1,16 @@
-const express = require('express');
-const router = express.Router();
-const {getAllPins} = require('../controllers/pins-controllers');
-
+const Pin = require("../models/pinmodel");
+const axios = require("axios");
+const { onemapApiKey } = require("../helpers/config");
 
 // Get all pins
-router.get('/',getAllPins);
+const getAllPins = async (req, res) => {
+  try {
+    const pins = await Pin.find();
+    res.json(pins);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 // // Create a new pin
 // router.post('/', async (req, res) => {
@@ -49,4 +55,4 @@ router.get('/',getAllPins);
 
 // console.log("Router" + router);
 
-module.exports = router;
+module.exports = { getAllPins };
