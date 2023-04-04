@@ -104,6 +104,24 @@ const loginUser = async (req, res) => {
   }
 };
 
+const logoutUser = async (req, res) => {
+  // Get the user ID from the request object
+  const userId = req.body.userId;
+
+  // Remove the token associated with the user from the database
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $unset: { token: 1 } },
+      { new: true }
+    );
+    res.status(200).send("Logout successful");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
+};
+
 const updateUser = async (req, res, next) => {
   try {
     let updatedUser = await User.findByIdAndUpdate(
@@ -223,4 +241,4 @@ const displayUserPosts = async (req, res) => {
   res.send(userPosts);
 };
 
-module.exports = {getUserId,getUserList,registerUser,loginUser,updateUser,editCreditScore,findUserByName,displayUserPosts,deleteUser};
+module.exports = {getUserId,getUserList,registerUser,loginUser,logoutUser,updateUser,editCreditScore,findUserByName,displayUserPosts,deleteUser};
