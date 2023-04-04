@@ -114,15 +114,13 @@ const deleteReportById = async (req, res, next) => {
   try {
     report = await Report.findById(req.params.id);
   } catch (err) {
-    const error = new HttpError(" no report found, please retry.", 500);
-    return next(error);
+    return res.status(500).send({message:"no report found, please retry."});
   }
   let Sender;
   try {
     Sender = await User.findById(report.sender);
   } catch (err) {
-    const error = new HttpError(" no sender found, please retry.", 500);
-    return next(error);
+    return res.status(500).send({message:"no sender found, please retry."});
   }
   let reportedOthersList = Sender.reportedOthers;
   let i = reportedOthersList.indexOf(req.params.id);
@@ -133,8 +131,7 @@ const deleteReportById = async (req, res, next) => {
   try {
     Recipient = await User.findById(report.recipient);
   } catch (err) {
-    const error = new HttpError(" no recipient found, please retry.", 500);
-    return next(error);
+    return res.status(500).send({message:"no recipient found, please retry."});
   }
   let gotReportedList = Recipient.gotReported;
   let j = gotReportedList.indexOf(req.params.id);
