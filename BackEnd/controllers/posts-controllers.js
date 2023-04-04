@@ -37,7 +37,7 @@ const getPostById = async (req, res) => {
 const uploadPost =
   async (req, res, next) => {
     const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send("invalid Category");
+    if (!category) return res.status(400).send({message:"invalid Category"});
     const files = req.files;
     const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
     let imagePaths = [];
@@ -46,7 +46,7 @@ const uploadPost =
         imagePaths.push(`${basePath}${file.filename}`);
       });
     } else {
-      return res.status(400).send("No image in the request");
+      return res.status(400).send({message:"No image in the request"});
     }
     let post = new Post({
       itemName: req.body.itemName,
@@ -61,7 +61,7 @@ const uploadPost =
       isResolved: req.body.isResolved,
     });
     if (post.isResolved === true) {
-      return res.status(404).send("the post cannot be created");
+      return res.status(404).send({message:"the post cannot be created"});
     }
     //We also need to ensure that if there exists a userid with the provided id
     let user;
@@ -131,7 +131,7 @@ const uploadPost =
         res.status(500).json({ message: err.message });
       }
     } else {
-      return res.status(404).send("the post cannot be created");
+      return res.status(404).send({message:"the post cannot be created"});
     }
 
     res.send([pin, post]);
@@ -143,11 +143,11 @@ const updatePostById =
   async (req, res) => {
     // check if the id in the url is valid
     if (!mongoose.isValidObjectId(req.params.id)) {
-      res.status(400).send("Invalid Post ID");
+      res.status(400).send({message:"Invalid Post ID"});
     }
 
     const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send("invalid Category");
+    if (!category) return res.status(400).send({message:"invalid Category"});
 
     let postcheck;
     try {
@@ -161,7 +161,7 @@ const updatePostById =
     }
 
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(400).send("invalid post");
+    if (!post) return res.status(400).send({message:"invalid post"});
     const files = req.files;
     const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
@@ -190,7 +190,7 @@ const updatePostById =
     );
 
     if (!updatedPost) {
-      return res.status(404).send("the post cannot be updated");
+      return res.status(404).send({message:"the post cannot be updated"});
     }
     if (updatedPost.isResolved === true) {
       Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {

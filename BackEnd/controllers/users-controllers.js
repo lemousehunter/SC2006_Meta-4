@@ -73,7 +73,7 @@ const registerUser = async (req, res, next) => {
   try {
     user = await user.save();
     if (!user) {
-      return res.status(404).send("the user cannot be created");
+      return res.status(404).send({message:"the user cannot be created"});
     }
   } catch (err) {
     const error = new HttpError("Signing up failed, please retry.", 500);
@@ -88,7 +88,7 @@ const loginUser = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   const secret = process.env.secret;
   if (!user) {
-    return res.status(401).send("User not found");
+    return res.status(401).send({message:"User not found"});
   }
   let token;
   if (user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
@@ -101,7 +101,7 @@ const loginUser = async (req, res) => {
     );
     res.status(200).send({ user: user.email, token: token, id: user.id });
   } else {
-    res.status(401).send("Password is wrong");
+    res.status(401).send({message:"Password is wrong"});
   }
 };
 
@@ -117,10 +117,10 @@ const logoutUser = async (req, res) => {
       { $unset: { token: 1 } },
       { new: true }
     );
-    res.status(200).send("Logout successful");
+    res.status(200).send({message:"Logout successful"});
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal server error");
+    res.status(500).send({message:"Internal server error"});
   }
 };
 
@@ -138,7 +138,7 @@ const updateUser = async (req, res, next) => {
       { new: true }
     );
     if (!updatedUser) {
-      return res.status(404).send("user cannot be updated");
+      return res.status(404).send({message:"user cannot be updated"});
     }
     res.status(201).send(updatedUser);
   } catch (err) {
@@ -163,7 +163,7 @@ const editCreditScore = async (req, res, next) => {
       { new: true }
     );
     if (!updatedUser) {
-      return res.status(404).send("user cannot be updated");
+      return res.status(404).send({message:"user cannot be updated"});
     }
     res.status(201).send(updatedUser);
   } catch (err) {
