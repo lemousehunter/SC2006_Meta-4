@@ -8,6 +8,13 @@ import BaseLoggedInScreen from '../../BaseLoggedInScreen';
 export default class AccountScreen extends BaseLoggedInScreen {
   constructor(props) {
     super(props);
+    this.state = {
+      postData: [],
+      name: '',
+      email: '',
+      socialRep: '',
+      numPosts: '',
+    };
     this.createStylesheet();
   }
 
@@ -34,6 +41,27 @@ export default class AccountScreen extends BaseLoggedInScreen {
     });
   }
 
+  async componentDidMount() {
+    await this.getLoginController()
+      .getUserByID(this.getUser())
+      .then(user => {
+        console.log('getUserByID:' + JSON.stringify(user));
+        this.setState({
+          name: user.name,
+          email: user.email,
+          socialRep: user.creditScore,
+          numPosts: user.posts.length,
+        });
+      });
+    await this.getPostsController()
+      .getPostItemsByUser(this.getUser())
+      .then(res => {
+        this.setState({postData: res});
+      });
+    console.log('setUserState');
+    console.log('name:' + this.state.name);
+  }
+
   getPostsStyle() {
     return {
       color: this.getBgColor(),
@@ -42,7 +70,7 @@ export default class AccountScreen extends BaseLoggedInScreen {
     };
   }
 
-  edit = (postID) => {
+  edit = postID => {
     this.nav('CreatePost', {postID: postID});
   };
 
@@ -67,17 +95,17 @@ export default class AccountScreen extends BaseLoggedInScreen {
             btnFont={this.getButtonFont()}
             winW={this.getWinW()}
             winH={this.getWinH()}
-            _name={'hello'}
-            username={'helloWorld'}
+            _name={this.state.name}
+            username={this.state.email}
             userSince={'2000'}
-            socialRep={'200'}
-            numPosts={'20'}
+            socialRep={this.state.socialRep}
+            numPosts={this.state.numPosts}
             logout={() => {
               this.navigate('PreLoginHomepage');
               console.log('logging out');
             }}
             currentUser={this.getUser()}
-            user={'hel'}
+            user={this.getUser()}
             contact={() => console.log('contact meeeee')}
           />
         </View>
@@ -85,7 +113,7 @@ export default class AccountScreen extends BaseLoggedInScreen {
           <FlatList
             contentContainerStyle={{}}
             style={{padding: 10}}
-            data={this.getPostsController().getPosts()}
+            data={this.state.postData}
             renderItem={({item}) => (
               <PostItem
                 _data={item}

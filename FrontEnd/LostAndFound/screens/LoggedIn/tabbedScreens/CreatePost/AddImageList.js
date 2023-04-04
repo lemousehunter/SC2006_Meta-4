@@ -12,7 +12,6 @@ export default class AddImageList extends Component {
       {_ref: React.createRef(null)},
       {_ref: React.createRef(null)},
       {_ref: React.createRef(null)},
-      {_ref: React.createRef(null)},
     ];
     this.color = this.props.color;
     this.winW = this.props.winW;
@@ -22,7 +21,7 @@ export default class AddImageList extends Component {
   }
 
   setImageUris(uris) {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 4; i++) {
       console.log('setting uris');
       this.imageRefs[i]._ref.current.setPhotoUri(uris[0]);
     }
@@ -35,7 +34,23 @@ export default class AddImageList extends Component {
       this.imageRefs[1]._ref.current.getPhotoUri(),
       this.imageRefs[2]._ref.current.getPhotoUri(),
       this.imageRefs[3]._ref.current.getPhotoUri(),
-      this.imageRefs[4]._ref.current.getPhotoUri(),
+    ];
+  }
+  getPhotoTypes() {
+    return [
+      this.imageRefs[0]._ref.current.getPhotoType(),
+      this.imageRefs[1]._ref.current.getPhotoType(),
+      this.imageRefs[2]._ref.current.getPhotoType(),
+      this.imageRefs[3]._ref.current.getPhotoType(),
+    ];
+  }
+
+  getPhotoNames() {
+    return [
+      this.imageRefs[0]._ref.current.getPhotoName(),
+      this.imageRefs[1]._ref.current.getPhotoName(),
+      this.imageRefs[2]._ref.current.getPhotoName(),
+      this.imageRefs[3]._ref.current.getPhotoName(),
     ];
   }
 

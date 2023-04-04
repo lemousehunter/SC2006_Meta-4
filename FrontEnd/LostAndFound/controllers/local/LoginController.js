@@ -31,7 +31,7 @@ export default class LoginController extends Component {
     return check;
   }
 
-  register(username, email, password, phoneNumber) {
+  async register(username, email, password, phoneNumber) {
     console.log(
       'usn:' +
         username +
@@ -67,13 +67,40 @@ export default class LoginController extends Component {
 
       return res_array.join('|');
     } else {
-      if (this.checkUser(username)) {
-        return 'E_USN';
-      } else {
-        // add code for POST-ing data to server
+      console.log('registering....');
+      console.log('dataController:' + JSON.stringify(this.dataController));
+      const response = await this.dataController
+        .post(this.urlBase + '/register', {
+          name: username,
+          email: email,
+          password: password,
+          phone: phoneNumber,
+        })
+        .then(res => {
+          console.log('loginControllerRes:' + JSON.stringify(res));
+          return res;
+        })
+        .catch(error =>
+          console.log('loginControllerError:' + JSON.stringify(error)),
+        );
+      console.log('response is :' + JSON.stringify(response));
+      if (response.status === 201) {
         return 'S';
+      } else {
+        console.log('E_USN');
+        return 'E_USN';
       }
     }
+  }
+
+  async getUserByID(userID) {
+    console.log('getting user by id...');
+    const response = await this.dataController
+      .get(this.urlBase + '/' + userID)
+      .then(result => {
+        return result;
+      });
+    return response.data;
   }
 
   async login(user, password) {
@@ -105,10 +132,9 @@ export default class LoginController extends Component {
       const status = response.status;
       const body = response.data;
       console.log('body is:' + JSON.stringify(body));
-      const msg = body.message;
       console.log('status is:' + JSON.stringify(status));
-      console.log('msg is: ' + JSON.stringify(msg));
       if (status === 401) {
+        const msg = body.message;
         if (msg === 'User not found') {
           return -1;
         } else {
@@ -118,6 +144,8 @@ export default class LoginController extends Component {
       }
       if (status === 200) {
         console.log('returning 1');
+        this.user = body.id;
+        this.dataController.sessionToken = body.token;
         return 1;
       }
     }

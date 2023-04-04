@@ -178,20 +178,20 @@ export default class ProfileCard extends React.Component {
           />
         </View>
         <View style={this.styles.nameContainer}>
-          <Text style={this.styles.headingText}> {this.name} </Text>
-          <Text style={this.styles.subHeadingText}> @{this.username} </Text>
+          <Text style={this.styles.headingText}>{this.props._name} </Text>
+          <Text style={this.styles.subHeadingText}>{this.props.username} </Text>
         </View>
         <View style={this.styles.middleContainer}>
           <View style={this.styles.middleInnerContainer}>
-            <Text style={this.styles.titleText}>{this.socialRep}</Text>
+            <Text style={this.styles.titleText}>{this.props.socialRep}</Text>
             <Text style={this.styles.text}>Reputation </Text>
           </View>
           <View style={this.styles.middleInnerContainer}>
-            <Text style={this.styles.titleText}>{this.numPosts}</Text>
+            <Text style={this.styles.titleText}>{this.props.numPosts}</Text>
             <Text style={this.styles.text}> Posts </Text>
           </View>
           <View style={this.styles.middleInnerContainer}>
-            <Text style={this.styles.titleText}>{this.userSince}</Text>
+            <Text style={this.styles.titleText}>{this.props.userSince}</Text>
             <Text style={this.styles.text}> User Since </Text>
           </View>
         </View>

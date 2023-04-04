@@ -136,14 +136,19 @@ export default class Search extends BaseLoggedInScreen {
     };
   }
 
-  validateSearch = () => {
+  validateSearch = async () => {
     console.log('viewType is:' + this.state.viewType);
     if (this.state.viewType === 'ListView') {
       console.log(
-        'searchSubmitted' + JSON.stringify(this.getPostsController().getPosts()),
+        'searchSubmitted' +
+          JSON.stringify(this.getPostsController().getPosts()),
       );
+      const response = await this.getPostsController().getPostsByUser(post => {
+        console.log('userResponse:' + JSON.stringify(post));
+        return post;
+      });
       this.navigate('ListView', {
-        postList: this.getPostsController().getPosts(),
+        postList: response,
       });
     } else {
       console.log('loading markers:');
@@ -240,9 +245,15 @@ export default class Search extends BaseLoggedInScreen {
     );
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    const response = await this.getControllers()
+      .categoriesController.getCategories()
+      .then(result => {
+        console.log('catRes:' + JSON.stringify(result));
+        return result;
+      });
     this.setState({
-      categories: this.getControllers().categoriesController.getCategories(),
+      categories: response,
     });
   }
 

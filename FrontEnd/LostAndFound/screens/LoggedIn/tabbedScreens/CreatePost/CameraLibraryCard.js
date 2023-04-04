@@ -10,6 +10,8 @@ export default class CameraLibraryCard extends React.Component {
     this.state = {
       pickerResponse: null,
       imgUri: null,
+      type: null,
+      name: null,
     };
     this.settings = this.props.settings;
     this.winW = this.props._style.winW;
@@ -23,9 +25,15 @@ export default class CameraLibraryCard extends React.Component {
   getPhotoUri() {
     return this.state.imgUri;
   }
-  setPhotoUri(uri) {
+  getPhotoName() {
+    return this.state.name;
+  }
+  getPhotoType() {
+    return this.state.type;
+  }
+  setPhotoUri(uri, mimeType) {
     console.log('set uri: ' + uri);
-    this.setState({imgUri: uri});
+    this.setState({imgUri: uri, type: mimeType});
   }
 
   getStylesheet() {
@@ -55,7 +63,10 @@ export default class CameraLibraryCard extends React.Component {
         this.setState({
           pickerResponse: response,
           imgUri: response.path,
+          type: response.mime,
+          name: response.filename,
         });
+        console.log('pickerResponse:', JSON.stringify(response));
         console.log('imgUri: ' + JSON.stringify(this.state.imgUri));
       })
       .catch(error => console.log('error: ' + JSON.stringify(error)));

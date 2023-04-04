@@ -15,6 +15,7 @@ import CustomRenderer from './reusable/Neuromorphic/Dropdown/CustomRenderer';
 export default class PostItem extends React.Component {
   constructor(props) {
     super(props);
+    console.log('PostItem_data:' + JSON.stringify(this.props._data));
     this.color = this.props.postStyle.color;
     this.winW = this.props.postStyle.winW;
     this.winH = this.props.postStyle.winH;
@@ -25,9 +26,12 @@ export default class PostItem extends React.Component {
     this.edit = this.props.edit;
     this.timing = this.props._data.timing;
     this.postID = this.props._data.postID;
+    this.image = this.props._data.image;
+    this.category = this.props._data.category;
     this.coordinates = this.props._data.coordinates;
     this.getStyleSheet();
     this.getNSettings();
+    console.log('imageURI:' + this.image);
   }
 
   getStyleSheet() {
@@ -141,7 +145,9 @@ export default class PostItem extends React.Component {
             <View style={this.styles.leftContainer}>
               <Image
                 style={this.styles.img}
-                source={require('../assets/images/logo.png')}
+                source={{
+                  uri: this.image,
+                }}
               />
             </View>
             <View style={this.styles.rightContainer}>
@@ -190,7 +196,7 @@ export default class PostItem extends React.Component {
                   onPress={() => {
                     console.log('pressed category');
                   }}>
-                  <Text style={this.styles.text}>Category</Text>
+                  <Text style={this.styles.text}>{this.category}</Text>
                 </Pressable>
               </View>
             </View>

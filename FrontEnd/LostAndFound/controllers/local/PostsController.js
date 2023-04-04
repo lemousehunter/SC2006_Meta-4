@@ -1,10 +1,12 @@
 import {Component} from 'react';
+import moment from 'moment';
 
 export default class PostsController extends Component {
-  constructor(props) {
-    super(props);
+  constructor(dataC) {
+    super(dataC);
     this.user = '';
     this.loggedIn = true;
+    this.dataController = dataC;
   }
   convertPost2PostItem(Post) {
     return {
@@ -19,6 +21,63 @@ export default class PostsController extends Component {
       isResolved: false,
       image: Post.images[0], // first image
     };
+  }
+
+  async getPostItemsByUser(user) {
+    const posts = await this.getPostsByUser(user).then(res => {
+      return res;
+    });
+    let array = [];
+    posts.map(post => {
+      console.log('post:' + JSON.stringify(post));
+      let date = new moment(post.date);
+      console.log('date:' + JSON.stringify(date));
+      console.log('o_time' + JSON.stringify(post.time));
+      let time = new moment(post.time, 'HH:mm:SS');
+      console.log('time:' + JSON.stringify(time));
+      date
+        ?.hour(time ? time.hours() : date.hours())
+        .minute(time ? time.minutes() : date.minutes());
+      console.log('datetime:' + JSON.stringify(date));
+      let currentTime = moment();
+      console.log(
+        'test:' + moment.utc(moment().diff(moment())).format('DD:hh:mm:ss'),
+      );
+      let timeDelta = moment.utc(currentTime.diff(date));
+      let days = timeDelta.format('DD');
+      let hours = timeDelta.format('hh');
+      let mins = timeDelta.format('mm');
+      let sec = timeDelta.format('ss');
+      let timing = '';
+      if (days !== '00') {
+        timing += days + ' days';
+      }
+      if (hours !== '00') {
+        timing += ' ' + hours + ' h';
+      }
+      if (mins !== '00') {
+        timing += ' ' + mins + ' mins';
+      }
+      if (sec !== '00') {
+        timing += ' ' + sec + ' s';
+      }
+      console.log('timing:' + timing);
+      let obj = {
+        name: post.itemName,
+        type: post.isLost === 1 ? 'Lost' : 'Found',
+        location: post.location,
+        timing: timing,
+        item: post.itemName,
+        category: post.category.name,
+        categoryID: post.category._id,
+        postID: post._id,
+        isResolved: post.isResolved,
+        listedBy: post.listedBy,
+        image: post.images[0],
+      };
+      array.push(obj);
+    });
+    return array;
   }
 
   getMarkers() {
@@ -57,67 +116,23 @@ export default class PostsController extends Component {
     return markers;
   }
 
-  getPosts(user) {
+  async getPostsByUser(user) {
     // to replace with fetch function call
-    return [
-      {
-        name: 'jerome',
-        type: 'Found',
-        location: 'NTU Hall 8',
-        coordinates: [1111, 2222],
-        timing: '12s',
-        item: 'iPad',
-        category: 'Electronics',
-        postID: 'A',
-        isResolved: false,
-        image: 'Post.images[0]', // first image
-      },
-      {
-        name: 'Jia Rong',
-        type: 'Lost',
-        location: 'NTU Can B',
-        coordinates: [1111, 2222],
-        timing: '2 Days',
-        item: 'MacBook',
-        category: 'Electronics',
-        postID: 'B',
-        isResolved: false,
-        image: 'Post.images[0]', // first image
-      },
-      {
-        name: 'Rodmond',
-        type: 'Found',
-        location: 'N4.1',
-        coordinates: [1111, 2222],
-        timing: '1 Day',
-        item: 'Water Bottle',
-        postID: 'C',
-        isResolved: false,
-        image: 'Post.images[0]', // first image
-      },
-      {
-        name: 'Bernard',
-        type: 'Found',
-        location: 'NYA',
-        coordinates: [1111, 2222],
-        timing: '2 Days',
-        item: 'item',
-        postID: 'D',
-        isResolved: false,
-        image: 'Post.images[0]', // first image
-      },
-      {
-        name: 'Yuan Lin',
-        type: 'Lost',
-        location: 'NYH',
-        coordinates: [1111, 2222],
-        timing: '1 Week',
-        item: 'Folder',
-        postID: 'E',
-        isResolved: false,
-        image: 'Post.images[0]', // first image
-      },
-    ];
+    console.log('session token is:', this.dataController.sessionToken);
+    const response = await this.dataController
+      .get('users/userposts/' + user)
+      .then(res => {
+        console.log('res:');
+        return res;
+      })
+      .catch(error => console.log(error));
+    console.log('getPostsResponse' + JSON.stringify(response));
+    if (response.status === 200) {
+      console.log('responseData:' + JSON.stringify(response.data));
+      return response.data;
+    } else {
+      console.log('Error');
+    }
   }
 
   editPost(
@@ -133,7 +148,14 @@ export default class PostsController extends Component {
     isResolved,
   ) {
     console.log(
-      'itemName: ' + itemName + ' isLost: ' + isLost + ' images: ' + images + ' postID: ' + postID,
+      'itemName: ' +
+        itemName +
+        ' isLost: ' +
+        isLost +
+        ' images: ' +
+        images +
+        ' postID: ' +
+        postID,
     );
   }
 
@@ -153,18 +175,45 @@ export default class PostsController extends Component {
     return Post;
   }
 
-  createPost(
-    itemName,
-    isLost,
-    images,
-    location,
+  async createPost(
+    photos,
+    photoTypes,
+    photoNames,
+    type,
     date,
-    time,
-    itemDesc,
-    category,
+    categoryID,
+    item,
+    desc,
+    location,
     listedBy,
   ) {
-    const isResolved = false;
-    console.log('itemName:' + itemName + ' isLost' + isLost);
+    let formdata = new FormData();
+    formdata.append('itemName', item);
+    formdata.append('isLost', type !== 'found');
+    for (let i = 0; i < 4; i++) {
+      formdata.append(
+        'images',
+        JSON.stringify({
+          uri: photos[i],
+          type: photoTypes[i],
+          name: photoNames[i],
+        }),
+      );
+    }
+    formdata.append('location', location);
+    formdata.append('listedBy', listedBy);
+    formdata.append('date', date);
+    formdata.append('time', date);
+    formdata.append('itemDescription', desc);
+    formdata.append('category', categoryID);
+    formdata.append('isResolved', false);
+    console.log('formData:', JSON.stringify(formdata));
+    const response = await this.dataController
+      .post('posts/', formdata, 'multipart/form-data')
+      .then(res => {
+        console.log('dcCreatePost:' + res);
+        return res.data;
+      });
+    return response;
   }
 }

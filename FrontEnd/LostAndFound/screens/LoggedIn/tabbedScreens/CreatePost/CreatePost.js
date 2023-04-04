@@ -22,6 +22,7 @@ export default class CreatePost extends BaseLoggedInScreen {
     this.getSettings();
     this.item = React.createRef(null);
     this.desc = React.createRef(null);
+    this.location = React.createRef(null);
     this.postID = this.props.route.params.postID;
     this.types = [
       {label: 'Found', value: 'found'},
@@ -57,7 +58,7 @@ export default class CreatePost extends BaseLoggedInScreen {
       },
       mainContainer: {
         width: this.getWinW() * 0.8,
-        height: this.getWinH() * 1.4,
+        height: this.getWinH() * 1.55,
       },
       middleInnerContainer: {
         flex: 1,
@@ -211,19 +212,39 @@ export default class CreatePost extends BaseLoggedInScreen {
 
   validatePost = async () => {
     const photos = this.addImgList.current.getImageUris();
+    const photoTypes = this.addImgList.current.getPhotoTypes();
+    const photoNames = this.addImgList.current.getPhotoNames();
     const type = this.state.type;
     const date = this.state.date;
     const category = this.state.category;
     const item = this.item.current.getText();
     const desc = this.desc.current.getText();
-    await this.getLocation();
+    const location = this.location.current.getText();
+    //await this.getLocation();
     console.log('photos:' + JSON.stringify(photos));
     console.log('type:' + JSON.stringify(type));
     console.log('category:' + JSON.stringify(category));
     console.log('item:' + JSON.stringify(item));
     console.log('desc:' + JSON.stringify(desc));
     console.log('date:' + JSON.stringify(date));
-    console.log('location: ' + JSON.stringify(this.state.location));
+    console.log('location: ' + this.location.current.getText());
+    const response = await this.getPostsController()
+      .createPost(
+        photos,
+        photoTypes,
+        photoNames,
+        type,
+        date,
+        category,
+        item,
+        desc,
+        location,
+        this.getUser(),
+      )
+      .then(res => {
+        console.log('createPostRes:' + JSON.stringify(res));
+        return res;
+      });
   };
 
   validateEdit = () => {
@@ -246,7 +267,7 @@ export default class CreatePost extends BaseLoggedInScreen {
     );
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     console.log('navProps:' + JSON.stringify(this.props.navigation));
     console.log('controllers:' + JSON.stringify(this.getControllers()));
     console.log('postID: ' + this.postID);
@@ -254,22 +275,25 @@ export default class CreatePost extends BaseLoggedInScreen {
       'categories: ' +
         this.getControllers().categoriesController.getCategories(),
     );
-    this.setState({
-      categories: this.getControllers().categoriesController.getCategories(),
-    });
+    await this.getControllers()
+      .categoriesController.getCategories()
+      .then(categories =>
+        this.setState({
+          categories: categories,
+        }),
+      );
+
     if (!(this.postID === undefined)) {
       console.log('edit mode');
       this.setPost();
     } else {
-
     }
   }
 
   render() {
     if (this.postID === undefined) {
       console.log('postID is null');
-    }
-    else {
+    } else {
       console.log('postID is not null');
     }
     console.log('User is:' + this.getLoginController().getUser());
@@ -386,6 +410,19 @@ export default class CreatePost extends BaseLoggedInScreen {
                       <View style={this.styles.horizontalSpacer} />
                       <Text style={this.styles.styledText}>Category</Text>
                     </View>
+                  </View>
+                </NCard>
+                <View style={this.styles.verticalSpacer} />
+                <NCard settings={this.nSettings.middleCard}>
+                  <View style={this.styles.descCatContainer}>
+                    <Text style={this.styles.styledText}>
+                      The item was last seen at
+                    </Text>
+                    <NTextInput
+                      ref={this.location}
+                      settings={this.nSettings.nTextField}
+                      placeholder={'Description'}
+                    />
                   </View>
                 </NCard>
                 <View style={this.styles.verticalSpacer} />

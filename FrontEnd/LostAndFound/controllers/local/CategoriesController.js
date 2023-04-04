@@ -1,11 +1,12 @@
 import {Component} from 'react';
 
 export default class CategoriesController extends Component {
-  constructor(props) {
-    super(props);
+  constructor(dataC) {
+    super(dataC);
+    this.dataController = dataC;
   }
 
-  getCategories() {
+  async getCategories() {
     const categories = [
       {label: 'All', value: 'e1'},
       {label: 'Electronics', value: 'e2'},
@@ -13,6 +14,15 @@ export default class CategoriesController extends Component {
       {label: 'Valuables', value: 'e4'},
       {label: 'Others', value: 'e5'},
     ];
-    return categories;
+    let response = await this.dataController.get('categories/').then(result => {
+      return result.data;
+    });
+
+    const array = [];
+    response.map(category => {
+      array.push({label: category.name, value: category._id});
+    });
+    console.log('catCtrlCats:' + JSON.stringify(array));
+    return array;
   }
 }

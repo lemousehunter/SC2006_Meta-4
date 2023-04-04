@@ -85,24 +85,24 @@ export default class RegisterPage extends BaseScreen {
     this.phoneNum = React.createRef(null);
   }
 
-  validateRegistration() {
+  async validateRegistration() {
     const usn = this.usn.current.getText();
     const email = this.email.current.getText();
     const pwd = this.password.current.getText();
     const phoneNum = this.phoneNum.current.getText();
 
     console.log(this.getLoginController());
-    const response = this.getLoginController().register(
-      usn,
-      email,
-      pwd,
-      phoneNum,
-    );
+    const response = await this.getLoginController()
+      .register(usn, email, pwd, phoneNum)
+      .then(res => {
+        return res;
+      });
     console.log('response: ' + response);
     if (response === 'S') {
       this.navigate('PreLoginHomepage');
     } else {
       if (response === 'E_USN') {
+        console.log('user exists');
         Alert.alert(
           'Invalid User',
           'Username chosen exists. Please choose another.',
@@ -113,7 +113,7 @@ export default class RegisterPage extends BaseScreen {
         for (let i = 0; i < res_arr.length; i++) {
           alert_msg += res_arr[i];
         }
-        if (res_arr.length == 1) {
+        if (res_arr.length === 1) {
           alert_msg += ' is not filled. Please try again.';
         } else {
           alert_msg += ' are not filled. Please try again.';
