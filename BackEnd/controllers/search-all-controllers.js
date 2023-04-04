@@ -9,24 +9,29 @@ const search =  async (req, res, next) => {
     const { name } = req.params;
     const { category, listedBy } = req.query;
 
-    let postData, userData;
-    try {
-        const filter = new RegExp(name, 'i');
-        const categoryFilter = category ? mongoose.Types.ObjectId(category) : undefined;
-        const listedByFilter = listedBy ? { $regex: listedBy, $options: 'i' } : undefined;        
+    let postData, userData, catData;
 
+    try {
+        const filter = new RegExp(name, 'i');       
+
+      // trying to find the user specified by the param name
       userData = await User.find({
         $or: [{ name: { $regex: req.params.name } }],
       }).select({ name: 1, email: 1, phone: 1, posts: 1 });
-      postData =await Post.find({
+
+      // trying to find the post specified by the param name
+      postData = await Post.find({
         $or: [
           { itemName: filter },
-          { category: categoryFilter },
-          { listedBy: listedByFilter }
         ]
       })
-      .populate("category")
+      .populate({ path: "category", select: { name: 1 } })
       .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
+
+      // trying to find the category specified by the param name
+      catData = await Category.find({
+        $or: [{ name: { $regex: req.params.name } }],
+      });
     } catch (err) {
       const error = new HttpError(
         "Could not find the specified user given the name.",
@@ -34,8 +39,12 @@ const search =  async (req, res, next) => {
       );
       return next(error);
     }
+    
+    postData = postData.filter((post) => {
+      return post.category.name === category && post.listedBy === listedBy;
+    });
 
-    const responseData = {userData, postData};
+    const responseData = {userData, postData, catData};
     res.status(201).send(responseData);
   };
   
