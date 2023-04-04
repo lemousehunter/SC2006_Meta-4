@@ -20,14 +20,16 @@ const userSchema = mongoose.Schema({
   },
   creditScore: {
     type: Number,
-    required: [true, ""],
+    default: 0,
   },
 
   // To bind the posts of this user to this user. makes an empty array of posts initially
-  posts: [{
-    type: mongoose.Types.ObjectId, 
-    ref: "Post"
-  }]
+  posts: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
 });
 
 userSchema.virtual("id").get(function () {
