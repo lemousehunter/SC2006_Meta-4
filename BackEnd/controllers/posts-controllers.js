@@ -45,7 +45,7 @@ const uploadPost =
         imagePaths.push(`${basePath}${file.filename}`);
       });
     } else {
-      return res.status(400).send("No image in the request");
+      return res.status(400).send({message:"No image in the request"});
     }
     let post = new Post({
       itemName: req.body.itemName,
