@@ -83,6 +83,7 @@ const registerUser = async (req, res, next) => {
   res.status(201).send(user);
 };
 
+// Log in user by taking in email and password as input in body
 const loginUser = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   const secret = process.env.secret;
@@ -104,6 +105,7 @@ const loginUser = async (req, res) => {
   }
 };
 
+// Log out user by using userId as input in body
 const logoutUser = async (req, res) => {
   // Get the user ID from the request object
   const userId = req.body.userId;
@@ -122,6 +124,7 @@ const logoutUser = async (req, res) => {
   }
 };
 
+// Update user information 
 const updateUser = async (req, res, next) => {
   try {
     let updatedUser = await User.findByIdAndUpdate(

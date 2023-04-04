@@ -29,8 +29,6 @@ const search =  async (req, res, next) => {
       );
       return next(error);
     }
-    
-    //console.log(postData[0]);
 
     postData = postData.filter((post) => {
       if (category && listedBy) {
@@ -44,7 +42,6 @@ const search =  async (req, res, next) => {
       }
     });
 
-    //const responseData = {userData, postData, catData};
     res.status(201).send(postData);
   };
   
