@@ -3,6 +3,7 @@ const {
   getUserList,
   registerUser,
   loginUser,
+  logoutUser,
   updateUser,
   editCreditScore,
   findUserByName,
@@ -24,6 +25,9 @@ router.post("/register", registerUser);
 
 //login route
 router.post("/login", loginUser);
+
+//logout route
+router.post("/logout", logoutUser);
 
 //update user profile
 router.put("/:id", updateUser);

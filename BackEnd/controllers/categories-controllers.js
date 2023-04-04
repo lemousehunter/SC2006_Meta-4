@@ -27,7 +27,7 @@ const postCategory = async (req, res) => {
   });
   category = await category.save();
   if (!category) {
-    return res.status(404).send("the category cannot be created");
+    return res.status(404).send({message:"the category cannot be created"});
   }
   res.send(category);
 };
@@ -42,7 +42,7 @@ const updateCategory = async (req, res) => {
     { new: true }
   );
   if (!category) {
-    return res.status(404).send("the category cannot be updated");
+    return res.status(404).send({message:"the category cannot be updated"});
   }
   res.send(category);
 };

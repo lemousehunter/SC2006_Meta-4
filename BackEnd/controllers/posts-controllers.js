@@ -33,43 +33,44 @@ const getPostById = async (req, res) => {
   res.send(post);
 };
 // upload new post
-const uploadPost = async (req, res, next) => {
-  const category = await Category.findById(req.body.category);
-  if (!category) return res.status(400).send("invalid Category");
-  const files = req.files;
-  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
-  let imagePaths = [];
-  if (files) {
-    files.map((file) => {
-      imagePaths.push(`${basePath}${file.filename}`);
+const uploadPost =
+  async (req, res, next) => {
+    const category = await Category.findById(req.body.category);
+    if (!category) return res.status(400).send("invalid Category");
+    const files = req.files;
+    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+    let imagePaths = [];
+    if (files) {
+      files.map((file) => {
+        imagePaths.push(`${basePath}${file.filename}`);
+      });
+    } else {
+      return res.status(400).send("No image in the request");
+    }
+    let post = new Post({
+      itemName: req.body.itemName,
+      isLost: req.body.isLost,
+      images: imagePaths,
+      location: req.body.location,
+      listedBy: req.body.listedBy,
+      date: req.body.date,
+      time: req.body.time,
+      itemDescription: req.body.itemDescription,
+      category: req.body.category,
+      isResolved: req.body.isResolved,
     });
-  } else {
-    return res.status(400).send("No image in the request");
-  }
-  let post = new Post({
-    itemName: req.body.itemName,
-    isLost: req.body.isLost,
-    images: imagePaths,
-    location: req.body.location,
-    listedBy: req.body.listedBy,
-    date: req.body.date,
-    time: req.body.time,
-    itemDescription: req.body.itemDescription,
-    category: req.body.category,
-    isResolved: req.body.isResolved,
-  });
-  if (post.isResolved === true) {
-    return res.status(404).send("the post cannot be created");
-  }
-  //We also need to ensure that if there exists a userid with the provided id
-  let user;
-  let pin;
-  try {
-    user = await User.findById(post.listedBy);
-  } catch (err) {
-    const error = new HttpError(" Creating place failed, please retry.", 500);
-    return next(error);
-  }
+    if (post.isResolved === true) {
+      return res.status(404).send("the post cannot be created");
+    }
+    //We also need to ensure that if there exists a userid with the provided id
+    let user;
+    let pin;
+    try {
+      user = await User.findById(post.listedBy);
+    } catch (err) {
+      const error = new HttpError(" Creating place failed, please retry.", 500);
+      return next(error);
+    }
 
   if (!user) {
     const error = new HttpError("Could not find user for the provided id", 404);
@@ -121,27 +122,28 @@ const uploadPost = async (req, res, next) => {
         postid: post.id,
       });
 
-      await pin.save();
-    } catch (err) {
-      res.status(500).json({ message: err.message });
+        await pin.save();
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+    } else {
+      return res.status(404).send("the post cannot be created");
     }
-  } else {
-    return res.status(404).send("the post cannot be created");
-  }
 
   res.send([pin, post]);
 };
 
 //update post found by id and if post has been resolved, remove pin from map
 //keep resolved post for history
-const updatePostById = async (req, res) => {
-  // check if the id in the url is valid
-  if (!mongoose.isValidObjectId(req.params.id)) {
-    res.status(400).send("Invalid Post ID");
-  }
+const updatePostById =
+  async (req, res) => {
+    // check if the id in the url is valid
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      res.status(400).send("Invalid Post ID");
+    }
 
-  const category = await Category.findById(req.body.category);
-  if (!category) return res.status(400).send("invalid Category");
+    const category = await Category.findById(req.body.category);
+    if (!category) return res.status(400).send("invalid Category");
 
   let postcheck;
   try {
@@ -154,10 +156,10 @@ const updatePostById = async (req, res) => {
     return next(error);
   }
 
-  const post = await Post.findById(req.params.id);
-  if (!post) return res.status(400).send("invalid post");
-  const files = req.files;
-  const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(400).send("invalid post");
+    const files = req.files;
+    const basePath = `${req.protocol}://${req.get("host")}/public/uploads/`;
 
   let imagePaths = [];
   if (files) {
@@ -183,30 +185,30 @@ const updatePostById = async (req, res) => {
     { new: true }
   );
 
-  if (!updatedPost) {
-    return res.status(404).send("the post cannot be updated");
-  }
-  if (updatedPost.isResolved === true) {
-    Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {
-      if (pin) {
-        return res
-          .status(200)
-          .json({ success: true, message: "post is deleted" });
-      } else {
-        return res
-          .status(404)
-          .json({ success: false, message: "pin not found" });
-      }
-    });
-  } else {
-    const title = updatedPost.itemName;
-    const description = updatedPost.itemDescription;
-    const location = updatedPost.location;
-    if (!title || !description || !location) {
-      return res.status(400).json({
-        message: "Please provide a title, description, and location.",
-      });
+    if (!updatedPost) {
+      return res.status(404).send("the post cannot be updated");
     }
+    if (updatedPost.isResolved === true) {
+      Pin.findOneAndDelete({ postid: req.params.id }).then((pin) => {
+        if (pin) {
+          return res
+            .status(200)
+            .json({ success: true, message: "post is deleted" });
+        } else {
+          return res
+            .status(404)
+            .json({ success: false, message: "pin not found" });
+        }
+      });
+    } else {
+      const title = updatedPost.itemName;
+      const description = updatedPost.itemDescription;
+      const location = updatedPost.location;
+      if (!title || !description || !location) {
+        return res.status(400).json({
+          message: "Please provide a title, description, and location.",
+        });
+      }
 
     // Geocode the location using the OneMap API
     try {
