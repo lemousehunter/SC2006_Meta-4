@@ -220,8 +220,8 @@ const displayUserPosts = async (req, res) => {
     .sort({ date: -1 });
 
   if (category){
-    userPosts = userPosts.filter((user) => {
-      return user.category.name === category;
+    userPosts = await userPosts.filter((user) => {
+      return user.category && user.category.id === category;
     });
   }
 
