@@ -139,25 +139,48 @@ export default class Search extends BaseLoggedInScreen {
   validateSearch = async () => {
     console.log('viewType is:' + this.state.viewType);
     if (this.state.viewType === 'ListView') {
-      console.log(
-        'searchSubmitted' +
-          JSON.stringify(this.getPostsController().getPosts()),
-      );
-      const response = await this.getPostsController().getPostsByUser(post => {
-        console.log('userResponse:' + JSON.stringify(post));
-        return post;
-      });
+      const searchText = this.searchField.current.getText();
+      const userIDLst = await this.getLoginController()
+        .getUserListByName(searchText)
+        .then(result => {
+          console.log('userListByName:' + JSON.stringify(result));
+          return result;
+        });
+      const postLst = [];
+      for (let i = 0; i < userIDLst.length; i++) {
+        console.log('userID:' + JSON.stringify(userIDLst[i]._id));
+        const posts = await this.getPostsController()
+          .getPostItemsByUser(userIDLst[i]._id)
+          .then(_posts => {
+            console.log('userResponse:' + JSON.stringify(_posts));
+            return _posts;
+          });
+        console.log('userResponse2:' + JSON.stringify(posts));
+        posts.map(_p => postLst.push(_p));
+      }
+      console.log('postLst:' + JSON.stringify(postLst));
+      this.setState({postList: postLst});
       this.navigate('ListView', {
-        postList: response,
+        postList: postLst,
       });
-    } else {
-      console.log('loading markers:');
-      this.navigate('Map_View', {
-        markers: this.getPostsController().getMarkers(),
-      });
+
+      //   const response = await this.getPostsController(userID)
+      //     .getPostsByUser()
+      //     .then(posts => {
+      //       console.log('userResponse:' + JSON.stringify(posts));
+      //       return posts;
+      //     });
+      //   this.navigate('ListView', {
+      //     postList: response,
+      //   });
+      // } else {
+      //   console.log('loading markers:');
+      //   this.navigate('Map_View', {
+      //     markers: this.getPostsController().getMarkers(),
+      //   });
+      //console.log('searchSubmitted' + userID);
     }
   };
-
   renderHeader = ({navigation}) => {
     console.log('rendering Header');
     console.log(navigation);

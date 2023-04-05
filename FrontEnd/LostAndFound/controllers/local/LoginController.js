@@ -93,6 +93,17 @@ export default class LoginController extends Component {
     }
   }
 
+  async getUserListByName(name) {
+    console.log('getting user by name...');
+    const response = await this.dataController
+      .get(this.urlBase + '/search/' + name)
+      .then(result => {
+        console.log('userList:' + JSON.stringify(result));
+        return result
+      });
+    return response.data;
+  }
+
   async getUserByID(userID) {
     console.log('getting user by id...');
     const response = await this.dataController
