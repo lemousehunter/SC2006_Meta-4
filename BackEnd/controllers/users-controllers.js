@@ -206,9 +206,17 @@ const deleteUser = async (req, res) => {
 
 //display user posts
 const displayUserPosts = async (req, res) => {
+  const { category } = req.query;
   const userPosts = await Post.find({ listedBy: req.params.userid })
     .populate("category")
     .sort({ date: -1 });
+
+  if (category){
+    userPosts = await userPosts.filter((user) => {
+      return user.category && user.category.id === category;
+    });
+  }
+
   if (!userPosts) {
     res.status(500).json({ success: false });
   }

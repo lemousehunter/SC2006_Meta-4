@@ -292,25 +292,17 @@ const getUserPosts = async (req, res) => {
 };
 
 // Search posts
-const searchPosts = async (req, res, next) => {
+const searchPosts = async (req, res) => {
   const { name } = req.params;
-  const { category, listedBy } = req.query;
+    const { category} = req.query;
 
   let data;
   try {
     const filter = new RegExp(name, "i");
-    const categoryFilter = category
-      ? mongoose.Types.ObjectId(category)
-      : undefined;
-    const listedByFilter = listedBy
-      ? { $regex: listedBy, $options: "i" }
-      : undefined;
 
     data = await Post.find({
       $or: [
         { itemName: filter },
-        { category: categoryFilter },
-        { listedBy: listedByFilter },
       ],
     })
       .populate("category")
@@ -320,6 +312,13 @@ const searchPosts = async (req, res, next) => {
       .status(500)
       .send({ message: "Could not find the specified post." });
   }
+
+  if (category){
+    data = await data.filter((user) => {
+      return user.category && user.category.id === category;
+    });
+  }
+
   res.status(201).send(data);
 };
 
