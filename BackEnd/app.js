@@ -9,7 +9,6 @@ const errorHandler = require("./helpers/error-handler");
 const io = require("socket.io");
 //change the database URL in the config file
 const { mongoUri } = require("./helpers/config");
-const path = require("path");
 
 app.use(cors());
 app.options("*", cors());
@@ -18,10 +17,7 @@ app.options("*", cors());
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authJwt());
-app.use(
-  "/public/uploads",
-  express.static(path.join(__dirname, "/public/uploads"))
-);
+app.use("/public/uploads", express.static( path.join(__dirname , "/public/uploads")));
 app.use(errorHandler);
 
 //Routes
