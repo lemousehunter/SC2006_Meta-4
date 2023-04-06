@@ -9,6 +9,7 @@ const errorHandler = require("./helpers/error-handler");
 const io = require("socket.io");
 //change the database URL in the config file
 const { mongoUri } = require("./helpers/config");
+const path = require("path");
 
 app.use(cors());
 app.options("*", cors());
@@ -17,7 +18,10 @@ app.options("*", cors());
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authJwt());
-app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
+app.use(
+  "/public/uploads",
+  express.static(path.join(__dirname, "/public/uploads"))
+);
 app.use(errorHandler);
 
 //Routes
@@ -36,7 +40,7 @@ app.use(`${api}/posts`, postsRoutes);
 app.use(`${api}/users`, usersRoutes);
 //app.use(`${api}/pins`, pinsRoutes);
 app.use(`${api}/chat`, chatRoutes);
-app.use(`${api}/searchall`, searchAllRoutes);;
+app.use(`${api}/searchall`, searchAllRoutes);
 app.use(`${api}/reports`, reportRoutes);
 
 //Database
@@ -54,11 +58,10 @@ app.use(`${api}/reports`, reportRoutes);
 //   });
 
 mongoose
-  .connect(
-    "mongodb+srv://sc2006ntu:fksc2006@lostnfounddb.8cmjwja.mongodb.net/?retryWrites=true&w=majority"
-  )
+  .connect(mongoUri)
   .then(() => {
     console.log("Database Connection is ready...");
+    console.log(__dirname);
     app.listen(3000);
   })
   .catch((err) => {
