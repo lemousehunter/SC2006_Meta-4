@@ -3,8 +3,7 @@ const { Post } = require("../models/post");
 const Pin = require("../models/pinmodel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const HttpError = require("../models/http-error");
-const { Report } = require("../models/report");
+
 
 //get single user by ID
 const getUserId = async (req, res, next) => {
@@ -183,14 +182,7 @@ const deleteUser = async (req, res) => {
         if (!post) {
           return res
             .status(404)
-            .json({ success: false, message: "post not found" });
-        }
-      });
-      Pin.findOneAndDelete({ postid: delpostid }).then((pin) => {
-        if (!pin) {
-          return res
-            .status(404)
-            .json({ success: false, message: "pin not found" });
+            .json({ success: false, message: "user not found" });
         }
       });
     }
@@ -234,14 +226,36 @@ const reportby = user.reportedOthers;
   res.send([reportAgainst,reportby]);
 };
 
+//display resolved post for each user
+const displayResolvedPosts = async (req, res) => {
+  const resolvedPost = await Post.find({ listedby:req.params.id , isResolved: "True" });
+  if (!resolvedPost) {
+    res.status(500).json({ success: false });
+  }
+  res.send(resolvedPost);
+};
+
+const displayFoundPosts = async(req,res)=>{
+  const foundPost = await Post.find({finder:req.params.id});
+    if (!foundPost) {
+      res.status(500).json({ success: false });
+    }
+    res.send(foundPost);
+
+}
+
 module.exports = {
   getUserId,
   getUserList,
   registerUser,
-  loginUser,logoutUser,
+  loginUser,
+  logoutUser,
   updateUser,
   editCreditScore,
   findUserByName,
   displayUserPosts,
-  deleteUser,displayUserReports
+  deleteUser,
+  displayUserReports,
+  displayResolvedPosts,
+  displayFoundPosts,
 };

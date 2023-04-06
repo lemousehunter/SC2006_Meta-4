@@ -10,6 +10,8 @@ const {
   displayUserPosts,
   deleteUser,
   displayUserReports,
+  displayResolvedPosts,
+  displayFoundPosts,
 } = require("../controllers/users-controllers");
 const express = require("express");
 const router = express.Router();
@@ -46,5 +48,12 @@ router.get("/userposts/:userid", displayUserPosts);
 
 //display user reports
 router.get("/userreports/:id", displayUserReports);
+
+//display users resolved posts 
+router.get("/resolvedposts/:id", displayResolvedPosts);
+
+//display users found posts
+router.get("/foundposts/:id",displayFoundPosts);
+
 
 module.exports = router;
