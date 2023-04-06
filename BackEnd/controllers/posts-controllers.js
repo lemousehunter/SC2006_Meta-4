@@ -78,6 +78,7 @@ const uploadPost = async (req, res) => {
     latitude: LATITUDE,
     longitude: LONGITUDE,
   });
+  console.log(imagePaths);
   if (post.isResolved === true) {
     return res.status(404).send({ message: "the post cannot be created" });
   }
@@ -294,16 +295,14 @@ const getUserPosts = async (req, res) => {
 // Search posts
 const searchPosts = async (req, res) => {
   const { name } = req.params;
-    const { category} = req.query;
+  const { category } = req.query;
 
   let data;
   try {
     const filter = new RegExp(name, "i");
 
     data = await Post.find({
-      $or: [
-        { itemName: filter },
-      ],
+      $or: [{ itemName: filter }],
     })
       .populate("category")
       .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
@@ -313,7 +312,7 @@ const searchPosts = async (req, res) => {
       .send({ message: "Could not find the specified post." });
   }
 
-  if (category){
+  if (category) {
     data = await data.filter((user) => {
       return user.category && user.category.id === category;
     });
