@@ -42,7 +42,7 @@ const userSchema = mongoose.Schema({
       ref: "Report",
     },
   ],
-  foundPosts:[
+  foundPosts: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",

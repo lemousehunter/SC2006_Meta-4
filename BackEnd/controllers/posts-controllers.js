@@ -1,9 +1,11 @@
 const { Post } = require("../models/post");
 const { Category } = require("../models/category");
+const { Request } = require("../models/request");
 const mongoose = require("mongoose");
 const { User } = require("../models/user");
 const axios = require("axios");
 const { onemapApiKey } = require("../helpers/config");
+const { request } = require("express");
 
 // show all posts or filtered by category posts
 const showAllPosts = async (req, res) => {
@@ -136,7 +138,18 @@ const updatePostById = async (req, res) => {
     return res.status(400).json({ message: "Location not found." });
   }
   const { LATITUDE, LONGITUDE } = response.data.results[0];
-  let isResolved = req.body.isResolved;
+  let isResolved;
+  //find the request that has been verified ie, state = 1
+  let request = await Request.find({ post: req.params.id, state: 1 });
+  if (!request) {
+    isResolved = false;
+  } else {
+    if (request.state === 1) {
+      isResolved = true;
+    } else {
+      isResolved = false;
+    }
+  }
   if (isResolved === true) {
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.id,
@@ -152,7 +165,7 @@ const updatePostById = async (req, res) => {
         latitude: LATITUDE,
         longitude: LONGITUDE,
         isResolved: isResolved,
-        finder: req.body.finder,
+        finder: request.sender,
       },
       { new: true }
     );
@@ -224,7 +237,16 @@ const deletePostById = async (req, res, next) => {
   const index = postList.indexOf(req.params.id);
   user.posts = postList.splice(index, 1);
   user.save();
-
+  request = await Request.find({ post: req.params.id });
+  if(request){
+      Request.deleteMany({ post: req.params.id }).then((request) => {
+        if (request) {
+          console.log("requests tagged to this post deleted");
+        } else {
+          console.log("no request found");
+        }s
+      });
+  }
   Post.findByIdAndRemove(req.params.id).then((post) => {
     if (post) {
       return res

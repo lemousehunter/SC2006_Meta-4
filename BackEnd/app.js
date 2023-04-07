@@ -28,6 +28,7 @@ const usersRoutes = require("./routes/users");
 const chatRoutes = require("./routes/chat");
 const searchAllRoutes = require("./routes/search-all");
 const reportRoutes = require("./routes/report");
+const requestRoutes = require("./routes/request");
 
 const api = process.env.API_URL;
 
@@ -38,6 +39,7 @@ app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/chat`, chatRoutes);
 app.use(`${api}/searchall`, searchAllRoutes);
 app.use(`${api}/reports`, reportRoutes);
+app.use(`${api}/requests`, requestRoutes);
 
 //Database
 // mongoose

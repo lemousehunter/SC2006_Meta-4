@@ -1,6 +1,6 @@
 const { User } = require("../models/user");
 const { Post } = require("../models/post");
-const Pin = require("../models/pinmodel");
+const { Request } = require("../models/request");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -266,6 +266,43 @@ const displayFoundPosts = async (req, res) => {
   res.send(foundPost);
 };
 
+//get all requests by a user
+const displayAllUserRequests = async (req, res) => {
+  const request = await Request.find({
+    $or: [{ sender: req.params.id }, { recipient: req.params.id }],
+  })
+    .populate("sender")
+    .populate("recipient")
+    .populate("post");
+  if (!request) {
+    res.status(500).json({ success: false });
+  }
+  res.send(request);
+};
+
+//display requests user made
+const displayUserMadeRequests = async (req, res) => {
+  const request = await Request.find({ sender: req.params.id })
+    .populate("sender")
+    .populate("recipient")
+    .populate("post");
+  if (!request) {
+    res.status(500).json({ success: false });
+  }
+  res.send(request);
+};
+
+const displayUserRecievedRequests = async (req, res) => {
+  const request = await Request.find({ recipient: req.params.id })
+    .populate("sender")
+    .populate("recipient")
+    .populate("post");
+  if (!request) {
+    res.status(500).json({ success: false });
+  }
+  res.send(request);
+};
+
 module.exports = {
   getUserId,
   getUserList,
@@ -280,4 +317,7 @@ module.exports = {
   displayUserReports,
   displayResolvedPosts,
   displayFoundPosts,
+  displayAllUserRequests,
+  displayUserRecievedRequests,
+  displayUserMadeRequests,
 };
