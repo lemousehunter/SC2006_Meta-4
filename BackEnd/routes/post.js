@@ -15,7 +15,6 @@ const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 
-
 const FILE_TYPE_MAP = {
   "image/png": "png",
   "image/jpeg": "jpeg",
@@ -48,7 +47,7 @@ router.get(`/`, showAllPosts);
 router.get("/:id", getPostById);
 
 // upload new post
-router.post(`/`,uploadOptions.array("images", 4), uploadPost);
+router.post(`/`, uploadOptions.array("images", 4), uploadPost);
 
 //update post found by id and if post has been resolved, remove pin from map
 //keep resolved post for history

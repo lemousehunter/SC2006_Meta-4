@@ -25,9 +25,11 @@ const postSchema = mongoose.Schema(
       type: String,
       required: [true, ""],
     },
-    isResolved: {
-      type: Boolean,
-      required: [true, ""],
+    latitude: {
+      type: Number,
+    },
+    longitude: {
+      type: Number,
     },
     listedBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -47,6 +49,10 @@ const postSchema = mongoose.Schema(
     itemDescription: {
       type: String,
       required: [true, ""],
+    },
+    finder: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {

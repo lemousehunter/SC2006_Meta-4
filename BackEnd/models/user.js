@@ -42,6 +42,12 @@ const userSchema = mongoose.Schema({
       ref: "Report",
     },
   ],
+  foundPosts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
 });
 
 userSchema.virtual("id").get(function () {

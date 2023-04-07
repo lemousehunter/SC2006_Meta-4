@@ -24,20 +24,22 @@ app.use(errorHandler);
 const categoriesRoutes = require("./routes/categories");
 const postsRoutes = require("./routes/post");
 const usersRoutes = require("./routes/users");
-const pinsRoutes = require("./routes/Pins");
+//const pinsRoutes = require("./routes/Pins");
 const chatRoutes = require("./routes/chat");
 const searchAllRoutes = require("./routes/search-all");
 const reportRoutes = require("./routes/report");
+const requestRoutes = require("./routes/request");
 
 const api = process.env.API_URL;
 
 app.use(`${api}/categories`, categoriesRoutes);
 app.use(`${api}/posts`, postsRoutes);
 app.use(`${api}/users`, usersRoutes);
-app.use(`${api}/pins`, pinsRoutes);
+//app.use(`${api}/pins`, pinsRoutes);
 app.use(`${api}/chat`, chatRoutes);
-app.use(`${api}/searchall`, searchAllRoutes);;
+app.use(`${api}/searchall`, searchAllRoutes);
 app.use(`${api}/reports`, reportRoutes);
+app.use(`${api}/requests`, requestRoutes);
 
 //Database
 // mongoose
@@ -54,11 +56,10 @@ app.use(`${api}/reports`, reportRoutes);
 //   });
 
 mongoose
-  .connect(
-    "mongodb+srv://sc2006ntu:fksc2006@lostnfounddb.8cmjwja.mongodb.net/?retryWrites=true&w=majority"
-  )
+  .connect(mongoUri)
   .then(() => {
     console.log("Database Connection is ready...");
+    console.log(__dirname);
     app.listen(3000);
   })
   .catch((err) => {

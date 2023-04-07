@@ -1,6 +1,5 @@
 const { Report } = require("../models/report");
 const mongoose = require("mongoose");
-const HttpError = require("../models/http-error");
 const { User } = require("../models/user");
 
 // show all reports
