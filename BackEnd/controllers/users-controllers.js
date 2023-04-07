@@ -173,20 +173,20 @@ const deleteUser = async (req, res) => {
   if (!user) {
     return res.status(400).send("invalid user");
   }
-  let postList = user.posts;
-  if (postList.length > 0) {
-    for (let index = 0; index < postList.length; index++) {
-      const delpostid = postList[index].toString();
-      console.log(delpostid);
-      Post.findByIdAndRemove(delpostid).then((post) => {
-        if (!post) {
-          return res
-            .status(404)
-            .json({ success: false, message: "user not found" });
-        }
-      });
-    }
-  }
+  // let postList = user.posts;
+  // if (postList.length > 0) {
+  //   for (let index = 0; index < postList.length; index++) {
+  //     const delpostid = postList[index].toString();
+  //     console.log(delpostid);
+  //     Post.findByIdAndRemove(delpostid).then((post) => {
+  //       if (!post) {
+  //         return res
+  //           .status(404)
+  //           .json({ success: false, message: "user not found" });
+  //       }
+  //     });
+  //   }
+  // }
   User.findByIdAndRemove(req.params.id)
     .then((user) => {
       if (user) {
