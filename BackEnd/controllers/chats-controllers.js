@@ -19,7 +19,7 @@ const createChat = async (req, res) => {
 
 const getChat = (req, res) => {
   const { senderId, receiverId } = req.query;
-
+ 
   Chat.find({
     $or: [
       { senderId, receiverId },
