@@ -43,6 +43,7 @@ const makeNewRequest = async (req, res) => {
       .status(500)
       .send({ message: "Creating request failed, please retry." });
   }
+  res.send(request);
 };
 
 //editing request ie changing the state
