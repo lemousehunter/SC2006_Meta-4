@@ -16,6 +16,7 @@ export default class AccountScreen extends BaseLoggedInScreen {
       email: '',
       socialRep: '',
       numPosts: '',
+      rerender: '',
     };
     this.createStylesheet();
   }
@@ -45,9 +46,10 @@ export default class AccountScreen extends BaseLoggedInScreen {
     });
   }
 
-  async onFocus() {
+  onFocus = async () => {
     //console.log('accountProps:' this.props)
     //console.log('accountUser:', this.props.user);
+    console.log('focused on accounts page');
     await this.getLoginController()
       .getUserByID(
         !this.props.route.params.user
@@ -77,9 +79,11 @@ export default class AccountScreen extends BaseLoggedInScreen {
   }
 
   async componentDidMount() {
+    console.log('component did mount');
     this.focusSub = this.props.navigation.addListener('focus', () => {
       this.onFocus();
     });
+    await this.onFocus();
   }
 
   getPostsStyle() {
@@ -94,6 +98,16 @@ export default class AccountScreen extends BaseLoggedInScreen {
     console.log('postID____:', postID);
     this.nav('CreatePost', {postID: postID});
   };
+
+  // del = postID => {
+  //   console.log('deleting...');
+  //   this.getPostsController()
+  //     .deletePost(postID)
+  //     .then(res => {
+  //       console.log('deleteRes:', JSON.stringify(res));
+  //       return res;
+  //     });
+  // };
 
   render() {
     // console.log('width' + this.getWinW());
@@ -141,6 +155,7 @@ export default class AccountScreen extends BaseLoggedInScreen {
             renderItem={({item}) => (
               <PostItem
                 _data={item}
+                fn={this.onFocus}
                 edit={this.edit}
                 postStyle={this.getPostsStyle()}
                 currentUser={this.getUser()}

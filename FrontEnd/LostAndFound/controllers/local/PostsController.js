@@ -204,6 +204,13 @@ export default class PostsController extends Component {
   //   return Post;
   // }
 
+  async deletePost(postID) {
+    console.log('deleting....');
+    return await this.dataController.del('posts/' + postID).then(res => {
+      return res.data;
+    });
+  }
+
   async createPost(
     photos,
     photoTypes,
@@ -231,9 +238,13 @@ export default class PostsController extends Component {
         formdata.append('images', img);
       }
     }
+    console.log('getDate:');
+    console.log(date.getDate());
+    console.log('getTime:');
+    console.log(date.getTime());
     formdata.append('location', location);
     formdata.append('listedBy', listedBy);
-    formdata.append('date', date.getDate());
+    formdata.append('date', date.toDateString());
     formdata.append('time', date.getTime());
     formdata.append('itemDescription', desc);
     formdata.append('category', categoryID);

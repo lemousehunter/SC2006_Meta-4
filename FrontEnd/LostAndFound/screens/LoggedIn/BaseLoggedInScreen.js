@@ -17,9 +17,9 @@ export default class BaseLoggedInScreen extends BaseScreen {
     this.navigate('PreLoginHomepage', this.getParams());
   }
 
-  getPostsController() {
+  getPostsController = () => {
     return this.getControllers().postsController;
-  }
+  };
 
   nav = (tabScreenName, params) => {
     this.props.navigation.jumpTo(tabScreenName, params);

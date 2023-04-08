@@ -48,9 +48,9 @@ export default class extends Component {
     return this.context.params;
   }
 
-  getControllers() {
+  getControllers = () => {
     return this.context.controllers;
-  }
+  };
 
   getLoginController() {
     console.log('loginController:');

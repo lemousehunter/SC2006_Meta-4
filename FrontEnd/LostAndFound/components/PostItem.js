@@ -10,7 +10,6 @@ import {
   MenuTrigger,
   renderers,
 } from 'react-native-popup-menu';
-import CustomRenderer from './reusable/Neuromorphic/Dropdown/CustomRenderer';
 
 export default class PostItem extends React.Component {
   constructor(props) {
@@ -23,13 +22,11 @@ export default class PostItem extends React.Component {
     this.item = this.props._data.item;
     this.type = this.props._data.type;
     this.loc = this.props._data.location;
-    this.edit = this.props.edit;
     this.timing = this.props._data.timing;
     this.postID = this.props._data.postID;
     this.image = this.props._data.image;
     this.category = this.props._data.category;
     this.coordinates = this.props._data.coordinates;
-    this.nav = this.props.nav;
     this.getStyleSheet();
     this.getNSettings();
     console.log('imageURI:' + this.image);
@@ -203,7 +200,13 @@ export default class PostItem extends React.Component {
             }}
             text="Edit"
           />
-          <MenuOption onSelect={() => alert('Delete')}>
+          <MenuOption
+            onSelect={async () => {
+              await this.props.postC.deletePost(this.postID).then(res => {
+                console.log('DelRes:' + JSON.stringify(res));
+                this.props.fn();
+              });
+            }}>
             <Text style={{color: 'red', fontFamily: 'Nunito-Light'}}>
               Delete
             </Text>

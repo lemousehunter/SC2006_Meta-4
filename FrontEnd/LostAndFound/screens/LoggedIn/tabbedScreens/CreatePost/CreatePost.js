@@ -261,6 +261,7 @@ export default class CreatePost extends BaseLoggedInScreen {
         console.log('createPostRes:' + JSON.stringify(res));
         return res;
       });
+    this.nav('Account');
   };
 
   validateEdit = () => {
@@ -287,10 +288,6 @@ export default class CreatePost extends BaseLoggedInScreen {
     console.log('navProps:' + JSON.stringify(this.props.navigation));
     console.log('controllers:' + JSON.stringify(this.getControllers()));
     console.log('postID: ' + this.postID);
-    console.log(
-      'categories: ' +
-        this.getControllers().categoriesController.getCategories(),
-    );
     await this.getControllers()
       .categoriesController.getCategories()
       .then(categories =>
@@ -301,7 +298,7 @@ export default class CreatePost extends BaseLoggedInScreen {
 
     if (!(this.postID === undefined)) {
       console.log('edit mode');
-      this.setPost();
+      await this.setPost();
     } else {
     }
   }
@@ -444,12 +441,8 @@ export default class CreatePost extends BaseLoggedInScreen {
                 <NButton
                   style={{flex: 1}}
                   settings={this.nSettings.postBtn}
-                  onPress={
-                    this.postID === undefined
-                      ? this.validatePost
-                      : this.validateEdit
-                  }
-                  label={this.postID === undefined ? 'Post' : 'Save'}
+                  onPress={!this.postID ? this.validatePost : this.validateEdit}
+                  label={!this.postID ? 'Post' : 'Save'}
                   fontFamily={this.getButtonFont()}
                   textColor={this.getSecondaryColor()}
                 />
