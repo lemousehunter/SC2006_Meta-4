@@ -57,7 +57,7 @@ const uploadReport = async (req, res) => {
     let reportedOthersList = Sender.reportedOthers;
     reportedOthersList.push(report.id);
     Sender.reportedOthers = reportedOthersList;
-    Sender.save();
+    Sender = await Sender.save();
     let Recipient = await User.findById(report.recipient);
     if (!Sender) {
       return res.status(404).send({ message: "the recipient cannot be found" });
@@ -113,28 +113,32 @@ const deleteReportById = async (req, res, next) => {
   try {
     report = await Report.findById(req.params.id);
   } catch (err) {
-    return res.status(500).send({message:"no report found, please retry."});
+    return res.status(500).send({ message: "no report found, please retry." });
   }
   let Sender;
   try {
     Sender = await User.findById(report.sender);
   } catch (err) {
-    return res.status(500).send({message:"no sender found, please retry."});
+    return res.status(500).send({ message: "no sender found, please retry." });
   }
   let reportedOthersList = Sender.reportedOthers;
   let i = reportedOthersList.indexOf(req.params.id);
-  Sender.reportedOthers = reportedOthersList.splice(i, 1);
-  Sender.save();
+  let removed = reportedOthersList.splice(i, 1);
+  Sender.reportedOthers = reportedOthersList;
+  Sender = await Sender.save();
 
   let Recipient;
   try {
     Recipient = await User.findById(report.recipient);
   } catch (err) {
-    return res.status(500).send({message:"no recipient found, please retry."});
+    return res
+      .status(500)
+      .send({ message: "no recipient found, please retry." });
   }
   let gotReportedList = Recipient.gotReported;
   let j = gotReportedList.indexOf(req.params.id);
-  Recipient.gotReported = gotReportedList.splice(j, 1);
+  let rremoved = gotReportedList.splice(j, 1);
+  Recipient.gotReported = gotReportedList;
   Recipient.save();
 
   Report.findByIdAndRemove(req.params.id).then((report) => {

@@ -55,11 +55,11 @@ router.put("/:id", uploadOptions.array("images", 4), updatePostById);
 
 //delete post found by id
 router.delete("/:id", deletePostById);
- 
+
 //get post counts
 router.get("/get/count", getPostCount);
 
-//display  unresolved posts 
+//display  unresolved posts
 router.get("/get/UrgentPosts", getUnresolvedPosts);
 
 //display found posts
