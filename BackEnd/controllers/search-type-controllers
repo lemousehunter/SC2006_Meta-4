@@ -35,6 +35,7 @@ const search =  async (req, res) => {
     // console.log("searchType: " + searchType);
 
     let postData = [];
+    let users;
 
     try {
         const filter = new RegExp(name, 'i');    
@@ -54,33 +55,20 @@ const search =  async (req, res) => {
       }
       else if ( searchType === "User" ) {
         console.log("User is being used to find");
-        /*const users = await User.find({ name: filter });
 
-        if (!users) {
-            console.log("No such user");
-            res.status(500).json({ success: false });
-        }
-        
-        let index = 0;
-
-        users.forEach(function(user) {
-            useridArray.push(users.id);
-            console.log("userid: " + users.id);
-            console.log("userid: " + useridArray[index]);
-            index++;
+        users = await User.find({
+            $or: [
+              { name: filter },
+            ]
         });
 
-        //useridArray = users.map(user => user.id);
-        //useridArray = Array.from(users).map(user => user.id);
-        //useridArray.forEach(user => console.log(user));
+        if (!users) return;
 
-        let catfilter = {};
-        if (category) {
-            catfilter = { category: category.split(",") };
-        }*/
-        postData = await Post.find({}, {listedBy: { name: name }})
+        postData = await Post.find({}, { listedBy: { name: filter } })
             .populate("category")
             .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
+
+        console.log(postData);
 
         if (!postData) {
             res.status(500).json({ success: false });
@@ -99,6 +87,11 @@ const search =  async (req, res) => {
         postData = postData.filter((item) => {
           return item.category && item.category.id === category;
         });
+    }
+
+    if (!users) {
+        res.status(201).send([]);
+        return;
     }
 
     res.status(201).send(postData);
