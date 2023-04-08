@@ -52,17 +52,18 @@ const search =  async (req, res) => {
         })
         .populate("category")
         .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
+        console.log(postData);
       }
       else if ( searchType === "User" ) {
         console.log("User is being used to find");
 
-        users = await User.find({
+        /*users = await User.find({
             $or: [
               { name: filter },
             ]
         });
 
-        if (!users) return;
+        if (!users) return;*/
 
         postData = await Post.find({}, { listedBy: { name: filter } })
             .populate("category")
@@ -89,10 +90,10 @@ const search =  async (req, res) => {
         });
     }
 
-    if (!users) {
+    /*if (!users) {
         res.status(201).send([]);
         return;
-    }
+    }*/
 
     res.status(201).send(postData);
   }; 

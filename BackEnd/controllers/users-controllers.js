@@ -34,7 +34,7 @@ const getUserList = async (req, res, next) => {
   } catch (err) {
     return res
       .status(500)
-      .send({ message: "Fetching user list failed, please retry." }); 
+      .send({ message: "Fetching user list failed, please retry." });  
   }
   res.send(userList);
 };
