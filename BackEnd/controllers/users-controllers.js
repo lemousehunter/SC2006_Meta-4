@@ -211,7 +211,7 @@ const deleteUser = async (req, res) => {
       }
     })
     .catch((err) => {
-      return res.status(400).json({ success: false, error: err });
+      return res.status(400).json({ success: false, error: err });  
     });
 };
 
@@ -222,7 +222,7 @@ const displayUserPosts = async (req, res) => {
 
   const filter = new RegExp(userid, 'i');
 
-  const userPosts = await Post.find({ listedby: {name: filter} })
+  const userPosts = await Post.find({ listedby: {name: filter} })  
     .populate("category")
     .populate("listedBy")
     .sort({ date: -1 });

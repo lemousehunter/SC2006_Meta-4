@@ -54,7 +54,7 @@ const search =  async (req, res) => {
       }
       else if ( searchType === "User" ) {
         console.log("User is being used to find");
-        const users = await User.find({ name: filter });
+        /*const users = await User.find({ name: filter });
 
         if (!users) {
             console.log("No such user");
@@ -77,17 +77,17 @@ const search =  async (req, res) => {
         let catfilter = {};
         if (category) {
             catfilter = { category: category.split(",") };
-        }
-        postData = await Post.find(catfilter)
+        }*/
+        postData = await Post.find({}, {listedBy: { name: name }})
             .populate("category")
             .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
 
         if (!postData) {
             res.status(500).json({ success: false });
         }
-        postData = postData.filter((item) => {
+        /*postData = postData.filter((item) => {
             return item.listedBy &&  item.listedBy.id && useridArray.includes(item.listedBy.id);
-        })
+        })*/
 
       }
     } catch (err) {
