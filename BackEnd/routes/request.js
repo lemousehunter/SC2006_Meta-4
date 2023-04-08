@@ -3,6 +3,7 @@ const {
   updateRequestStatus,
   displayAllRequests,
   makeNewRequest,
+  validateUser,
 } = require("../controllers/requests-controller");
 
 const express = require("express");
@@ -19,5 +20,8 @@ router.put("/:id", updateRequestStatus);
 
 //delete request params is request id
 router.delete("/:id", deleteRequest);
+
+//validate if current session user has send request to this post, params is post id
+router.get("/validate/:id", validateUser);
 
 module.exports = router;

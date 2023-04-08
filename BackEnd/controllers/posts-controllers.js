@@ -154,14 +154,14 @@ const updatePostById = async (req, res) => {
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.id,
       {
-        itemName: req.body.itemName,
-        isLost: req.body.isLost,
+        itemName: post.itemName,
+        isLost: post.isLost,
         location: location,
-        listedBy: req.body.listedBy,
-        date: req.body.date,
-        time: req.body.time,
-        itemDescription: req.body.itemDescription,
-        category: req.body.category,
+        listedBy: post.listedBy,
+        date: post.date,
+        time: post.time,
+        itemDescription: post.itemDescription,
+        category: post.category,
         latitude: LATITUDE,
         longitude: LONGITUDE,
         isResolved: isResolved,
@@ -228,7 +228,7 @@ const deletePostById = async (req, res, next) => {
   }
 
   let user;
-  
+
   try {
     user = await User.findById(post.listedBy);
   } catch (err) {
@@ -334,7 +334,7 @@ const searchPosts = async (req, res) => {
       $or: [{ itemName: filter }],
     })
       .populate("category")
-      .populate({ path: "listedBy", select: { name: 1, phone: 1 } });   
+      .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
   } catch (err) {
     return res
       .status(500)
