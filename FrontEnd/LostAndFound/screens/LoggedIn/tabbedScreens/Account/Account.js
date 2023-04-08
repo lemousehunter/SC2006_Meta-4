@@ -1,9 +1,11 @@
-import {FlatList, Text, View} from 'react-native';
+import {Button, FlatList, Text, View} from 'react-native';
 import {StyleSheet} from 'react-native';
 import React from 'react';
 import ProfileCard from './ProfileCard';
 import PostItem from '../../../../components/PostItem';
 import BaseLoggedInScreen from '../../BaseLoggedInScreen';
+import {AppContext} from '../../../../contexts/Contexts';
+import Geolocation from '@react-native-community/geolocation';
 
 export default class AccountScreen extends BaseLoggedInScreen {
   constructor(props) {
@@ -17,6 +19,8 @@ export default class AccountScreen extends BaseLoggedInScreen {
     };
     this.createStylesheet();
   }
+
+  static contextType = AppContext;
 
   createStylesheet() {
     this.styles = StyleSheet.create({
@@ -41,9 +45,15 @@ export default class AccountScreen extends BaseLoggedInScreen {
     });
   }
 
-  async componentDidMount() {
+  async onFocus() {
+    //console.log('accountProps:' this.props)
+    //console.log('accountUser:', this.props.user);
     await this.getLoginController()
-      .getUserByID(this.getUser())
+      .getUserByID(
+        !this.props.route.params.user
+          ? this.getUser()
+          : this.props.route.params.user,
+      )
       .then(user => {
         console.log('getUserByID:' + JSON.stringify(user));
         this.setState({
@@ -54,12 +64,22 @@ export default class AccountScreen extends BaseLoggedInScreen {
         });
       });
     await this.getPostsController()
-      .getPostItemsByUser(this.getUser())
+      .getPostItemsByUserID(
+        !this.props.route.params.user
+          ? this.getUser()
+          : this.props.route.params.user,
+      )
       .then(res => {
         this.setState({postData: res});
       });
-    console.log('setUserState');
-    console.log('name:' + this.state.name);
+    console.log('setPostsData');
+    console.log('setPostsData:' + JSON.stringify(this.state.postData));
+  }
+
+  async componentDidMount() {
+    this.focusSub = this.props.navigation.addListener('focus', () => {
+      this.onFocus();
+    });
   }
 
   getPostsStyle() {
@@ -71,21 +91,25 @@ export default class AccountScreen extends BaseLoggedInScreen {
   }
 
   edit = postID => {
+    console.log('postID____:', postID);
     this.nav('CreatePost', {postID: postID});
   };
 
   render() {
-    console.log('width' + this.getWinW());
-    console.log('height' + this.getWinH());
-    console.log('bgColor' + this.getBgColor());
-    console.log('props:' + JSON.stringify(this.props));
-    console.log(
-      'accountLoginController:' + JSON.stringify(this.getLoginController()),
-    );
-    console.log('accountUser:' + this.getUser());
+    // console.log('width' + this.getWinW());
+    // console.log('height' + this.getWinH());
+    // console.log('bgColor' + this.getBgColor());
+    // console.log('props:' + JSON.stringify(this.props));
+    // console.log(
+    //   'accountLoginController:' + JSON.stringify(this.getLoginController()),
+    // );
+    // console.log('postController_' + JSON.stringify(this.getPostsController()));
+    // console.log('accountUser:' + this.getUser());
+    //this.getPostsController().getPostByID('123').then(res => console.log('res_' + res));
     //console.log('data: ' + JSON.stringify(this.getData()));
     return (
       <View style={this.styles.mainContainer}>
+        {/*{<Button style={{flex: 1}} title={'< Back'}/>}*/}
         <View style={this.styles.profileContainer}>
           <ProfileCard
             color={this.getBgColor()}
@@ -119,6 +143,10 @@ export default class AccountScreen extends BaseLoggedInScreen {
                 _data={item}
                 edit={this.edit}
                 postStyle={this.getPostsStyle()}
+                currentUser={this.getUser()}
+                nav={this.getNav()}
+                loginC={this.getLoginController()}
+                postC={this.getPostsController()}
               />
             )}
             ItemSeparatorComponent={() => <View style={{height: 20}} />}

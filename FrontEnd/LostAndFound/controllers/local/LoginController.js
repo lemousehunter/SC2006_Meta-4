@@ -99,7 +99,7 @@ export default class LoginController extends Component {
       .get(this.urlBase + '/search/' + name)
       .then(result => {
         console.log('userList:' + JSON.stringify(result));
-        return result
+        return result;
       });
     return response.data;
   }

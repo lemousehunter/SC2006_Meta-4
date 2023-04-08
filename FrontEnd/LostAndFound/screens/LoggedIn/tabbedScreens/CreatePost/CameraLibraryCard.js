@@ -93,7 +93,7 @@ export default class CameraLibraryCard extends React.Component {
     return (
       <TouchableOpacity onPress={this.onImageLibraryPress}>
         <NCard settings={this.settings}>
-          {this.state.imgUri === null ? (
+          {!this.state.imgUri ? (
             <Image
               source={require('../../../../assets/icons/post.png')}
               style={this.styles.placeholder}

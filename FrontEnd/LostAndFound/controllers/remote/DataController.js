@@ -41,9 +41,10 @@ export default class DataController extends React.Component {
           Authorization: 'Bearer ' + this.sessionToken,
           Accept: 'application/json',
         },
-        body: JSON.stringify(data),
+        body: data,
       };
-      console.log('req: ' + JSON.stringify(req));
+      console.log('req: ');
+      console.log(req);
 
       console.log('full url is: ' + this.url + route);
       return await fetch(url, req)

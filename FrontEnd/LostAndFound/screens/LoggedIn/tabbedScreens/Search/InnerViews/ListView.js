@@ -14,10 +14,7 @@ export default class ListView extends BaseInnerView {
   constructor(props) {
     super(props);
     this.createStylesheet();
-    this.state = {
-      postList: this.props.route.params.postList,
-    };
-    console.log('route');
+    console.log('test:' + JSON.stringify(this.props.test));
   }
 
   createStylesheet() {
@@ -45,19 +42,24 @@ export default class ListView extends BaseInnerView {
 
   render() {
     console.log('rendered ListView');
-    console.log(this.props.route.params.postList);
+    console.log(JSON.stringify(this.props.route.params));
+    console.log('POSTLIST:', JSON.stringify(this.props.route.params.postLst));
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={this.styles.mainContainer}>
           <FlatList
             contentContainerStyle={{}}
             style={{padding: 10}}
-            data={this.props.route.params.postList}
+            data={this.props.route.params.postLst}
             renderItem={({item}) => (
               <PostItem
                 _data={item}
                 edit={this.edit}
+                currentUser={this.getUser()}
                 postStyle={this.getPostsStyle()}
+                nav={this.getNav()}
+                loginC={this.getLoginController()}
+                postC={this.getPostsController()}
               />
             )}
             ItemSeparatorComponent={() => <View style={{height: 20}} />}

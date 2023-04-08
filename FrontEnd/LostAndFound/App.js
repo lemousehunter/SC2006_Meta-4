@@ -12,6 +12,9 @@ import {MenuProvider} from 'react-native-popup-menu';
 import PostsController from './controllers/local/PostsController';
 import CategoriesController from './controllers/local/CategoriesController';
 import DataController from './controllers/remote/DataController';
+import PostView from './screens/LoggedIn/tabbedScreens/PostView';
+import 'react-native-gesture-handler';
+import Account from './screens/LoggedIn/tabbedScreens/Account/Account'
 
 const Stack = createNativeStackNavigator();
 const winH = Dimensions.get('window').height;
@@ -28,8 +31,8 @@ export default function App() {
   const ControllersContext = ControllerContext;
   const url = 'http://localhost:3000/';
   const dataController = new DataController(url);
-  const postController = new PostsController(dataController);
   const loginController = new LoginController(dataController);
+  const postController = new PostsController(dataController, loginController);
   const categoriesController = new CategoriesController(dataController);
   const controllers = {
     nav: nav,
@@ -54,6 +57,8 @@ export default function App() {
     {name: 'PreLoginHomepage', component: LoginPage},
     {name: 'RegisterPage', component: RegisterPage},
     {name: 'LoggedInScreen', component: LoggedInScreen},
+    {name: 'PostView', component: PostView},
+    {name: 'GenericAccount', component: Account},
   ];
   // const Screens = screenDetails.map(s => {
   //   return (
@@ -88,6 +93,16 @@ export default function App() {
                 <Stack.Screen
                   name={screenDetails[2].name}
                   component={screenDetails[2].component}
+                  initialParams={params}
+                />
+                <Stack.Screen
+                  name={screenDetails[3].name}
+                  component={screenDetails[3].component}
+                  initialParams={params}
+                />
+                <Stack.Screen
+                  name={screenDetails[4].name}
+                  component={screenDetails[4].component}
                   initialParams={params}
                 />
               </Stack.Navigator>

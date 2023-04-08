@@ -5,6 +5,7 @@ import {TextInput, StyleSheet, ScrollView} from 'react-native';
 export default class NTextInput extends Component {
   constructor(props) {
     super(props);
+    this.autocorrect = this.props.autocorrect;
     this.state = {text: '', pressing: false};
     this.props = props;
     this.label = this.props.label;
@@ -56,6 +57,12 @@ export default class NTextInput extends Component {
     this.setState({text: text});
   }
 
+  componentDidMount() {
+    if (this.props.text !== undefined) {
+      this.setState({text: this.props.text});
+    }
+  }
+
   render() {
     //this.settings.innerShadow = !!this.state.pressing;
 
@@ -86,6 +93,7 @@ export default class NTextInput extends Component {
           onChangeText={text => {
             this.setState({text: text});
           }}
+          autoCorrect={this.autocorrect}
           onSubmitEditing={this.onSubmit}
           inputMode={this.inputMode}
           value={this.state.text}

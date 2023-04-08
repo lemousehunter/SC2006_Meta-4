@@ -20,12 +20,23 @@ export default class Search extends BaseLoggedInScreen {
     this.createStylesheet();
     this.getSettings();
     this.searchField = React.createRef(null);
+    this.params = {
+      bgColor: this.getBgColor(),
+      winW: this.getWinW(),
+      winH: this.getWinH(),
+      primaryColor: this.getPrimaryColor(),
+      secondaryColor: this.getSecondaryColor(),
+      callColor: this.getCallColor(),
+      buttonFont: this.getButtonFont(),
+      screenW: this.getWinW(),
+      screenH: this.getWinH() * 0.8,
+    };
     this.state = {
       searchTypes: [
-        {label: 'All', value: 'All'},
+        //{label: 'All', value: 'All'},
         {label: 'User', value: 'User'},
         {label: 'Item', value: 'Item'},
-        {label: 'Location', value: 'Location'},
+        //{label: 'Location', value: 'Location'},
       ],
       viewTypes: [
         {label: 'List', value: 'ListView'},
@@ -37,20 +48,8 @@ export default class Search extends BaseLoggedInScreen {
       ],
       category: 'All',
       viewType: 'ListView',
-      searchType: 'All',
-      postList: [],
-    };
-    this.params = {
-      bgColor: this.getBgColor(),
-      winW: this.getWinW(),
-      winH: this.getWinH(),
-      primaryColor: this.getPrimaryColor(),
-      secondaryColor: this.getSecondaryColor(),
-      callColor: this.getCallColor(),
-      buttonFont: this.getButtonFont(),
-      screenW: this.getWinW(),
-      screenH: this.getWinH() * 0.8,
-      postList: this.state.postList,
+      searchType: 'User',
+      params: {...this.params, postLst: [], searchText: ''},
     };
     this.innerView = React.createRef(null);
   }
@@ -136,49 +135,43 @@ export default class Search extends BaseLoggedInScreen {
     };
   }
 
-  validateSearch = async () => {
-    console.log('viewType is:' + this.state.viewType);
-    if (this.state.viewType === 'ListView') {
-      const searchText = this.searchField.current.getText();
-      const userIDLst = await this.getLoginController()
-        .getUserListByName(searchText)
-        .then(result => {
-          console.log('userListByName:' + JSON.stringify(result));
-          return result;
-        });
-      const postLst = [];
-      for (let i = 0; i < userIDLst.length; i++) {
-        console.log('userID:' + JSON.stringify(userIDLst[i]._id));
-        const posts = await this.getPostsController()
-          .getPostItemsByUser(userIDLst[i]._id)
-          .then(_posts => {
-            console.log('userResponse:' + JSON.stringify(_posts));
-            return _posts;
-          });
-        console.log('userResponse2:' + JSON.stringify(posts));
-        posts.map(_p => postLst.push(_p));
-      }
-      console.log('postLst:' + JSON.stringify(postLst));
-      this.setState({postList: postLst});
-      this.navigate('ListView', {
-        postList: postLst,
-      });
+  // displayCategoryPosts(category) {
+  //   this.state.params.searchText = user;
+  //   this.validateSearch().then();
+  //   this.state.searchType = 'User';
+  //   this.state.category = category;
+  // }
 
-      //   const response = await this.getPostsController(userID)
-      //     .getPostsByUser()
-      //     .then(posts => {
-      //       console.log('userResponse:' + JSON.stringify(posts));
-      //       return posts;
-      //     });
-      //   this.navigate('ListView', {
-      //     postList: response,
-      //   });
-      // } else {
-      //   console.log('loading markers:');
-      //   this.navigate('Map_View', {
-      //     markers: this.getPostsController().getMarkers(),
-      //   });
-      //console.log('searchSubmitted' + userID);
+  validateSearch = async () => {
+    let postLst = [];
+    const searchText = this.searchField.current.getText();
+    console.log('viewType is:' + this.state.viewType);
+    if (this.state.searchType === 'User') {
+      postLst = await this.getPostsController().getPostsFromUser(searchText);
+      console.log('UserPosts__!' + JSON.stringify(postLst));
+    }
+    if (this.state.searchType === 'Item') {
+      postLst = await this.getPostsController()
+        .searchByItemAndCat(searchText, this.state.category)
+        .then(_posts => {
+          console.log('newSearchPosts:' + JSON.stringify(_posts));
+          return _posts;
+        });
+    }
+    console.log('postLst:' + JSON.stringify(postLst));
+    this.setState({
+      params: {
+        ...this.params,
+        postLst: postLst,
+        searchText: searchText,
+      },
+    });
+    console.log('postList___', JSON.stringify(this.state.params.postLst));
+    console.log('before searchText:', searchText);
+    if (this.state.viewType === 'ListView') {
+      this.navigate('ListView', this.state.params);
+    } else {
+      this.navigate('Map_View', this.state.params);
     }
   };
   renderHeader = ({navigation}) => {
@@ -191,6 +184,8 @@ export default class Search extends BaseLoggedInScreen {
             <View style={this.styles.topContainer}>
               <View style={this.styles.topInnerContainer}>
                 <NTextInput
+                  text={this.state.params.searchText}
+                  autocorrect={false}
                   ref={this.searchField}
                   placeholder="Search"
                   settings={this.nSettings.search}
@@ -269,14 +264,21 @@ export default class Search extends BaseLoggedInScreen {
   };
 
   async componentDidMount() {
+    this.focusSub = this.props.navigation.addListener('focus', () => {
+
+    });
     const response = await this.getControllers()
       .categoriesController.getCategories()
       .then(result => {
         console.log('catRes:' + JSON.stringify(result));
         return result;
       });
+    const newCats = [{label: 'All', value: 'All'}];
+    response.map(cat => {
+      newCats.push(cat);
+    });
     this.setState({
-      categories: response,
+      categories: newCats,
     });
   }
 
@@ -293,12 +295,13 @@ export default class Search extends BaseLoggedInScreen {
         <InnerView.Screen
           name="ListView"
           component={ListView}
-          initialParams={this.params}
+          test={'helloWorld'}
+          initialParams={this.state.params}
         />
         <InnerView.Screen
           name="Map_View"
           component={Map_View}
-          initialParams={this.params}
+          initialParams={this.state.params}
         />
       </InnerView.Navigator>
     );

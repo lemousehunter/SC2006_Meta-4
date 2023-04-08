@@ -6,16 +6,9 @@ import Search from '../screens/LoggedIn/tabbedScreens/Search/Search';
 import CreatePost from '../screens/LoggedIn/tabbedScreens/CreatePost/CreatePost';
 import ChatScreen from '../screens/LoggedIn/tabbedScreens/Chat/Chat';
 import AccountScreen from '../screens/LoggedIn/tabbedScreens/Account/Account';
+import PostView from '../screens/LoggedIn/tabbedScreens/PostView';
 
 let Tab = createBottomTabNavigator();
-
-function HS() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
 
 export default class NavBar extends React.Component {
   constructor(props) {

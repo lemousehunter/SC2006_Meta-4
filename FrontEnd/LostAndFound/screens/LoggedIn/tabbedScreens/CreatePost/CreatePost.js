@@ -14,6 +14,7 @@ import AddImageList from './AddImageList';
 import DatePicker from 'react-native-date-picker';
 import NButton from '../../../../components/reusable/Neuromorphic/Buttons/NButton';
 import GetLocation from 'react-native-get-location';
+import moment from 'moment';
 
 export default class CreatePost extends BaseLoggedInScreen {
   constructor(props) {
@@ -197,17 +198,32 @@ export default class CreatePost extends BaseLoggedInScreen {
       });
   }
 
-  setPost() {
+  async setPost() {
     console.log('postC:' + JSON.stringify(this.getPostsController()));
-    const post = this.getPostsController().getPostByID(this.postID);
+    const post = await this.getPostsController()
+      .getPostByID(this.postID)
+      .then(_res => {
+        return _res;
+      });
+    console.log('toSetPost', JSON.stringify(post));
     this.setState({type: post.isLost === 1 ? 'lost' : 'found'});
+    console.log('setting itemName', post.itemName);
     this.item.current.setText(post.itemName);
-    this.desc.current.setText(post.itemDesc);
-    this.setState({category: post.category});
+    console.log('setting itemDescription', post.itemDescription);
+    this.desc.current.setText(post.itemDescription);
+    console.log('setting category', post.category.id);
+    this.setState({category: post.category.id});
+    console.log('setting images', post.images);
     this.addImgList.current.setImageUris(post.images);
-    this.setState({location: post.location});
-    console.log('toSetDate:' + post.datetime);
-    this.setState({date: post.datetime});
+    console.log('setting location', post.location);
+    this.location.current.setText(post.location);
+    console.log('setting date', post.date);
+    let date = new Date(post.date);
+    const time = moment(post.time, 'HH:mm:ss').toDate();
+    console.log('setting time', time);
+    date.setTime(time.getTime());
+    console.log('setting datetime:', date);
+    this.setState({date: date});
   }
 
   validatePost = async () => {
@@ -362,7 +378,6 @@ export default class CreatePost extends BaseLoggedInScreen {
                 <NCard settings={this.nSettings.bottomCard}>
                   <View style={this.styles.datePickerContainer}>
                     <DatePicker
-                      ref={this.datePicker}
                       date={this.state.date}
                       onDateChange={date => this.setState({date: date})}
                     />

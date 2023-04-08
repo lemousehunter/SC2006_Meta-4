@@ -23,7 +23,11 @@ export default class AddImageList extends Component {
   setImageUris(uris) {
     for (let i = 0; i < 4; i++) {
       console.log('setting uris');
-      this.imageRefs[i]._ref.current.setPhotoUri(uris[0]);
+      if (uris[i] !== null) {
+        this.imageRefs[i]._ref.current.setPhotoUri(uris[i]);
+      } else {
+        this.imageRefs[i]._ref.current.setPhotoUri(null);
+      }
     }
   }
 

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import BaseInnerView from './BaseInnerView';
 import Geolocation from '@react-native-community/geolocation';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Callout, Marker} from 'react-native-maps';
 // import { Button } from '@rneui/base';
 
 export default class Map_View extends BaseInnerView {
@@ -116,18 +116,36 @@ export default class Map_View extends BaseInnerView {
 
   renderMarkers() {
     /* Render all the markers from the `markers` state */
-    if (this.props.route.params.markers !== undefined) {
+    if (this.props.route.params.postLst !== undefined) {
       console.log('rendering markers');
-      return this.props.route.params.markers.map((marker, index) => (
+      console.log('mapParams:', JSON.stringify(this.props.route.params));
+      return this.props.route.params.postLst.map((marker, index) => (
         <Marker
           key={index}
-          coordinate={{
-            latitude: marker.latitude,
-            longitude: marker.longitude,
-          }}
-          title={marker.title}
+          coordinate={marker.coordinates}
+          title={marker.name}
           description={marker.description}
-          pinColor="red"
+          pinColor={marker.type === 'Lost' ? 'red' : 'found'}
+          onCalloutPress={async () => {
+            const post = await this.getPostsController()
+              .getPostByID(marker.postID)
+              .then(res => {
+                console.log('PostItemRes:' + JSON.stringify(res));
+                return res;
+              });
+            const data = {
+              images: post.images,
+              date: post.date,
+              categoryID: post.category.id,
+              category: post.category.name,
+              location: post.location,
+              isResolved: post.isResolved,
+              listedBy: post.listedBy,
+              desc: post.itemDescription,
+            };
+            console.log('dataImages:' + JSON.stringify(data.images));
+            this.getNav().navigate('PostView', {data: data});
+          }}
           //onPress={() => navigation.navigate('ScreenName')}
         />
       ));
@@ -155,10 +173,12 @@ export default class Map_View extends BaseInnerView {
               latitude: this.state.location.coords.latitude,
               longitude: this.state.location.coords.longitude,
             }}
-            title="Your location"
+            title="Current location"
             pinColor="blue"
           />
-          <TouchableOpacity style={this.styles.btnContainer} onPress={this.getCurrentLocation}>
+          <TouchableOpacity
+            style={this.styles.btnContainer}
+            onPress={this.getCurrentLocation}>
             <Image
               style={this.styles.icon}
               source={require('../../../../../assets/icons/locationArrow.png')}

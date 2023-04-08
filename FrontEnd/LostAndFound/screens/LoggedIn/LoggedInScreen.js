@@ -15,6 +15,11 @@ export default class LoggedInScreen extends BaseScreen {
       secondaryColor: this.getSecondaryColor(),
       callColor: this.getCallColor(),
       buttonFont: this.getButtonFont(),
+      userName: 'testUserName',
+      location: 'testLoc',
+      category: 'testCat',
+      desc: 'testDesc',
+      date: 'testDate',
     };
   }
 
