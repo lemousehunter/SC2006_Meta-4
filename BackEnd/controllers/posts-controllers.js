@@ -228,6 +228,7 @@ const deletePostById = async (req, res, next) => {
   }
 
   let user;
+  
   try {
     user = await User.findById(post.listedBy);
   } catch (err) {
@@ -235,17 +236,23 @@ const deletePostById = async (req, res, next) => {
   }
   let postList = user.posts;
   const index = postList.indexOf(req.params.id);
-  user.posts = postList.splice(index, 1);
-  user.save();
-  request = await Request.find({ post: req.params.id });
-  if(request){
-      Request.deleteMany({ post: req.params.id }).then((request) => {
-        if (request) {
-          console.log("requests tagged to this post deleted");
-        } else {
-          console.log("no request found");
-        }s
-      });
+  console.log(postList);
+  console.log(index);
+  let removed = postList.splice(index, 1);
+  user.posts = postList;
+  console.log(user.posts);
+  user = await user.save();
+  console.log(user.posts);
+
+  let request = await Request.find({ post: req.params.id });
+  if (request) {
+    Request.deleteMany({ post: req.params.id }).then((request) => {
+      if (request) {
+        console.log("requests tagged to this post deleted");
+      } else {
+        console.log("no request found");
+      }
+    });
   }
   Post.findByIdAndRemove(req.params.id).then((post) => {
     if (post) {
