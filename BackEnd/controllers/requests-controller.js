@@ -1,5 +1,7 @@
 const { Request } = require("../models/request");
 const { Post } = require("../models/post");
+const { User } = require("../models/user");
+const { findById } = require("../models/chat");
 
 //get all request details
 const displayAllRequests = async (req, res) => {
@@ -59,7 +61,7 @@ const updateRequestStatus = async (req, res) => {
       recipient: oldrequest.recipient,
       post: oldrequest.post,
       isLost: oldrequest.isLost,
-      state: req.body.isLost,
+      state: req.body.state,
       date: req.body.date,
     },
     { new: true }
@@ -67,7 +69,53 @@ const updateRequestStatus = async (req, res) => {
   if (!newrequest) {
     return res.status(404).send({ message: "request cannot be updated" });
   }
+  //change state of other requests tagged to the post to be -1
+  if (newrequest.state === 1) {
+    let reqlist = await Request.find({ post: oldrequest.post });
+    for (let index = 0; index < reqlist.length; index++) {
+      const element = reqlist[index];
+      let oldreq = await Request.findById(element);
+      let rejReq = await Request.findByIdAndUpdate(
+        element,
+        {
+          sender: oldreq.sender,
+          recipient: oldreq.recipient,
+          post: oldreq.post,
+          isLost: oldreq.isLost,
+          state: -1,
+          date: oldreq.date,
+        },
+        { new: true }
+      );
+    }
+  }
   res.send(newrequest);
+};
+
+const validateUser = async (req, res) => {
+  let userid = req.body.user;
+  let user = await User.findById(userid);
+  if (!user) {
+    return res.status(500).json({ success: false });
+  }
+  let request = await Request.findById(req.params.id);
+  if (!request) {
+    return res.status(500).json({ success: false });
+  }
+  let postid = request.post;
+  let checkReq = Request.find({ post: postid });
+  if (!checkReq) {
+    return res.status(500).json({ success: false });
+  }
+  let check = false;
+  for (let index = 0; index < checkReq.length; index++) {
+    const element = checkReq[index];
+    let r = await Request.findById(element);
+    if (r.sender === userid) {
+      check = true;
+    }
+  }
+  res.send({ check });
 };
 
 //delete request
@@ -94,4 +142,5 @@ module.exports = {
   updateRequestStatus,
   displayAllRequests,
   makeNewRequest,
+  validateUser,
 };
