@@ -217,22 +217,26 @@ const deleteUser = async (req, res) => {
 
 //display user posts
 const displayUserPosts = async (req, res) => {
+  const { userid } = req.params;
   const { category } = req.query;
-  const userPosts = await Post.find({ listedBy: req.params.userid })
+
+  const filter = new RegExp(userid, 'i');
+
+  const userPosts = await Post.find({ listedby: {name: filter} })
     .populate("category")
     .populate("listedBy")
     .sort({ date: -1 });
 
-  if (category) {
-    userPosts = await userPosts.filter((user) => {
-      return user.category && user.category.id === category;
-    });
-  }
-
   if (!userPosts) {
     res.status(500).json({ success: false });
   }
-  res.send(userPosts);
+
+  let postData;
+  postData = userPosts.filter((item) => {
+    return item.category &&  item.category.name && item.category.name === category;
+  })
+
+  res.send(postData);
 };
 
 const displayUserReports = async (req, res) => {
