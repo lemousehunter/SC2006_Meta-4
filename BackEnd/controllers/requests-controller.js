@@ -98,12 +98,11 @@ const validateUser = async (req, res) => {
   if (!user) {
     return res.status(500).json({ success: false });
   }
-  let request = await Request.findById(req.params.id);
-  if (!request) {
+  let post = await Post.findById(req.params.id);
+  if (!post) {
     return res.status(500).json({ success: false });
   }
-  let postid = request.post;
-  let checkReq = Request.find({ post: postid });
+  let checkReq = Request.find({ post:req.params.id });
   if (!checkReq) {
     return res.status(500).json({ success: false });
   }
