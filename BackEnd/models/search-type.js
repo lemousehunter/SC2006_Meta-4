@@ -1,7 +1,4 @@
-const { Category } = require("../models/category");
 const mongoose = require("mongoose");
-const { User } = require("../models/user");
-const { Post } = require("../models/post");
 
 const searchSchema = mongoose.Schema({
   name: {

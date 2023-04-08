@@ -25,74 +25,84 @@ const getTypesById = async (req, res) => {
   res.status(200).send(category);
 };
 
-// Search both post and user via name (Case sensitive)
-// const search =  async (req, res) => {
-//     const { name } = req.params;
-//     const { category, searchType } = req.query;
+//Search both post and user via name (Case sensitive)
+const search =  async (req, res) => {
+    const { name } = req.params;
+    const { category, searchType } = req.query;
 
-//     console.log("name: " + name);
-//     console.log("category: " + category);
-//     console.log("searchType: " + searchType);
+    // console.log("name: " + name);
+    // console.log("category: " + category);
+    // console.log("searchType: " + searchType);
 
-//     let postData = [];
+    let postData = [];
 
-//     try {
-//         const filter = new RegExp(name, 'i');    
-//         let useridArray = [];   
+    try {
+        const filter = new RegExp(name, 'i');    
+        let useridArray = [];   
 
-//       // trying to find the post specified by the param name
-//       //if ( searchType.name === "Item" ) console.log(searchType.name)
-//       if ( searchType === "Item" ){
+      // trying to find the post specified by the param name
+      if ( searchType === "Item" ){
+        console.log("Item is being used to find");
         
-//         postData = await Post.find({
-//           $or: [
-//             { itemName: filter },
-//           ]
-//         })
-//         .populate({ path: "category", select: { name: 1 } })
-//         .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
-//       }
-//       else if ( searchType === "User" ) {
-//         const users = await User.find({ name: filter })
-//           .populate("category")
-//           .populate("listedBy")
-//           .sort({ date: -1 });
+        postData = await Post.find({
+          $or: [
+            { itemName: filter },
+          ]
+        })
+        .populate("category")
+        .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
+      }
+      else if ( searchType === "User" ) {
+        console.log("User is being used to find");
+        const users = await User.find({ name: filter });
 
-//         if (!users) {
-//             res.status(500).json({ success: false });
-//         }
+        if (!users) {
+            console.log("No such user");
+            res.status(500).json({ success: false });
+        }
         
-//         useridArray = users.map(user => user.id);
-//         //useridArray = Array.from(users).map(user => user.id);
+        let index = 0;
 
-//         let catfilter = {};
-//         if (req.query.categories) {
-//             catfilter = { category: req.query.categories.split(",") };
-//         }
-//         postData = await Post.find(catfilter)
-//             .populate("category")
-//             .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
+        users.forEach(function(user) {
+            useridArray.push(users.id);
+            console.log("userid: " + users.id);
+            console.log("userid: " + useridArray[index]);
+            index++;
+        });
 
-//         if (!postData) {
-//             res.status(500).json({ success: false });
-//         }
-//         postData = postData.filter((item) => {
-//             return item.listedBy &&  item.listedBy.id && useridArray.includes(item.listedBy.id);
-//         })
+        //useridArray = users.map(user => user.id);
+        //useridArray = Array.from(users).map(user => user.id);
+        //useridArray.forEach(user => console.log(user));
 
-//       }
-//     } catch (err) {
-//       return res.status(500).send({message:"Could not find the specified item given the name."});
-//     }
+        let catfilter = {};
+        if (category) {
+            catfilter = { category: category.split(",") };
+        }
+        postData = await Post.find(catfilter)
+            .populate("category")
+            .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
 
-//     if (category) {
-//         postData = postData.filter((item) => {
-//           return item.category && item.category.id === category;
-//         });
-//     }
+        if (!postData) {
+            res.status(500).json({ success: false });
+        }
+        postData = postData.filter((item) => {
+            return item.listedBy &&  item.listedBy.id && useridArray.includes(item.listedBy.id);
+        })
 
-//     res.status(201).send(postData);
-//   };
+      }
+    } catch (err) {
+        console.log(err);
+      return res.status(500).send({message:"Could not find the specified item given the name."});
+    }
+
+    if (category) {
+        postData = postData.filter((item) => {
+          return item.category && item.category.id === category;
+        });
+    }
+
+    res.status(201).send(postData);
+  }; 
 
 // create new search type
 const createType = async (req, res) => {
@@ -104,15 +114,6 @@ const createType = async (req, res) => {
     return res.status(404).send({message:"the search type cannot be created"});
   }
   res.send(searchType);
-};
-
-const search =  async (req, res) => {
-    const { name } = req.params;
-    const { category, searchType } = req.query;
-
-    console.log("name: " + name);
-    console.log("category: " + category);
-    console.log("searchType: " + searchType);
 };
 
 //update search type found by id

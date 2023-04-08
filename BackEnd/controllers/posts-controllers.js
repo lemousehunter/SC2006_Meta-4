@@ -327,7 +327,7 @@ const searchPosts = async (req, res) => {
       $or: [{ itemName: filter }],
     })
       .populate("category")
-      .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
+      .populate({ path: "listedBy", select: { name: 1, phone: 1 } });   
   } catch (err) {
     return res
       .status(500)
