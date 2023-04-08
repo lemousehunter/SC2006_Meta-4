@@ -335,8 +335,8 @@ const searchPosts = async (req, res) => {
   }
 
   if (category) {
-    data = await data.filter((user) => {
-      return user.category && user.category.id === category;
+    data = await data.filter((item) => {
+      return item.category && item.category.id === category;
     });
   }
 
