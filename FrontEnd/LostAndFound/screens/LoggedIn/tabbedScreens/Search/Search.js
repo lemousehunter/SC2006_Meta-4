@@ -147,9 +147,8 @@ export default class Search extends BaseLoggedInScreen {
     const searchText = this.searchField.current.getText();
     console.log('viewType is:' + this.state.viewType);
     if (this.state.searchType === 'User') {
-      postLst = await this.getPostsController().searchPost(
+      postLst = await this.getPostsController().getPostsFromUser(
         searchText,
-        this.state.searchType,
         this.state.category,
       );
       console.log('UserPosts__!' + JSON.stringify(postLst));
