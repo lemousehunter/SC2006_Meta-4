@@ -3,13 +3,22 @@ import {StyleSheet, View} from 'react-native';
 import NButton from '../reusable/Neuromorphic/Buttons/NButton';
 import BaseListItem from './BaseListItem';
 
+/**
+ * Represents a list item for an own request. The list item includes two buttons to approve or reject a request.
+ */
 export default class OwnReqListItem extends Component {
+   /**
+   * Constructor for OwnReqListItem component.
+   * @param {Object} props - The props object.
+   */
   constructor(props) {
     super(props);
     this.createStylesheet();
     this.createSettings();
   }
-
+  /**
+   * Creates the stylesheet for the component.
+   */
   createStylesheet() {
     this.styles = StyleSheet.create({
       btns: {
@@ -19,7 +28,9 @@ export default class OwnReqListItem extends Component {
       },
     });
   }
-
+  /**
+   * Creates the settings object for the component.
+   */
   createSettings() {
     this.nSettings = {
       approveBtn: {
@@ -36,11 +47,16 @@ export default class OwnReqListItem extends Component {
       },
     };
   }
-
+  /**
+   * Processes the request.
+   */
   processReq() {
     // this.props.params.dataC.
   }
-
+  /**
+   * Renders the component.
+   * @returns - The rendered component.
+   */
   render() {
     return (
       <BaseListItem
