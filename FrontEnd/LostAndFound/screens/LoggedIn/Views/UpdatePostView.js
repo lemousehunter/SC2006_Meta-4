@@ -10,13 +10,27 @@ import NCard from '../../../components/reusable/Neuromorphic/Cards/NCard';
 import NButton from '../../../components/reusable/Neuromorphic/Buttons/NButton';
 import CreatePost from '../tabbedScreens/CreatePost/CreatePost';
 
+/**
+Represents the UpdatePostView class, which is a React component used for updating posts.
+Inherits from the BaseInnerView class.
+*/
 export default class UpdatePostView extends BaseInnerView {
+
+  /**
+Constructs a new UpdatePostView object with the given props.
+Initializes the component's stylesheet and neuromorphic settings.
+@param {Object} props - The props passed down to the component.
+*/
   constructor(props) {
     super(props);
     this.createStyleSheet();
     this.getNSettings();
     console.log('props', JSON.stringify(this.props));
   }
+
+  /**
+Creates the component's stylesheet using the getBgColor, getWinH, and getWinW methods.
+*/
   createStyleSheet() {
     this.styles = StyleSheet.create({
       bg: {
@@ -84,6 +98,9 @@ export default class UpdatePostView extends BaseInnerView {
     });
   }
 
+  /**
+Initializes the component's neuromorphic settings using the getBgColor, getPrimaryColor, getWinW, and getWinH methods.
+*/
   getNSettings() {
     this.nSettings = {
       contentCard: {
@@ -103,6 +120,11 @@ export default class UpdatePostView extends BaseInnerView {
     };
   }
 
+  /**
+Formats a date object into a string in the format "dd/mm/yyyy".
+@param {Date} date - The date object to format.
+@returns {string} A string representing the formatted date.
+*/
   formatDate(date) {
     const d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -117,6 +139,13 @@ export default class UpdatePostView extends BaseInnerView {
     return [day, month, year].join('/');
   }
 
+  /**
+   * Renders the Nbutton component which allows the user to submit a request for a lost or found item,
+   * depending on whether the item is marked as lost or found
+   *
+   * @return an NButton component with the label "I lost it" or "I found it"depending on the value of isLost. 
+   * If the current user is the same as the user who listed the item, the function does not return anything
+   */
   renderButton(isLost) {
     if (
       this.props.route.params.data.currentUser !==
@@ -132,6 +161,7 @@ export default class UpdatePostView extends BaseInnerView {
     }
   }
 
+  
   render() {
     console.log('in update view');
     console.log('paramsData:' + JSON.stringify(this.props.route.params));

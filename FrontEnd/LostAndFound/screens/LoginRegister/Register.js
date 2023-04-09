@@ -7,7 +7,16 @@ import {AppContext} from '../../contexts/Contexts';
 import NTextInput from '../../components/reusable/Neuromorphic/TextInput/NTextInput';
 import React from 'react';
 
+/**
+ * A screen component for registering a user. This component extends the `BaseScreen` component and
+ * includes various UI elements for user input, including text input fields and buttons. It also
+ * includes methods for validating user input and handling registration with a backend API.
+ */
 export default class RegisterPage extends BaseScreen {
+  /**
+   * Constructs a new instance of the `RegisterPage` component.
+   * @param {Object} props - The props passed to the component.
+   */
   constructor(props) {
     super(props);
     this.createStyleSheet();
@@ -15,7 +24,14 @@ export default class RegisterPage extends BaseScreen {
     this.createRefs();
   }
 
+  /**
+   * Specifies that the component should use the `AppContext` context type.
+   */
   static contextType = AppContext;
+
+  /**
+   * Creates the component's stylesheet using `StyleSheet.create()`.
+   */
   createStyleSheet() {
     this.style = StyleSheet.create({
       mainContainer: {
@@ -53,6 +69,9 @@ export default class RegisterPage extends BaseScreen {
     });
   }
 
+  /**
+   * Gets the app's settings and stores them in `this.nSettings`.
+   */
   getSettings() {
     this.nSettings = {
       registerBtn: {
@@ -78,6 +97,9 @@ export default class RegisterPage extends BaseScreen {
     };
   }
 
+  /**
+   * Creates references to the text input fields and stores them in instance variables.
+   */
   createRefs() {
     this.usn = React.createRef(null);
     this.email = React.createRef(null);
@@ -85,6 +107,11 @@ export default class RegisterPage extends BaseScreen {
     this.phoneNum = React.createRef(null);
   }
 
+  /**
+   * Validates user input and attempts to register a new user with the backend API. If registration
+   * is successful, navigates to the home screen. Otherwise, displays an alert with an error message.
+   * @returns {Promise} - A promise that resolves when registration is complete.
+   */
   async validateRegistration() {
     const usn = this.usn.current.getText();
     const email = this.email.current.getText();
@@ -123,6 +150,11 @@ export default class RegisterPage extends BaseScreen {
     }
   }
 
+  /**
+ * It includes a background with a card, a title, and several text inputs for the user to fill in.
+ * It also includes two buttons: one to validate the registration, and another to go back to the previous screen.
+ * @returns {JSX.Element} The UI of the RegisterPage component.
+ */
   render() {
     return (
       <BGWithNCard

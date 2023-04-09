@@ -17,7 +17,15 @@ import NonTabbedScreenContainer from '../NonTabbedScreenContainer';
 import NCard from '../../../components/reusable/Neuromorphic/Cards/NCard';
 import NButton from '../../../components/reusable/Neuromorphic/Buttons/NButton';
 
+/**
+ * This class represents a view component for displaying a post. It extends the BaseInnerView component.
+ */
 export default class PostView extends BaseInnerView {
+
+  /**
+   * Constructs a new PostView object.
+   * @param {object} props - The props object that contains data to pass down to this component.
+   */
   constructor(props) {
     super(props);
     this.createStyleSheet();
@@ -25,6 +33,10 @@ export default class PostView extends BaseInnerView {
     console.log('props', JSON.stringify(this.props));
     this.state = {disableBtn: false};
   }
+
+  /**
+   * Creates a stylesheet object for this component.
+   */
   createStyleSheet() {
     this.styles = StyleSheet.create({
       bg: {
@@ -92,6 +104,9 @@ export default class PostView extends BaseInnerView {
     });
   }
 
+  /**
+   * Gets the settings object for the Neuromorphic components used in this component.
+   */
   getNSettings() {
     this.nSettings = {
       contentCard: {
@@ -111,6 +126,11 @@ export default class PostView extends BaseInnerView {
     };
   }
 
+   /**
+   * Formats a date object into a string in the format DD/MM/YYYY.
+   * @param {object} date - The date object to format.
+   * @returns {string} A string representation of the date in the format DD/MM/YYYY.
+   */
   formatDate(date) {
     const d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -125,6 +145,13 @@ export default class PostView extends BaseInnerView {
     return [day, month, year].join('/');
   }
 
+  /**
+   * Renders the Nbutton component which allows the user to submit a request for a lost or found item,
+   * depending on whether the item is marked as lost or found
+   *
+   * @return an NButton component with the label "I lost it" or "I found it"depending on the value of isLost. 
+   * If the current user is the same as the user who listed the item, the function does not return anything
+   */
   renderButton(isLost) {
     if (
       this.props.route.params.data.currentUser !==
@@ -159,6 +186,10 @@ export default class PostView extends BaseInnerView {
     }
   }
 
+  /**
+Called immediately after a component is mounted. Setting state here will trigger re-rendering.
+This method is a good place to set up subscriptions or event listeners, or to perform other initialization tasks.
+*/
   async componentDidMount() {
     const validation = await this.getRequestsController()
       .validateRequest(this.getUser(), this.props.route.params.data.postID)
@@ -169,6 +200,11 @@ export default class PostView extends BaseInnerView {
     console.log('validation:', JSON.stringify(validation));
   }
 
+ /**
+ * Renders the component's view to the screen.
+ *
+ * @return {JSX.Element} A React component representing the rendered view.
+ */
   render() {
     console.log('in post view');
     console.log('paramsData:' + JSON.stringify(this.props.route.params));

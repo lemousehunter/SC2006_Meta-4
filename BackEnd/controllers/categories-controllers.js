@@ -1,6 +1,12 @@
 const { Category } = require("../models/category");
 
-// get the list of all categories
+/**
+ * Gets a list of all categories.
+ *
+ * @param req the request object
+ * @param res the response object
+ * @return a list of all categories
+ */
 const getCategories = async (req, res) => {
   const categoryList = await Category.find();
 
@@ -10,7 +16,13 @@ const getCategories = async (req, res) => {
   res.status(200).send(categoryList);
 };
 
-// get the category by ID
+/**
+ * Gets a category by ID.
+ *
+ * @param req the request object containing the ID of the category to retrieve
+ * @param res the response object
+ * @return the category with the given ID
+ */
 const getCategoriesById = async (req, res) => {
   const category = await Category.findById(req.params.id);
   if (!category) {
@@ -20,7 +32,14 @@ const getCategoriesById = async (req, res) => {
   }
   res.status(200).send(category);
 };
-// create new category
+
+/**
+ * Creates a new category.
+ *
+ * @param req the request object containing the name of the new category
+ * @param res the response object
+ * @return the newly created category
+ */
 const postCategory = async (req, res) => {
   let category = new Category({
     name: req.body.name,
@@ -32,7 +51,14 @@ const postCategory = async (req, res) => {
   res.send(category);
 };
 
-//update category found by id
+
+/**
+ * Updates a category by ID.
+ *
+ * @param req the request object containing the ID of the category to update and the new name
+ * @param res the response object
+ * @return the updated category
+ */
 const updateCategory = async (req, res) => {
   const category = await Category.findByIdAndUpdate(
     req.params.id,
@@ -47,8 +73,13 @@ const updateCategory = async (req, res) => {
   res.send(category);
 };
 
-//api/<id>
-//delete category found by id
+/**
+ * Deletes a category by ID.
+ *
+ * @param req the request object containing the ID of the category to delete
+ * @param res the response object
+ * @return a message indicating whether the category was successfully deleted
+ */
 const deleteCategory = (req, res) => {
   Category.findByIdAndRemove(req.params.id)
     .then((category) => {
