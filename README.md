@@ -11,6 +11,10 @@
 ## MERN
 [![My Tech Stack](https://github-readme-tech-stack.vercel.app/api/cards?title=Tech%20Stack&fontFamily=Quicksand&lineCount=4&theme=github_dark_green&line1=mongodb,MongoDB,47A248;&line2=express,ExpressJS,000000;&line3=react,React-Native,61DAFB;&line4=nodedotjs,NodeJS,339933;)](https://github-readme-tech-stack.vercel.app/api/cards?title=Tech%20Stack&fontFamily=Quicksand&lineCount=4&theme=github_dark_green&line1=mongodb,MongoDB,47A248;&line2=express,ExpressJS,000000;&line3=react,React-Native,61DAFB;&line4=nodedotjs,NodeJS,339933;)
 
+# API Used
+## OneMap API
+
+
 
 # Introduction
 ## Purpose 
@@ -109,10 +113,6 @@ OneMap API
 
 ## Map page
 <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/mapView.png" height="500">
-
-## Search page
-<img src="" height="500">
-
 
 ## Accounts page
 <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/accounts.png" height="500">
