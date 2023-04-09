@@ -170,8 +170,8 @@ The purpose of each of these data items and requests is to provide users with th
 <br />
 <br />
 
-# Services needed include:
-## User authentication and authorization services
+## Services needed include:
+**User authentication and authorization services** <br />
 Database management services for storing and retrieving lost and found item data
 Media storage and retrieval services for storing and retrieving media files related to lost and found items
 Location-based services for determining the location of lost and found items and users
@@ -181,7 +181,7 @@ The nature of communications between these services is RESTful API communication
 Data that will be shared across software components includes user authentication data, lost and found item data, and image files related to lost and found items. The data sharing mechanism will be implemented using MongoDB as the database management system and REST APIs for data communication.
 
 
-## Communications Interfaces
+# Communications Interfaces
 * The communication between frontend and backend will be following HTTPS protocol and TCP/IP network protocol.
 * User authentication and authorization will be implemented using token authentication, which will be securely transmitted in the HTTP request header.
 
