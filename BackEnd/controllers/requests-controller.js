@@ -75,6 +75,7 @@ const updateRequestStatus = async (req, res) => {
   } else {
     s = newrequest.sender;
   }
+  console.log(s);
   if (newrequest.state === 1) {
     //change state of other requests tagged to the post to be -1
     let oldpost = await Post.findById(oldrequest.post);
