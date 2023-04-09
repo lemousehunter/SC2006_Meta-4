@@ -3,13 +3,25 @@ import BaseInnerView from './tabbedScreens/Search/InnerViews/BaseInnerView';
 import {Button, StyleSheet, Text, View} from 'react-native';
 import NCard from '../../components/reusable/Neuromorphic/Cards/NCard';
 
+/**
+ * NonTabbedScreenContainer is a class that extends BaseInnerView and is used to display a screen without tabs.
+ */
 export default class NonTabbedScreenContainer extends BaseInnerView {
+
+  /**
+   * Constructor for NonTabbedScreenContainer class.
+   * 
+   * @param {Object} props - The props that will be passed to the component.
+   */
   constructor(props) {
     super(props);
     this.createStylesheet();
     this.getSettings();
   }
 
+  /**
+   * Sets the nSettings object which defines the properties of the title card.
+   */
   getSettings() {
     this.nSettings = {
       titleCard: {
@@ -22,6 +34,9 @@ export default class NonTabbedScreenContainer extends BaseInnerView {
     };
   }
 
+  /**
+   * Creates the stylesheet object used to style the component.
+   */
   createStylesheet() {
     this.styles = StyleSheet.create({
       bg: {
@@ -51,6 +66,11 @@ export default class NonTabbedScreenContainer extends BaseInnerView {
     });
   }
 
+  /**
+   * Renders the content of the screen.
+   *
+   * @return {JSX.Element} A JSX element representing the content of the screen.
+   */
   renderContent() {
     if (!this.props.title) {
       return (
@@ -109,6 +129,11 @@ export default class NonTabbedScreenContainer extends BaseInnerView {
     }
   }
 
+  /**
+Renders the content of the non-tabbed screen container component.
+Returns a React element representing the non-tabbed screen container.
+@return {React.Element} A React element representing the non-tabbed screen container.
+*/
   render() {
     return (
       <View style={this.styles.bg}>
