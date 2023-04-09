@@ -1,8 +1,6 @@
-
 const { Request } = require("../models/request");
 const { Post } = require("../models/post");
 const { User } = require("../models/user");
-const { findById } = require("../models/chat");
 
 /**
  * Retrieves details of all requests, including sender, recipient, and post information

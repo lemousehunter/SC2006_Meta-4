@@ -6,7 +6,6 @@ const cors = require("cors");
 require("dotenv").config();
 const authJwt = require("./helpers/jwt");
 const errorHandler = require("./helpers/error-handler");
-const io = require("socket.io");
 //change the database URL in the config file
 const { mongoUri } = require("./helpers/config");
 
@@ -25,8 +24,6 @@ const categoriesRoutes = require("./routes/categories");
 const searchTypeRoutes = require("./routes/search-type");
 const postsRoutes = require("./routes/post");
 const usersRoutes = require("./routes/users");
-//const pinsRoutes = require("./routes/Pins");
-const chatRoutes = require("./routes/chat");
 const reportRoutes = require("./routes/report");
 const requestRoutes = require("./routes/request");
 
@@ -36,8 +33,6 @@ app.use(`${api}/categories`, categoriesRoutes);
 app.use(`${api}/searchtype`, searchTypeRoutes);
 app.use(`${api}/posts`, postsRoutes);
 app.use(`${api}/users`, usersRoutes);
-//app.use(`${api}/pins`, pinsRoutes);
-app.use(`${api}/chat`, chatRoutes);
 app.use(`${api}/reports`, reportRoutes);
 app.use(`${api}/requests`, requestRoutes);
  
