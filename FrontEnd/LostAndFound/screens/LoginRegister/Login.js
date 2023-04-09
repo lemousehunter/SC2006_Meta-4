@@ -7,7 +7,20 @@ import NTextInput from '../../components/reusable/Neuromorphic/TextInput/NTextIn
 import React from 'react';
 import {AppContext} from '../../contexts/Contexts';
 
+/**
+ * A screen component that displays a login page, which allows users to input their
+ * username and password in order to log in. It extends the BaseScreen class and
+ * implements a contextType for AppContext. The component includes a background with
+ * a Neuromorphic card and an image, as well as input fields for the user's username
+ * and password and a login button. When the user clicks the login button, the component
+ * validates the inputted username and password and logs the user in if the credentials
+ * are valid.
+ */
 export default class LoginPage extends BaseScreen {
+  /**
+   * Creates a new LoginPage object.
+   * @param {Object} props - The props passed to the component.
+   */
   constructor(props) {
     super(props);
     this.props = props;
@@ -20,8 +33,16 @@ export default class LoginPage extends BaseScreen {
     this.usn = React.createRef(null);
     this.pwd = React.createRef(null);
   }
+
+  /**
+   * The AppContext object that provides access to global app state.
+   * @type {Object}
+   */
   static contextType = AppContext;
 
+  /**
+   * Initializes the StyleSheet for the component.
+   */
   getStyleSheet() {
     this.styles = StyleSheet.create({
       imgContainer: {
@@ -50,6 +71,9 @@ export default class LoginPage extends BaseScreen {
     });
   }
 
+  /**
+   * Initializes the Neuromorphic settings for the component.
+   */
   getNeuromorphicSettings() {
     this.nSettings = {
       circleCard: {
@@ -83,6 +107,13 @@ export default class LoginPage extends BaseScreen {
     };
   }
 
+  /**
+ * Validates the login credentials provided by the user.
+ * If the username and password are valid, navigates the user to the
+ * LoggedInScreen. Otherwise, displays an error message to the user.
+ * 
+ * @return A Promise that resolves to nothing.
+ */
   async validateLogin() {
     const username = this.usn.current.getText();
     const password = this.pwd.current.getText();
@@ -119,6 +150,11 @@ export default class LoginPage extends BaseScreen {
     }
   }
 
+  /**
+ * Renders the loginpage
+ *
+ * @return {JSX.Element} - Returns a JSX element which is a component that describes what should be displayed on the screen
+ */
   render() {
     return (
       // eslint-disable-next-line react/react-in-jsx-scope
