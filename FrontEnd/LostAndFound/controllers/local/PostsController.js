@@ -140,7 +140,7 @@ export default class PostsController extends Component {
 
   async getAllPosts() {
     console.log('getting all posts');
-    const posts = await this.dataController.get('posts').then(res => {
+    const posts = await this.dataController.get('posts/get/UrgentPosts').then(res => {
       console.log('getAllPostsRes:' + JSON.stringify(res));
       return res.data;
     });
@@ -156,6 +156,7 @@ export default class PostsController extends Component {
     const posts = await this.getPostsByUserID(userID).then(res => {
       return res;
     });
+    console.log('getPostItemsByUserID:', JSON.stringify(posts));
     let array = [];
     posts.map(post => {
       const obj = this.convertPost2PostItem(post);
@@ -168,7 +169,7 @@ export default class PostsController extends Component {
     // to replace with fetch function call
     console.log('session token is:', this.dataController.sessionToken);
     const response = await this.dataController
-      .get('users/userposts/' + userID)
+      .get('posts/userposts/' + userID) // posts/get/Resolved/ // posts/get/UrgentPosts/
       .then(res => {
         console.log('res:');
         return res;
