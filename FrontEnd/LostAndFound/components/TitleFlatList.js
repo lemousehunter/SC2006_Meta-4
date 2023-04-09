@@ -2,13 +2,28 @@ import {Component} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import NCard from './reusable/Neuromorphic/Cards/NCard';
 
+/**
+ * A component that displays a list with a title and content.
+ */
 export default class TitleFlatList extends Component {
+  /**
+   * Constructs a new instance of the TitleFlatList component.
+   *
+   * @param props The component properties.
+   * @param props.winH The window height.
+   * @param props.winW The window width.
+   * @param props.bgColor The background color.
+   * @param props.title The title text to display.
+   * @param props.children The content to display.
+   */
   constructor(props) {
     super(props);
     this.createStylesheet();
     this.getSettings();
   }
-
+  /**
+   * Creates the component stylesheet.
+   */
   createStylesheet() {
     this.styles = StyleSheet.create({
       mainContainer: {
@@ -37,7 +52,9 @@ export default class TitleFlatList extends Component {
       },
     });
   }
-
+  /**
+   * Gets the component settings.
+   */
   getSettings() {
     this.nSettings = {
       containerCard: {
@@ -60,7 +77,11 @@ export default class TitleFlatList extends Component {
       },
     };
   }
-
+  /**
+   * Renders the component.
+   *
+   * @return The rendered component.
+   */
   render() {
     return (
       <NCard settings={this.nSettings.containerCard}>
