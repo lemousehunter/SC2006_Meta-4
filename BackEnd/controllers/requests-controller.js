@@ -102,16 +102,22 @@ const validateUser = async (req, res) => {
   if (!post) {
     return res.status(500).json({ success: false });
   }
-  let checkReq = Request.find({ post:req.params.id });
+  let checkReq = await Request.find({ post: req.params.id });
+  // console.log(checkReq);
   if (!checkReq) {
     return res.status(500).json({ success: false });
   }
   let check = false;
   for (let index = 0; index < checkReq.length; index++) {
     const element = checkReq[index];
+    // console.log(element);
     let r = await Request.findById(element);
-    if (r.sender === userid) {
+    console.log(r.sender.toString() === userid);
+
+    if (r.sender.toString() === userid) {
       check = true;
+      console.log(check);
+      return res.send({ check });
     }
   }
   res.send({ check });
