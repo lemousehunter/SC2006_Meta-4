@@ -10,8 +10,31 @@ import {
   MenuTrigger,
   renderers,
 } from 'react-native-popup-menu';
-
+/**
+ * The PostItem component is used to display a post item and allows the user to interact with it.
+ * It includes a Pressable component that, when pressed, navigates the user to a view where they can see more details about the post
+ * It contains several nested View components, each of which contains a Text component with information about the post, 
+ * as well as several custom icons that are used to indicate the post's location, category, and listed-by user
+ */
 export default class PostItem extends React.Component {
+  /**
+   * Constructor for PostItem.
+   * @param {Object} props - The props object passed to the component.
+   * @param {Object} props._data - The data object used to render the post.
+   * @param {string} props._data.name - The name for the PostItem component.
+   * @param {string} props._data.item - The item for the PostItem component
+   * @param {string} props._data.type - The item type for the PostItem component
+   * @param {string} props._data.location - The location for the PostItem component
+   * @param {string} props._data.timing - The timing for the PostItem component.
+   * @param {string} props._data.postID - The post ID for the PostItem component
+   * @param {string} props._data.image - The image for the PostItem component.
+   * @param {string} props._data.category - The category for the PostItem component.
+   * @param {Array} props._data.coordinates - The coordinates for the PostItem component
+   * @param {Object} props.postStyle - The styling object used to render the post.
+   * @param {string} props.postStyle.color - The color of the post.
+   * @param {number} props.postStyle.winW - The width of the window.
+   * @param {number} props.postStyle.winH - The height of the window.
+   */
   constructor(props) {
     super(props);
     console.log('PostItem_data:' + JSON.stringify(this.props._data));
@@ -31,7 +54,14 @@ export default class PostItem extends React.Component {
     this.getNSettings();
     console.log('imageURI:' + this.image);
   }
-
+  /**
+   *Retrieves the style sheet object for this component and sets it to the
+  "styles" property of this instance. The style sheet contains styles for
+  various components in this PostItem, including the main container, left
+  container, right container, title container, line container, category
+  container, title text, timing text, text, image, menu icon, location icon,
+  account icon, category icon, separator, and menu.
+*/
   getStyleSheet() {
     this.styles = StyleSheet.create({
       mainContainer: {
@@ -130,7 +160,10 @@ export default class PostItem extends React.Component {
       },
     });
   }
-
+  /**
+  Initializes the nSettings object with the main card style properties.
+  @return void
+  */
   getNSettings() {
     this.nSettings = {
       mainCard: {
@@ -143,7 +176,12 @@ export default class PostItem extends React.Component {
       },
     };
   }
-
+  /**
+ * A function that handles editing the current post item.
+ * It navigates to the 'UpdatePostView' and passes the post data to it.
+ *
+ * @return {void}
+ */
   edit = () => {
     console.log('postID____:', this.props._data.postID);
     this.props.nav.navigate('UpdatePostView', {
@@ -153,7 +191,13 @@ export default class PostItem extends React.Component {
       },
     });
   };
-
+  /**
+ * Renders the menu for the PostItem component. If the current user is the owner of the post,
+ * the method renders an edit and delete menu, otherwise it renders a report menu. The menu
+ * is implemented using the react-native-popup-menu package.
+ *
+ * @return The rendered menu.
+ */
   renderMenu() {
     console.log('currentUser!!:', JSON.stringify(this.props.currentUser));
     console.log('listedBy:', JSON.stringify(this.props._data.listedBy.id));
@@ -164,7 +208,11 @@ export default class PostItem extends React.Component {
       return this.renderOthersMenu();
     }
   }
-
+  /**
+ * This function is responsible for rendering the menu options that are visible to users other than the one who posted the item. 
+ * It checks whether the user currently logged in is the same as the one who posted the item, and renders the appropriate menu options accordingly.
+ * @returns {JSX.Element} - Returns a JSX element that contains the menu options visible to users other than the one who posted the item.
+ */
   renderOthersMenu() {
     console.log('rendering others menu');
     return (
@@ -195,7 +243,11 @@ export default class PostItem extends React.Component {
       </Menu>
     );
   }
-
+  /**
+ * This function is responsible for rendering the menu options for the user who owns the post. 
+ * It checks whether the user currently logged in is the same as the one who posted the item, and renders the appropriate menu options accordingly.
+ * @returns {JSX.Element} - Returns a JSX element that contains the menu options for the user who owns the post.
+ */
   renderOwnMenu() {
     return (
       <Menu renderer={renderers.ContextMenu}>
@@ -232,7 +284,11 @@ export default class PostItem extends React.Component {
       </Menu>
     );
   }
-
+  /**
+   * Renders the component, view composed of various React Native components, such as NCard, Image, Text, Pressable, and Menu.
+   *Includes event handlers for various user interactions, such as clicking on a button or selecting an option from a menu
+   * @returns {JSX.Element} - Returns a JSX element that defines the layout and content of the component's view
+   */
   render() {
     return (
       <Pressable
