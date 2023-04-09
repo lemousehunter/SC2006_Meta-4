@@ -76,7 +76,7 @@ const uploadPost = async (req, res) => {
     time: req.body.time,
     itemDescription: req.body.itemDescription,
     category: req.body.category,
-    isResolved: req.body.isResolved,
+    isResolved: false,
     latitude: LATITUDE,
     longitude: LONGITUDE,
   });
@@ -285,7 +285,9 @@ const getPostCount = async (req, res) => {
 
 //display all unresolved posts
 const getUnresolvedPosts = async (req, res) => {
-  const urgentPost = await Post.find({ isResolved: false });
+  const urgentPost = await Post.find({ isResolved: false })
+    .populate("category")
+    .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
   if (!urgentPost) {
     res.status(500).json({ success: false });
   }
@@ -294,7 +296,9 @@ const getUnresolvedPosts = async (req, res) => {
 
 //display all found posts
 const getFoundPosts = async (req, res) => {
-  const foundPosts = await Post.find({ isResolved: false, isLost: false });
+  const foundPosts = await Post.find({ isResolved: false, isLost: false })
+    .populate("category")
+    .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
   if (!foundPosts) {
     res.status(500).json({ success: false });
   }
@@ -303,7 +307,9 @@ const getFoundPosts = async (req, res) => {
 
 //display lost posts
 const getLostPosts = async (req, res) => {
-  const lostPosts = await Post.find({ isResolved: false, isLost: true });
+  const lostPosts = await Post.find({ isResolved: false, isLost: true })
+    .populate("category")
+    .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
   if (!lostPosts) {
     res.status(500).json({ success: false });
   }
@@ -314,11 +320,40 @@ const getLostPosts = async (req, res) => {
 const getUserPosts = async (req, res) => {
   const userPosts = await Post.find({ listedBy: req.params.userid })
     .populate("category")
+    .populate({ path: "listedBy", select: { name: 1, phone: 1 } })
     .sort({ date: -1 });
   if (!userPosts) {
     res.status(500).json({ success: false });
   }
   res.send(userPosts);
+};
+
+//display user unresolved  posts
+const getUserUnresolvedPosts = async (req, res) => {
+  const userUnresolvedPosts = await Post.find({
+    listedBy: req.params.userid,
+    isResolved: false,
+  })
+    .populate("category")
+    .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
+  if (!userUnresolvedPosts) {
+    res.status(500).json({ success: false });
+  }
+  res.send(userUnresolvedPosts);
+};
+
+//display user resolved  posts
+const getUserResolvedPosts = async (req, res) => {
+  const userResolvedPosts = await Post.find({
+    listedBy: req.params.userid,
+    isResolved: true,
+  })
+    .populate("category")
+    .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
+  if (!userResolvedPosts) {
+    res.status(500).json({ success: false });
+  }
+  res.send(userResolvedPosts);
 };
 
 // Search posts
@@ -362,4 +397,6 @@ module.exports = {
   getLostPosts,
   getUserPosts,
   searchPosts,
+  getUserUnresolvedPosts,
+  getUserResolvedPosts,
 };

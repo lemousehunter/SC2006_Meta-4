@@ -54,6 +54,11 @@ const postSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    isResolved: {
+      type: Boolean,
+      required: [true, ""],
+      default: false,
+    },
   },
   {
     timestamps: true,
