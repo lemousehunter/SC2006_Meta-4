@@ -53,8 +53,8 @@ export default class extends Component {
   };
 
   getLoginController() {
-    console.log('loginController:');
-    console.log(this.getControllers().loginController);
+    //console.log('loginController:');
+    //console.log(this.getControllers().loginController);
     return this.getControllers().loginController;
   }
 
