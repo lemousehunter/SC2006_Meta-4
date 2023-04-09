@@ -2,12 +2,24 @@ import {Component} from 'react';
 import NCard from '../reusable/Neuromorphic/Cards/NCard';
 import {StyleSheet, Text, View} from 'react-native';
 
+/**
+ * BaseListItem represents a component that displays a navigation item in a list.
+ * It includes a title, a user name, a status, and content at the bottom.
+ */
 export default class BaseListItem extends Component {
+   /**
+   * Constructs a new instance of the BaseListItem component.
+   *
+   * @param {Object} props the props passed to the component
+   */
   constructor(props) {
     super(props);
     this.createStylesheet();
     this.getSettings();
   }
+  /**
+   * Creates the component's stylesheet.
+   */
   createStylesheet() {
     this.styles = StyleSheet.create({
       scrollViewC: {
@@ -49,7 +61,9 @@ export default class BaseListItem extends Component {
       },
     });
   }
-
+  /**
+   * Retrieves the component's settings based on its props.
+   */
   getSettings() {
     console.log('this.props.bgColor:', this.props.params.bgColor);
     this.nSettings = {
@@ -64,7 +78,11 @@ export default class BaseListItem extends Component {
       },
     };
   }
-
+  /**
+   * Renders the component.
+   *
+   * @return the rendered component
+   */
   render() {
     return (
       <NCard settings={this.nSettings.mainCard}>
@@ -86,7 +104,8 @@ export default class BaseListItem extends Component {
             this.styles.bottomContainer,
             this.styles.bottomContentContainer,
           ]}>
-          {this.props.children}
+          {this.props.children //OCP allows for entension 
+          }
         </View>
       </NCard>
     );

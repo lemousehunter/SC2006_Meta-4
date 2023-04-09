@@ -9,8 +9,29 @@ import AccountScreen from '../screens/LoggedIn/tabbedScreens/Account/Account';
 import PostView from '../screens/LoggedIn/Views/PostView';
 
 let Tab = createBottomTabNavigator();
-//ss
+
+/**
+ * The NavBar component provides a navigation bar at the bottom of the screen with icons that
+ * allow the user to switch between different screens. It uses createBottomTabNavigator from
+ * @react-navigation/bottom-tabs to create the navigation bar and Tab.Screen to add screens
+ * to it. The NavBar component takes several props, including navBarColor, activeColor,
+ * normalColor, screensArray, initialParams, and user. It also defines a PlusButton component
+ * to be used as a button to add new content to the app.
+ */
 export default class NavBar extends React.Component {
+  /**
+   * Constructs a new NavBar with the given props.
+   *
+   * @param {Object} props - The props for this component.
+   * @param {string} props.navBarColor - The background color of the navigation bar.
+   * @param {string} props.activeColor - The color of the icons when they are active.
+   * @param {string} props.normalColor - The color of the icons when they are not active.
+   * @param {Array} props.screensArray - An array of objects representing the screens to be
+   *                                      added to the navigation bar.
+   * @param {Object} props.initialParams - An object containing the initial params for the
+   *                                        screens in the navigation bar.
+   * @param {Object} props.user - The user object for the current user of the app.
+   */
   constructor(props) {
     super(props);
     this.navBarColor = props.navBarColor;
@@ -80,7 +101,13 @@ export default class NavBar extends React.Component {
       </TouchableOpacity>
     );
   }
-
+/**
+ * Renders the navigation bar component. The method returns a `Tab.Navigator` component that
+ * contains several `Tab.Screen` components for each screen in the navigation bar.
+ *
+ * @return A `Tab.Navigator` component containing `Tab.Screen` components for each screen in the
+ *         navigation bar.
+ */
   render() {
     return (
       // eslint-disable-next-line react/react-in-jsx-scope
