@@ -1,8 +1,21 @@
+/**
+A module that handles all the operations related to reports.
+@module reportController
+*/
 const { Report } = require("../models/report");
 const mongoose = require("mongoose");
 const { User } = require("../models/user");
 
-// show all reports
+
+/**
+Returns a list of all reports with populated sender, recipient, and post fields.
+@function
+@async
+@param {Object} req - The request object.
+@param {Object} res - The response object.
+@returns {Object} - A list of all reports.
+@throws {Object} - If an error occurs while performing the operation.
+*/
 const showAllReports = async (req, res) => {
   const reportlist = await Report.find()
     .populate({
@@ -20,7 +33,16 @@ const showAllReports = async (req, res) => {
   }
   res.send(reportlist);
 };
-//show post found by id, can use .select(<attribute>) to show selected attribute
+
+/**
+Returns a report with the given ID and populated sender, recipient, and post fields.
+@function
+@async
+@param {Object} req - The request object.
+@param {Object} res - The response object.
+@returns {Object} - A report with the given ID.
+@throws {Object} - If an error occurs while performing the operation.
+*/
 const getReportById = async (req, res) => {
   const report = await Report.findById(req.params.id)
     .populate({
@@ -37,7 +59,17 @@ const getReportById = async (req, res) => {
   }
   res.send(report);
 };
-// upload new post
+
+/**
+Creates a new report and saves it to the database. Also updates the reported user's credit score and
+updates the reportedOthers and gotReported fields of the sender and recipient users respectively.
+@function
+@async
+@param {Object} req - The request object.
+@param {Object} res - The response object.
+@returns {Object} - The newly created report object.
+@throws {Object} - If an error occurs while performing the operation.
+*/
 const uploadReport = async (req, res) => {
   let report = new Report({
     sender: req.body.sender,
@@ -72,8 +104,16 @@ const uploadReport = async (req, res) => {
   }
 };
 
-//update report found by id
-//keep resolved report for history
+/**
+ * Updates an existing report by its ID.
+ *
+ * @param req the HTTP request object containing the report ID in the URL and the updated report data in the request body
+ * @param res the HTTP response object that will contain the updated report if successful
+ *
+ * @throws 400 Bad Request if the report ID in the URL is not a valid MongoDB ObjectID
+ * @throws 404 Not Found if no report is found with the given ID
+ * @throws 500 Internal Server Error if there is a problem finding or updating the report or updating the credit score of the recipient user
+ */
 const updateReportById = async (req, res) => {
   // check if the id in the url is valid
   if (!mongoose.isValidObjectId(req.params.id)) {
@@ -107,7 +147,14 @@ const updateReportById = async (req, res) => {
   res.send(updatedReport);
 };
 
-//delete post found by id
+/**
+Deletes a report by ID from the database, as well as removes the report from both the sender and recipient's reportedOthers/gotReported list.
+@param {Object} req - The request object
+@param {Object} res - The response object
+@param {Function} next - The next middleware function
+@returns {Object} The JSON response containing the success status and message
+@throws {Object} If no report, sender or recipient is found in the database, returns an error message with status code 500.
+*/
 const deleteReportById = async (req, res, next) => {
   let report;
   try {
@@ -154,7 +201,13 @@ const deleteReportById = async (req, res, next) => {
   });
 };
 
-// get the count of posts
+/**
+Retrieves the count of all reports using the Report model.
+@param req the HTTP request object
+@param res the HTTP response object
+@return a JSON object containing the count of all reports
+@throws Error if an error occurs while retrieving the report count
+*/
 const getReportCount = async (req, res) => {
   let reportCount;
   try {
