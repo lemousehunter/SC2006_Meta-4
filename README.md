@@ -49,6 +49,7 @@ Product Functions
 * Reported users will have reputation decreased.
 * Verified lost/found requests will increase the finder’s reputation score.
 <br />
+<br />
 
 # User Classes and Characteristics
 ## User
@@ -60,6 +61,7 @@ These are individuals who have found a lost item and are using the app to report
 
 *Regular Users:*
 These are individuals who use the app to browse lost and found items, search for specific items, and communicate with owners or finders of items.
+<br />
 <br />
 
 # Operating Environment
@@ -79,9 +81,11 @@ All data is stored in MongoDB
 * Reporting Constraints: The app must be designed to allow users to report lost or found items, including the ability to attach photos and provide detailed descriptions of the items.
 * User Interface Constraints: The app must be designed with a user-friendly interface that allows users to easily report lost or found items, search for items, and view the status of their reports.
 <br />
+<br />
 
 # User Documentation
 No user documentation needed as our app is interactive and intuitive to use, with good labelling to guide users around our app.
+<br />
 <br />
 
 # Assumptions and Dependencies
@@ -94,6 +98,7 @@ OneMap API
 * External Interface Requirements
 * User Interfaces
 * Login/Sign up Page
+<br />
 <br />
 
 # Images of app GUI
@@ -120,6 +125,7 @@ OneMap API
 |------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/postView.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/report.png" height="500"> |
 <br />
+<br />
 
 # Hardware Interfaces
 ## Mobile Device Interface
@@ -136,6 +142,7 @@ The app will utilize the device's camera and GPS hardware to capture images and 
 
 **Physical Characteristics**: The app will communicate with the OneMapAPI through REST APIs, using JSON data. 
 <br />
+<br />
 
 # Software Interfaces
 **MongoDB - Version 4.0 or higher**
@@ -151,6 +158,7 @@ Express.js is a fast, minimalist web framework for Node.js that provides a set o
 **React Native - Version 0.64 or higher**
 React Native is an open-source mobile application framework created by Facebook that allows developers to build native mobile apps for iOS and Android using JavaScript and React. The app will use React Native to build the mobile user interface and logic for the app.
 <br />
+<br />
 
 # Data items and messages coming into the system and going out include:
 
@@ -158,6 +166,7 @@ React Native is an open-source mobile application framework created by Facebook 
 Lost and found item data, including item descriptions, location data, and contact information for owners and finders
 Media files related to lost and found items, such as images 
 The purpose of each of these data items and requests is to provide users with the ability to report and search for lost and found items, as well as to manage the ownership and recovery process of these items.
+<br />
 <br />
 
 # Services needed include:
