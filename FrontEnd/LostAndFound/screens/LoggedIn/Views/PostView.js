@@ -200,11 +200,7 @@ This method is a good place to set up subscriptions or event listeners, or to pe
     console.log('validation:', JSON.stringify(validation));
   }
 
- /**
- * Renders the component's view to the screen.
- *
- * @return {JSX.Element} A React component representing the rendered view.
- */ 
+
   render() {
     console.log('in post view');
     console.log('paramsData:' + JSON.stringify(this.props.route.params));
