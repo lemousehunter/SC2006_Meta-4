@@ -321,6 +321,17 @@ const getUserPosts = async (req, res) => {
   res.send(userPosts);
 };
 
+//display user posts
+const getUserUnresolvedPosts = async (req, res) => {
+  const userUnresolvedPosts = await Post.find({ listedBy: req.params.userid, isResolved:false })
+    .populate("category")
+    .sort({ date: -1 });
+  if (!userPosts) {
+    res.status(500).json({ success: false });
+  }
+  res.send(userPosts);
+};
+
 // Search posts
 const searchPosts = async (req, res) => {
   const { name } = req.params;
@@ -362,4 +373,5 @@ module.exports = {
   getLostPosts,
   getUserPosts,
   searchPosts,
+  getUserUnresolvedPosts,
 };
