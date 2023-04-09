@@ -7,6 +7,10 @@
 * Wang Jie Rui, Jerome
 * Rodmond Tan
 
+# Tech Stack
+## MERN
+[![My Tech Stack](https://github-readme-tech-stack.vercel.app/api/cards?title=Tech%20Stack&fontFamily=Quicksand&lineCount=4&theme=github_dark_green&line1=mongodb,MongoDB,47A248;&line2=express,ExpressJS,000000;&line3=react,React-Native,61DAFB;&line4=nodedotjs,NodeJS,339933;)](https://github-readme-tech-stack.vercel.app/api/cards?title=Tech%20Stack&fontFamily=Quicksand&lineCount=4&theme=github_dark_green&line1=mongodb,MongoDB,47A248;&line2=express,ExpressJS,000000;&line3=react,React-Native,61DAFB;&line4=nodedotjs,NodeJS,339933;)
+
 
 # Introduction
 ## Purpose 
@@ -91,7 +95,7 @@ OneMap API
 <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/registerScreen.png" height="500">
 
 ## HomePage
-<img src="" height="500">
+<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/homeScreen.png" height="500">
 
 ## Create post page
 <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost1.png" height="500">
