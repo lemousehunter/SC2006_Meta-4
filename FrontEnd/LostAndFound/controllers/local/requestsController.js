@@ -46,6 +46,7 @@ export default class RequestsController extends Component {
   }
 
   async validateRequest(senderID, postID) {
+    console.log(postID);
     console.log('validating requests...');
     console.log(senderID);
     return await this.dataController
