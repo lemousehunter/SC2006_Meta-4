@@ -6,7 +6,15 @@ import NTextInput from '../../components/reusable/Neuromorphic/TextInput/NTextIn
 import NButton from '../../components/reusable/Neuromorphic/Buttons/NButton';
 import React from 'react';
 
+/**
+ReportsView is a React component that allows the user to report a post. It extends the BaseInnerView class.
+*/
 export default class ReportsView extends BaseInnerView {
+
+  /**
+ReportsView constructor that initializes the component's state and sets up necessary references.
+@param {object} props - React props object that includes navigation and route params.
+*/
   constructor(props) {
     super(props);
     this.createSettings();
@@ -14,6 +22,9 @@ export default class ReportsView extends BaseInnerView {
     this.reportReasonField = React.createRef(null);
   }
 
+  /**
+Creates and sets the stylesheet object for this component.
+*/
   createStylesheet() {
     this.styles = StyleSheet.create({
       innerContainer: {
@@ -34,6 +45,9 @@ export default class ReportsView extends BaseInnerView {
     });
   }
 
+  /**
+Creates and sets the settings object for this component.
+*/
   createSettings() {
     this.nSettings = {
       contentCard: {
@@ -60,6 +74,10 @@ export default class ReportsView extends BaseInnerView {
     };
   }
 
+  /**
+Renders the ReportsView component.
+@return {ReactElement} - The rendered component.
+*/
   render() {
     return (
       <NonTabbedScreenContainer
