@@ -30,7 +30,7 @@ Lost items can be posted for users to help with the search or update people who 
 
 # Overall Description
 ## Product Perspective
-Lost&Found is a novel app that helps users find their beloved lost items. The app is designed for anyone who has lost or found an item, and who wants to report the item or connect with others who may have information about the item. It also uses interactive map display with precise pins to indicate the location of the reported lost/found items to ease the lost and found process. Users are also able to search for users/posts/category based on a filter system. The introduction of reputation scores and reports will increase the credibility of the users, enhancing the credibility of Lost&Found. Lost&Found aims to simplify the process of finding lost items and to increase the chances of reuniting lost items with their owners.
+*Lost&Found* is a novel app that helps users find their beloved lost items. The app is designed for anyone who has lost or found an item, and who wants to report the item or connect with others who may have information about the item. It also uses interactive map display with precise pins to indicate the location of the reported lost/found items to ease the lost and found process. Users are also able to search for users/posts/category based on a filter system. The introduction of reputation scores and reports will increase the credibility of the users, enhancing the credibility of Lost&Found. Lost&Found aims to simplify the process of finding lost items and to increase the chances of reuniting lost items with their owners.
 Product Functions
 
 * Users can create account and log into their accounts.
