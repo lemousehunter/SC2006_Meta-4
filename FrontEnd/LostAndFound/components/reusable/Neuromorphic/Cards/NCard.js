@@ -5,7 +5,7 @@ import NCardCircle from './NCardCircle';
 /**
  * A custom card component that renders either a rectangle or a circle based on the `circle` prop.
  *
- * @param {Object} props - The props object that contains the following properties:
+ *   @param {Object} props - The props object that contains the following properties:
  *   @param {Object} settings - The settings object for the card.
  *   @param {boolean} [circle=false] - A boolean value indicating whether the card should be a circle or a rectangle. If `true`, the card will be rendered as a circle. If `false` or not provided, the card will be rendered as a rectangle.
  *   @param {any} children - The children nodes to be rendered within the card.
