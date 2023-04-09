@@ -343,7 +343,7 @@ const getUserResolvedPosts = async (req, res) => {
   })
     .populate("category")
     .sort({ date: -1 });
-  if (!userPosts) {
+  if (!userResolvedPosts) {
     res.status(500).json({ success: false });
   }
   res.send(userResolvedPosts);
