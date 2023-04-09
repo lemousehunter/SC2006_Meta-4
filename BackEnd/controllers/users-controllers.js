@@ -34,7 +34,7 @@ const getUserList = async (req, res, next) => {
   } catch (err) {
     return res
       .status(500)
-      .send({ message: "Fetching user list failed, please retry." });  
+      .send({ message: "Fetching user list failed, please retry." });
   }
   res.send(userList);
 };
@@ -211,7 +211,7 @@ const deleteUser = async (req, res) => {
       }
     })
     .catch((err) => {
-      return res.status(400).json({ success: false, error: err });       
+      return res.status(400).json({ success: false, error: err });
     });
 };
 
@@ -222,7 +222,7 @@ const displayUserPosts = async (req, res) => {
 
   const filter = new RegExp(userid, 'i');
 
-  const userPosts = await Post.find({ listedby: {name: filter} })  
+  const userPosts = await Post.find({ listedby: {name: filter} })
     .populate("category")
     .populate("listedBy")
     .sort({ date: -1 });
@@ -240,14 +240,24 @@ const displayUserPosts = async (req, res) => {
 };
 
 const displayUserReports = async (req, res) => {
-  const user = await User.findById(req.params.userid);
+  const user = await User.findById(req.params.id);
   if (!user) {
-    res.status(500).json({ success: false });
+    res.status(500).json({ message: 'invalidUser' });
   }
 
   const reportAgainst = user.gotReported;
   const reportby = user.reportedOthers;
   res.send([reportAgainst, reportby]);
+};
+
+const displayUserReportsReceived = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    res.status(500).json({ message: 'invalidUser' });
+  }
+
+  const reportAgainst = user.gotReported;
+  res.send(reportAgainst);
 };
 
 //display resolved post for each user
@@ -297,7 +307,7 @@ const displayUserMadeRequests = async (req, res) => {
 };
 
 const displayUserRecievedRequests = async (req, res) => {
-  const request = await Request.find({ recipient: req.params.id })
+  const request = await Request.find({ recipient: req.params.id, state: 0})
     .populate("sender")
     .populate("recipient")
     .populate("post");
@@ -324,4 +334,5 @@ module.exports = {
   displayAllUserRequests,
   displayUserRecievedRequests,
   displayUserMadeRequests,
+  displayUserReportsReceived,
 };
