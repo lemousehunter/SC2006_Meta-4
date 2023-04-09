@@ -9,7 +9,7 @@ import AccountScreen from '../screens/LoggedIn/tabbedScreens/Account/Account';
 import PostView from '../screens/LoggedIn/Views/PostView';
 
 let Tab = createBottomTabNavigator();
-
+//ss
 export default class NavBar extends React.Component {
   constructor(props) {
     super(props);
