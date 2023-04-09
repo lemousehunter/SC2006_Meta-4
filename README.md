@@ -92,31 +92,28 @@ OneMap API
 
 # Images of app GUI
 
+## Login & Register
 | Login Page                                                                                                 | Registration Page                                                                                             |
 |---------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/loginScreen.jpg" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/registerScreen.png" height="500"> |
 
-## HomePage
-<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/homeScreen.png" height="500">
 
-## Create post page
-<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost1.png" height="500">
-<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost2.png" height="500">
+## Tabbed Screens
+| HomePage                                                                                                     | MapPage                                                                                                   | Activity page                                                                                                    | Accounts page                                                                                              |
+|--------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/homeScreen.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/mapView.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/activityScreen.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/accounts.png" height="500"> |
 
-## Post view page
-<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/postView.png" height="500">
+## Create & Edit Posts
+| Part 1                                                                                                            | Part 2                                                                                                            | Accounts page                                                                                              |
+|-------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost1.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost2.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/accounts.png" height="500"> |
 
-## Report page
-<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/report.png" height="500">
 
-## Map page
-<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/mapView.png" height="500">
+## Inner Screens
+| PostView                                                                                                   | ReportView                                                                                               |
+|------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/postView.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/report.png" height="500"> |
 
-## Accounts page
-<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/accounts.png" height="500">
-
-## Activity page
-<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/activityScreen.png" height="500">
 
 
 # Hardware Interfaces
