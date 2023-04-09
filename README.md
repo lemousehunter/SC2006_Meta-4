@@ -1,11 +1,11 @@
 # SC2006_Meta-4
 ## Contributors
 <br />*Nanyang Technological University, A43 Team Meta-4*
-* Bernard Chiang [@Kazurl](https://github.com/Kazurl)
-* Cheong Jia Rong [@jiarong12](https://github.com/jiarong12)
-* Guo Yuan Lin [@pratelagger](https://github.com/pratelagger)
-* Jerome Wang [@lemousehunter](https://github.com/lemousehunter)
-* Rodmond Tan [@rodmond](https://github.com/Kazurl)
+* Bernard Chiang [@Kazurl](https://github.com/Kazurl) | **Backend**
+* Cheong Jia Rong [@jiarong12](https://github.com/jiarong12) | **Backend**
+* Guo Yuan Lin [@pratelagger](https://github.com/pratelagger) | **Backend**
+* Jerome Wang [@lemousehunter](https://github.com/lemousehunter)| **Frontend**
+* Rodmond Tan [@rodmond](https://github.com/Rodmond) | **Backend**
 <br />
 
 # Tech Stack
