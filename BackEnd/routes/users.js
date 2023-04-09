@@ -15,6 +15,7 @@ const {
   displayUserMadeRequests,
   displayAllUserRequests,
   displayUserRecievedRequests,
+  displayUserReportsReceived,
 } = require("../controllers/users-controllers");
 const express = require("express");
 const router = express.Router();
@@ -51,6 +52,9 @@ router.get("/userposts/:userid", displayUserPosts);
 
 //display user reports
 router.get("/userreports/:id", displayUserReports);
+
+//display user reports received
+router.get("/userreportsreceived/:id", displayUserReportsReceived);
 
 //display users resolved posts
 router.get("/resolvedposts/:id", displayResolvedPosts);

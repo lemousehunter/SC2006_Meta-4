@@ -22,6 +22,6 @@ router.put("/:id", updateRequestStatus);
 router.delete("/:id", deleteRequest);
 
 //validate if current session user has send request to this post, params is post id
-router.get("/validate/:id", validateUser);
+router.post("/validate/:id", validateUser);
 
 module.exports = router;

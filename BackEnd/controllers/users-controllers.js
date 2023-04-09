@@ -240,14 +240,24 @@ const displayUserPosts = async (req, res) => {
 };
 
 const displayUserReports = async (req, res) => {
-  const user = await User.findById(req.params.userid);
+  const user = await User.findById(req.params.id);
   if (!user) {
-    res.status(500).json({ success: false });
+    res.status(500).json({ message: 'invalidUser' });
   }
 
   const reportAgainst = user.gotReported;
   const reportby = user.reportedOthers;
   res.send([reportAgainst, reportby]);
+};
+
+const displayUserReportsReceived = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    res.status(500).json({ message: 'invalidUser' });
+  }
+
+  const reportAgainst = user.gotReported;
+  res.send(reportAgainst);
 };
 
 //display resolved post for each user
@@ -324,4 +334,5 @@ module.exports = {
   displayAllUserRequests,
   displayUserRecievedRequests,
   displayUserMadeRequests,
+  displayUserReportsReceived,
 };
