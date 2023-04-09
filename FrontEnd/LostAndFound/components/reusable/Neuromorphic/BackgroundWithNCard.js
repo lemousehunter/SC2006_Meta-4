@@ -7,7 +7,19 @@ import {
 } from 'react-native';
 import NCard from './Cards/NCard';
 
+/**
+ * A component that displays a colored background with an NCard on top of it.
+ */
 export default class BGWithNCard extends Component {
+
+   /**
+   * Constructs a new BGWithNCard component with the given props.
+   *
+   * @param props The props for this component.
+   * @param props.bgColor The background color to use.
+   * @param props.winW The width of the window.
+   * @param props.winH The height of the window.
+   */
   constructor(props) {
     super(props);
     this.bgColor = this.props.bgColor;
@@ -35,6 +47,11 @@ export default class BGWithNCard extends Component {
     });
   }
 
+  /**
+   * Renders the BGWithNCard component.
+   *
+   * @returns The rendered component.
+   */
   render() {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
