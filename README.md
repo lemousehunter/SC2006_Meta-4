@@ -39,7 +39,7 @@ Product Functions
 * Users can view all the unresolved posts on the map page.
 * Users can search for posts via user/category/items.
 * Users can view other users profile.
-* Users can make a request to a post (either I found it/ I lost it).
+* Users can make a request to a post (either *I found it* / *I lost it*).
 * Post owners can receive the requests.
 * Post owners can verify the request via an approve/reject button.
 * Users can report fake posts.
