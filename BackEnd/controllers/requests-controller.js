@@ -69,6 +69,12 @@ const updateRequestStatus = async (req, res) => {
   if (!newrequest) {
     return res.status(404).send({ message: "request cannot be updated" });
   }
+  let s;
+  if (newrequest.isLost === true) {
+    s = newrequest.recipient;
+  } else {
+    s = newrequest.sender;
+  }
   if (newrequest.state === 1) {
     //change state of other requests tagged to the post to be -1
     let oldpost = await Post.findById(oldrequest.post);
@@ -86,7 +92,7 @@ const updateRequestStatus = async (req, res) => {
         latitude: oldpost.latitude,
         longitude: oldpost.longitude,
         isResolved: true,
-        finder: oldrequest.sender,
+        finder: s,
       },
       { new: true }
     );
