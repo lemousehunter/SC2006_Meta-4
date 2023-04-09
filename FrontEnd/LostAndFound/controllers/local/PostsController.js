@@ -1,7 +1,18 @@
 import {Component} from 'react';
 import moment from 'moment';
 
+/**
+ * This class represents a controller for posts. It extends the Component class
+ * from the React library and provides methods for searching, retrieving, and converting posts.
+ */
 export default class PostsController extends Component {
+
+  /**
+   * Creates a new instance of PostsController.
+   * 
+   * @param {Object} dataC - The data controller to use for data operations.
+   * @param {Object} loginC - The login controller to use for login operations.
+   */
   constructor(dataC, loginC) {
     super(dataC, loginC);
     this.user = '';
@@ -9,6 +20,12 @@ export default class PostsController extends Component {
     this.loginController = loginC;
     this.dataController = dataC;
   }
+  /**
+   * Converts a post to a post item object.
+   * 
+   * @param {Object} post - The post object to convert.
+   * @returns {Object} A post item object containing the converted post data.
+   */
   convertPost2PostItem(post) {
     console.log('converting...');
     console.log('post!!:' + JSON.stringify(post));
@@ -64,6 +81,14 @@ export default class PostsController extends Component {
     };
   }
 
+  /**
+   * Searches for posts based on the given search term, search type, and category ID.
+   * 
+   * @param {string} searchTerm - The search term to use.
+   * @param {string} searchType - The search type to use.
+   * @param {string} categoryID - The category ID to search in.
+   * @returns {Array} An array of post item objects that match the search criteria.
+   */
   async searchPost(searchTerm, searchType, categoryID) {
     const _category = categoryID === 'All' ? '' : '&category=' + categoryID;
     const params =
@@ -83,6 +108,12 @@ export default class PostsController extends Component {
     return postLst;
   }
 
+  /**
+Retrieves a post by its ID.
+@param postID the ID of the post to retrieve
+@return the post object retrieved by the ID
+@throws any exceptions that occur during the API request
+*/
   async getPostByID(postID) {
     console.log('getting posts by id....');
     const posts = await this.dataController.get('posts/' + postID).then(_p => {
@@ -92,6 +123,13 @@ export default class PostsController extends Component {
     return posts;
   }
 
+  /**
+Gets a post with the specified name.
+@param {string} name - The name of the post to retrieve.
+@param {string} categoryID - The ID of the category to search within. Defaults to "All" if not specified.
+@return {Promise} - A Promise that resolves to an array of post items matching the specified name and category.
+@throws {Error} - If there is an error retrieving the post items.
+*/
   async getPostsFromUser(name, categoryID) {
     const userLst = await this.loginController
       .getUserListByName(name)
@@ -115,6 +153,14 @@ export default class PostsController extends Component {
     return postLst;
   }
 
+  /**
+ * Searches for posts that match the given item and category.
+ *
+ * @param item the search term for the post item
+ * @param category the category to filter the search by
+ * @return a list of post items that match the search criteria
+ * @throws {Error} if there is an error retrieving the data
+ */
   async searchByItemAndCat(item, category) {
     let url = '';
     if (category === 'All') {
@@ -134,10 +180,22 @@ export default class PostsController extends Component {
     return postList;
   }
 
+  /**
+Retrieves an array of post items for a given user and category using an asynchronous HTTP request.
+@param {string} userID - The ID of the user whose posts will be retrieved.
+@param {string} categoryID - The ID of the category to which the posts belong.
+@returns {Promise<Array>} - A Promise that resolves to an array of post items matching the specified user and category.
+*/
   async getPostItemsByUserAndCategory(userID, categoryID) {
     const posts = await this.dataController.get('users/userposts/');
   }
 
+  /**
+ * Retrieves all posts from the data source.
+ * 
+ * @return A Promise that resolves with an array of post objects if successful, 
+ *         or rejects with an error message if an error occurred.
+ */
   async getAllPosts() {
     console.log('getting all posts');
     const posts = await this.dataController.get('posts/get/UrgentPosts').then(res => {
@@ -152,6 +210,13 @@ export default class PostsController extends Component {
     return postItems;
   }
 
+  /**
+ * Retrieves all post items created by a given user ID.
+ * 
+ * @param {string} userID - The ID of the user whose post items will be retrieved.
+ * @returns {Promise<Array>} - A promise that resolves to an array of post items created by the user with the given ID.
+ * @throws {Error} - If the request to the data controller fails or returns an error.
+ */
   async getPostItemsByUserID(userID, postStatus) {
     const posts = await this.getPostsByUserID(userID, postStatus).then(res => {
       return res;
@@ -165,6 +230,13 @@ export default class PostsController extends Component {
     return array;
   }
 
+  /**
+Retrieves a list of posts created by a given user ID.
+@param {string} userID - The ID of the user whose posts to retrieve.
+@param {string} categoryID - The ID of the category to filter the posts by.
+@returns {Array} An array of post objects created by the given user.
+@throws {Error} If an error occurs while retrieving the posts.
+*/
   async getPostsByUserID(userID, postStatus) {
     let response = null;
     if (postStatus === 0) {
@@ -202,6 +274,11 @@ export default class PostsController extends Component {
     }
   }
 
+  /**
+Creates a new FormData object with the given key-value pairs.
+@param {object} data - An object containing key-value pairs to be added to the FormData.
+@returns {FormData} A new FormData object with the key-value pairs added to it.
+*/
   createFormData(
     photos,
     photoTypes,
@@ -245,6 +322,18 @@ export default class PostsController extends Component {
     return formdata;
   }
 
+  /**
+
+Edits the specified post with the given updates.
+@param {string} postID - The ID of the post to edit.
+@param {string} itemName - The updated name of the item.
+@param {string} itemDescription - The updated description of the item.
+@param {string} location - The updated location where the item was found/lost.
+@param {string} categoryID - The ID of the updated category.
+@param {Array} images - An array of updated image URLs for the post.
+@returns {Object} An object representing the edited post.
+@throws {Error} If the post does not exist or if the user is not authorized to edit the post.
+*/
   editPost(
     photos,
     photoTypes,
@@ -279,6 +368,13 @@ export default class PostsController extends Component {
     return response;
   }
 
+  /**
+ * Deletes a post with the specified post ID.
+ *
+ * @param {string} postID - The ID of the post to be deleted.
+ * @returns {Promise<boolean>} A promise that resolves with a boolean value indicating whether the post was successfully deleted.
+ * @throws {Error} If the post ID is invalid or if there was an error deleting the post.
+ */
   async deletePost(postID) {
     console.log('deleting....');
     return await this.dataController.del('posts/' + postID).then(res => {
@@ -286,6 +382,21 @@ export default class PostsController extends Component {
     });
   }
 
+  /**
+ * Creates a new post with the given details.
+ * 
+ * @param {string} itemName - The name of the lost/found item.
+ * @param {string} itemDescription - A description of the lost/found item.
+ * @param {string} location - The location where the item was lost/found.
+ * @param {string} categoryID - The ID of the category the item belongs to.
+ * @param {string} image - A URL pointing to the image of the lost/found item.
+ * @param {number} latitude - The latitude of the location where the item was lost/found.
+ * @param {number} longitude - The longitude of the location where the item was lost/found.
+ * @param {boolean} isLost - A flag indicating whether the item is lost or found.
+ * @param {string} listedBy - The name of the user who listed the post.
+ * 
+ * @returns {Promise} A Promise that resolves to the newly created post if successful, or rejects with an error if the post could not be created.
+ */
   async createPost(
     photos,
     photoTypes,
