@@ -68,7 +68,7 @@ These are individuals who use the app to browse lost and found items, search for
 # Operating Environment
 ## Development Environment
 **Front-end**: react-native
-*React Native is a User Interface(UI) Software Development Library that is created by Facebook. It allows the development of native apps. Hence, the same codebase could be used to run in both Android and iOS phones<br>
+* React Native is a User Interface(UI) Software Development Library that is created by Facebook. It allows the development of native apps. Hence, the same codebase could be used to run in both Android and iOS phones<br>
 **Backend**: Node.js,Express.js, MongoDB
 * Authentication is handled by JsonWebToken
 * All data is stored in MongoDB
