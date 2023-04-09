@@ -29,6 +29,7 @@ const getTypesById = async (req, res) => {
 const search =  async (req, res) => {
     const { name } = req.params;
     const { category, searchType } = req.query;
+    console.log(category);
 
     // console.log("name: " + name);
     // console.log("category: " + category);
@@ -57,26 +58,42 @@ const search =  async (req, res) => {
       else if ( searchType === "User" ) {
         console.log("User is being used to find");
 
-        /*users = await User.find({
+        users = await User.find({
             $or: [
               { name: filter },
             ]
         });
 
-        if (!users) return;*/
+        if (!users) {
+            console.log("no such user");
+            return;
+        }
+        else console.log(users);
 
-        postData = await Post.find({}, { listedBy: { name: filter } })
+        postData = await Post.find({}, { listedBy: { $elemMatch: { name: filter } }})
             .populate("category")
             .populate({ path: "listedBy", select: { name: 1, phone: 1 } });
+        
+        /*postData = await Post.aggregate([
+            {"$unwind": { "path": "$listedBy" }},
+            { "$match": { "listedBy.name": filter }},
+            { "$project": {
+                "_id": 0, "itemName": 1, "images": 1, "isLost": 1, "category": 1, "location": 1, "listedBy": "$listedBy.name", "date": 1, "time": 1, "itemDescription": 1
+            }}
+        ])*/
+
+        console.log(filter);
+        console.log(name);
+
+        /*postData = await Post.find({ 'listedBy.name': filter })
+            .populate("category")
+            .populate({ path: "listedBy", select: { name: 1, phone: 1 } });*/
 
         console.log(postData);
 
         if (!postData) {
             res.status(500).json({ success: false });
         }
-        /*postData = postData.filter((item) => {
-            return item.listedBy &&  item.listedBy.id && useridArray.includes(item.listedBy.id);
-        })*/
 
       }
     } catch (err) {
@@ -85,10 +102,13 @@ const search =  async (req, res) => {
     }
 
     if (category) {
+        console.log(category);
         postData = postData.filter((item) => {
           return item.category && item.category.id === category;
         });
     }
+
+    console.log(postData);
 
     /*if (!users) {
         res.status(201).send([]);
