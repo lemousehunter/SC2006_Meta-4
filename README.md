@@ -29,6 +29,7 @@ The Lost & Found mobile application is created and designed to be a one stop pla
 
 Lost items can be posted for users to help with the search or update people who have found said lost item. Found items can be posted for owners to come and identify their ownership.
 <br />
+<br />
 
 # Overall Description
 ## Product Perspective
