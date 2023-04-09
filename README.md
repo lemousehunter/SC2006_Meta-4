@@ -144,17 +144,17 @@ The app will utilize the device's camera and GPS hardware to capture images and 
 <br />
 
 # Software Interfaces
-**MongoDB - Version 4.0 or higher**
+**MongoDB - Version 4.0 or higher**<br>
 MongoDB is a NoSQL document database used to store and manage data about lost and found items. The app will communicate with the MongoDB database using the Mongoose ODM library.
 
 
-**Node.js - Version 12 or higher**
+**Node.js - Version 12 or higher**<br>
 Node.js is an open-source, cross-platform JavaScript runtime environment that allows developers to build scalable, high-performance web applications. The app will use Node.js as the server-side runtime environment.
 
-**Express.js - Version 4.17 or higher**
+**Express.js - Version 4.17 or higher**<br>
 Express.js is a fast, minimalist web framework for Node.js that provides a set of robust features for web and mobile applications. The app will use Express.js to build the RESTful API endpoints for data communication between the server and client.
 
-**React Native - Version 0.64 or higher**
+**React Native - Version 0.64 or higher**<br>
 React Native is an open-source mobile application framework created by Facebook that allows developers to build native mobile apps for iOS and Android using JavaScript and React. The app will use React Native to build the mobile user interface and logic for the app.
 <br />
 <br />
