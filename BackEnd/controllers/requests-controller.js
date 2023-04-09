@@ -71,9 +71,9 @@ const updateRequestStatus = async (req, res) => {
   }
   let s;
   if (newrequest.isLost === true) {
-    s = newrequest.recipient;
-  } else {
     s = newrequest.sender;
+  } else {
+    s = newrequest.recipient;
   }
   console.log(s);
   if (newrequest.state === 1) {
