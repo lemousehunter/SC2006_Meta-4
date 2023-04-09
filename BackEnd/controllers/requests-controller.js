@@ -71,6 +71,48 @@ const updateRequestStatus = async (req, res) => {
   }
   if (newrequest.state === 1) {
     //change state of other requests tagged to the post to be -1
+    let oldpost = await Post.findById(oldrequest.post);
+    let updatedPost = await Post.findByIdAndUpdate(
+      oldrequest.post,
+      {
+        itemName: oldpost.itemName,
+        isLost: oldpost.isLost,
+        location: oldpost.location,
+        listedBy: oldpost.listedBy,
+        date: oldpost.date,
+        time: oldpost.time,
+        itemDescription: oldpost.itemDescription,
+        category: oldpost.category,
+        latitude: oldpost.latitude,
+        longitude: oldpost.longitude,
+        isResolved: true,
+        finder: oldrequest.sender,
+      },
+      { new: true }
+    );
+    if (!updatedPost) {
+      return res.status(404).send("the post cannot be updated");
+    }
+    finderUser = await User.findById(updatedPost.finder);
+    if (!finderUser) {
+      return res.status(400).json({ message: "Finder not found." });
+    }
+    finderUser.creditScore = finderUser.creditScore + 1;
+    let foundPosts = finderUser.foundPosts;
+    let check = 0;
+    for (let index = 0; index < foundPosts.length; index++) {
+      const element = foundPosts[index];
+      if (element.toString() === req.params.id) {
+        check = 1;
+      }
+    }
+    console.log(check);
+    if (check != 1) {
+      foundPosts.push(req.params.id);
+      finderUser.foundPosts = foundPosts;
+      finderUser.save();
+    }
+
     let reqlist = await Request.find({ post: oldrequest.post });
     for (let index = 0; index < reqlist.length; index++) {
       const element = reqlist[index];
