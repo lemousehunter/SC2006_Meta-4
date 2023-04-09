@@ -62,15 +62,15 @@ const updateRequestStatus = async (req, res) => {
       post: oldrequest.post,
       isLost: oldrequest.isLost,
       state: req.body.state,
-      date: req.body.date,
+      date: oldrequest.date,
     },
     { new: true }
   );
   if (!newrequest) {
     return res.status(404).send({ message: "request cannot be updated" });
   }
-  //change state of other requests tagged to the post to be -1
   if (newrequest.state === 1) {
+    //change state of other requests tagged to the post to be -1
     let reqlist = await Request.find({ post: oldrequest.post });
     for (let index = 0; index < reqlist.length; index++) {
       const element = reqlist[index];
@@ -114,7 +114,7 @@ const validateUser = async (req, res) => {
     let r = await Request.findById(element);
     console.log(r.sender.toString() === userid);
 
-    if (r.sender.toString() === userid) {
+    if (r.sender.toString() === userid && r.state === 0) {
       check = true;
       console.log(check);
       return res.send({ check });
