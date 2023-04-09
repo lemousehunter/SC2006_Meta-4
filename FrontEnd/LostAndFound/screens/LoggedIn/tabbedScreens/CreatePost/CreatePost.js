@@ -236,6 +236,13 @@ export default class CreatePost extends BaseLoggedInScreen {
     const item = this.item.current.getText();
     const desc = this.desc.current.getText();
     const location = this.location.current.getText();
+    if (!location) {
+      Alert.alert('Post Error', 'Item Name cannot be empty!');
+    } else if (!location) {
+      Alert.alert('Post Error', 'Location cannot be empty!');
+      return null;
+    } 
+
     //await this.getLocation();
     console.log('photos:' + JSON.stringify(photos));
     console.log('type:' + JSON.stringify(type));

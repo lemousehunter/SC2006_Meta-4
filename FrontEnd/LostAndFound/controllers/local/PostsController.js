@@ -6,10 +6,9 @@ import moment from 'moment';
  * from the React library and provides methods for searching, retrieving, and converting posts.
  */
 export default class PostsController extends Component {
-
   /**
    * Creates a new instance of PostsController.
-   * 
+   *
    * @param {Object} dataC - The data controller to use for data operations.
    * @param {Object} loginC - The login controller to use for login operations.
    */
@@ -22,7 +21,7 @@ export default class PostsController extends Component {
   }
   /**
    * Converts a post to a post item object.
-   * 
+   *
    * @param {Object} post - The post object to convert.
    * @returns {Object} A post item object containing the converted post data.
    */
@@ -83,7 +82,7 @@ export default class PostsController extends Component {
 
   /**
    * Searches for posts based on the given search term, search type, and category ID.
-   * 
+   *
    * @param {string} searchTerm - The search term to use.
    * @param {string} searchType - The search type to use.
    * @param {string} categoryID - The category ID to search in.
@@ -154,13 +153,13 @@ Gets a post with the specified name.
   }
 
   /**
- * Searches for posts that match the given item and category.
- *
- * @param item the search term for the post item
- * @param category the category to filter the search by
- * @return a list of post items that match the search criteria
- * @throws {Error} if there is an error retrieving the data
- */
+   * Searches for posts that match the given item and category.
+   *
+   * @param item the search term for the post item
+   * @param category the category to filter the search by
+   * @return a list of post items that match the search criteria
+   * @throws {Error} if there is an error retrieving the data
+   */
   async searchByItemAndCat(item, category) {
     let url = '';
     if (category === 'All') {
@@ -191,17 +190,19 @@ Retrieves an array of post items for a given user and category using an asynchro
   }
 
   /**
- * Retrieves all posts from the data source.
- * 
- * @return A Promise that resolves with an array of post objects if successful, 
- *         or rejects with an error message if an error occurred.
- */
+   * Retrieves all posts from the data source.
+   *
+   * @return A Promise that resolves with an array of post objects if successful,
+   *         or rejects with an error message if an error occurred.
+   */
   async getAllPosts() {
     console.log('getting all posts');
-    const posts = await this.dataController.get('posts/get/UrgentPosts').then(res => {
-      console.log('getAllPostsRes:' + JSON.stringify(res));
-      return res.data;
-    });
+    const posts = await this.dataController
+      .get('posts/get/UrgentPosts')
+      .then(res => {
+        console.log('getAllPostsRes:' + JSON.stringify(res));
+        return res.data;
+      });
     const postItems = [];
     posts.map(post => {
       const obj = this.convertPost2PostItem(post);
@@ -211,12 +212,12 @@ Retrieves an array of post items for a given user and category using an asynchro
   }
 
   /**
- * Retrieves all post items created by a given user ID.
- * 
- * @param {string} userID - The ID of the user whose post items will be retrieved.
- * @returns {Promise<Array>} - A promise that resolves to an array of post items created by the user with the given ID.
- * @throws {Error} - If the request to the data controller fails or returns an error.
- */
+   * Retrieves all post items created by a given user ID.
+   *
+   * @param {string} userID - The ID of the user whose post items will be retrieved.
+   * @returns {Promise<Array>} - A promise that resolves to an array of post items created by the user with the given ID.
+   * @throws {Error} - If the request to the data controller fails or returns an error.
+   */
   async getPostItemsByUserID(userID, postStatus) {
     const posts = await this.getPostsByUserID(userID, postStatus).then(res => {
       return res;
@@ -369,12 +370,12 @@ Edits the specified post with the given updates.
   }
 
   /**
- * Deletes a post with the specified post ID.
- *
- * @param {string} postID - The ID of the post to be deleted.
- * @returns {Promise<boolean>} A promise that resolves with a boolean value indicating whether the post was successfully deleted.
- * @throws {Error} If the post ID is invalid or if there was an error deleting the post.
- */
+   * Deletes a post with the specified post ID.
+   *
+   * @param {string} postID - The ID of the post to be deleted.
+   * @returns {Promise<boolean>} A promise that resolves with a boolean value indicating whether the post was successfully deleted.
+   * @throws {Error} If the post ID is invalid or if there was an error deleting the post.
+   */
   async deletePost(postID) {
     console.log('deleting....');
     return await this.dataController.del('posts/' + postID).then(res => {
@@ -383,20 +384,20 @@ Edits the specified post with the given updates.
   }
 
   /**
- * Creates a new post with the given details.
- * 
- * @param {string} itemName - The name of the lost/found item.
- * @param {string} itemDescription - A description of the lost/found item.
- * @param {string} location - The location where the item was lost/found.
- * @param {string} categoryID - The ID of the category the item belongs to.
- * @param {string} image - A URL pointing to the image of the lost/found item.
- * @param {number} latitude - The latitude of the location where the item was lost/found.
- * @param {number} longitude - The longitude of the location where the item was lost/found.
- * @param {boolean} isLost - A flag indicating whether the item is lost or found.
- * @param {string} listedBy - The name of the user who listed the post.
- * 
- * @returns {Promise} A Promise that resolves to the newly created post if successful, or rejects with an error if the post could not be created.
- */
+   * Creates a new post with the given details.
+   *
+   * @param {string} itemName - The name of the lost/found item.
+   * @param {string} itemDescription - A description of the lost/found item.
+   * @param {string} location - The location where the item was lost/found.
+   * @param {string} categoryID - The ID of the category the item belongs to.
+   * @param {string} image - A URL pointing to the image of the lost/found item.
+   * @param {number} latitude - The latitude of the location where the item was lost/found.
+   * @param {number} longitude - The longitude of the location where the item was lost/found.
+   * @param {boolean} isLost - A flag indicating whether the item is lost or found.
+   * @param {string} listedBy - The name of the user who listed the post.
+   *
+   * @returns {Promise} A Promise that resolves to the newly created post if successful, or rejects with an error if the post could not be created.
+   */
   async createPost(
     photos,
     photoTypes,
