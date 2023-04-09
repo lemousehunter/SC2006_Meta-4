@@ -76,7 +76,7 @@ const uploadPost = async (req, res) => {
     time: req.body.time,
     itemDescription: req.body.itemDescription,
     category: req.body.category,
-    isResolved: req.body.isResolved,
+    isResolved: false,
     latitude: LATITUDE,
     longitude: LONGITUDE,
   });
@@ -323,7 +323,10 @@ const getUserPosts = async (req, res) => {
 
 //display user unresolved  posts
 const getUserUnresolvedPosts = async (req, res) => {
-  const userUnresolvedPosts = await Post.find({ listedBy: req.params.userid, isResolved:false })
+  const userUnresolvedPosts = await Post.find({
+    listedBy: req.params.userid,
+    isResolved: false,
+  })
     .populate("category")
     .sort({ date: -1 });
   if (!userPosts) {
