@@ -4,7 +4,14 @@ const { Request } = require("../models/request");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-//get single user by ID
+/**
+ * Retrieve a single user by ID.
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Promise} - A promise that resolves to the user object.
+ */
 const getUserId = async (req, res, next) => {
   let user;
   try {
@@ -21,7 +28,14 @@ const getUserId = async (req, res, next) => {
   res.send(user);
 };
 
-//get list of user
+/**
+ * Retrieve a list of all users sorted by credit score.
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Promise} - A promise that resolves to an array of user objects.
+ */
 const getUserList = async (req, res, next) => {
   let userList;
   try {
@@ -39,7 +53,14 @@ const getUserList = async (req, res, next) => {
   res.send(userList);
 };
 
-// create new User localhost://3000/users/
+/**
+ * Create a new user.
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Promise} - A promise that resolves to the newly created user object.
+ */
 const registerUser = async (req, res, next) => {
   let existingUser;
   try {
@@ -76,7 +97,13 @@ const registerUser = async (req, res, next) => {
   res.status(201).send(user);
 };
 
-// Log in user by taking in email and password as input in body
+/**
+ * Log in a user with email and password.
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise} - A promise that resolves to an object containing user email, token, and ID.
+ */
 const loginUser = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   const secret = process.env.secret;
@@ -98,7 +125,13 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Log out user by using userId as input in body
+/**
+ * Log out a user with user ID.
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise} - A promise that resolves to a success message.
+ */
 const logoutUser = async (req, res) => {
   // Get the user ID from the request object
   const userId = req.body.userId;
@@ -117,7 +150,14 @@ const logoutUser = async (req, res) => {
   }
 };
 
-// Update user information
+/**
+ * Update user information by user ID.
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Promise} - A promise that resolves to the updated user object.
+ */
 const updateUser = async (req, res, next) => {
   try {
     let updatedUser = await User.findByIdAndUpdate(
@@ -139,7 +179,14 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-// change creditScore
+/**
+ * Edit the credit score of a user by user ID.
+ * @async
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Promise} - A promise that resolves to the updated user object.
+ */
 const editCreditScore = async (req, res, next) => {
   try {
     user = await User.findById(req.params.id).select("-passwordHash");
@@ -163,7 +210,15 @@ const editCreditScore = async (req, res, next) => {
   }
 };
 
-// Search via name (Case sensitive)
+/**
+Finds users by name using a case sensitive search and returns their name, email, phone, and posts
+@function
+@async
+@param {Object} req - Express request object
+@param {string} req.params.name - Name to search for
+@param {Object} res - Express response object
+@returns {Object} Returns an object containing name, email, phone, and posts of the found users or an error message
+*/
 const findUserByName = async (req, res, next) => {
   let data;
   try {
@@ -178,7 +233,15 @@ const findUserByName = async (req, res, next) => {
   res.status(201).send(data);
 };
 
-//delete user
+/**
+ * Deletes a user with the specified ID from the database.
+ *
+ * @param req the HTTP request object containing the ID of the user to delete
+ * @param res the HTTP response object that will contain the result of the operation
+ * @param next the next middleware function in the chain
+ * @return the HTTP response object indicating the success or failure of the operation
+ * @throws Error if an error occurs while deleting the user or if the user does not exist
+ */
 const deleteUser = async (req, res) => {
   let user = await User.findById(req.params.id);
   if (!user) {
@@ -215,7 +278,14 @@ const deleteUser = async (req, res) => {
     });
 };
 
-//display user posts
+/**
+
+Retrieves all the posts associated with a specific user ID and returns them
+in descending order by creation date/time.
+@param {object} req - The HTTP request object
+@param {object} res - The HTTP response object
+@returns {object} - The HTTP response object with an array of the user's posts
+*/
 const displayUserPosts = async (req, res) => {
   const { userid } = req.params;
   const { category } = req.query;
@@ -239,6 +309,17 @@ const displayUserPosts = async (req, res) => {
   res.send(postData);
 };
 
+/**
+ * Displays a report of a user's information and posts.
+ *
+ * @function
+ * @async
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Promise<Object>} An object containing the user's information and posts.
+ * @throws {Error} If there is an error fetching the user's information or posts.
+ */
 const displayUserReports = async (req, res) => {
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -250,6 +331,15 @@ const displayUserReports = async (req, res) => {
   res.send([reportAgainst, reportby]);
 };
 
+/**
+Displays the report information of a specified user including reports made against them
+@function
+@async
+@param {Object} req - Express request object
+@param {string} req.params.id - The ID of the user to display reports for
+@param {Object} res - Express response object
+@returns {Object} Returns an array containing report information of the specified user or an error message
+*/
 const displayUserReportsReceived = async (req, res) => {
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -260,7 +350,15 @@ const displayUserReportsReceived = async (req, res) => {
   res.send(reportAgainst);
 };
 
-//display resolved post for each user
+/**
+Displays all posts that have been marked as resolved by a specified user
+@function
+@async
+@param {Object} req - Express request object
+@param {string} req.params.id - The ID of the user to display resolved posts for
+@param {Object} res - Express response object
+@returns {Object} Returns an array containing resolved posts of the specified user or an error message
+*/
 const displayResolvedPosts = async (req, res) => {
   const resolvedPost = await Post.find({
     listedby: req.params.id,
@@ -272,6 +370,15 @@ const displayResolvedPosts = async (req, res) => {
   res.send(resolvedPost);
 };
 
+/**
+Displays all posts that have been found by a specified user
+@function
+@async
+@param {Object} req - Express request object
+@param {string} req.params.id - The ID of the user to display found posts for
+@param {Object} res - Express response object
+@returns {Object} Returns an array containing found posts of the specified user or an error message
+*/
 const displayFoundPosts = async (req, res) => {
   const foundPost = await Post.find({ finder: req.params.id });
   if (!foundPost) {
@@ -280,7 +387,16 @@ const displayFoundPosts = async (req, res) => {
   res.send(foundPost);
 };
 
-//get all requests by a user
+
+/**
+Displays all requests sent or received by a specified user
+@function
+@async
+@param {Object} req - Express request object
+@param {string} req.params.id - The ID of the user to display requests for
+@param {Object} res - Express response object
+@returns {Object} Returns an array containing all requests of the specified user or an error message
+*/
 const displayAllUserRequests = async (req, res) => {
   const request = await Request.find({
     $or: [{ sender: req.params.id }, { recipient: req.params.id }],
@@ -294,7 +410,15 @@ const displayAllUserRequests = async (req, res) => {
   res.send(request);
 };
 
-//display requests user made
+/**
+Displays all requests sent by a specified user
+@function
+@async
+@param {Object} req - Express request object
+@param {string} req.params.id - The ID of the user to display requests for
+@param {Object} res - Express response object
+@returns {Object} Returns an array containing all requests made by the specified user or an error message
+*/
 const displayUserMadeRequests = async (req, res) => {
   const request = await Request.find({ sender: req.params.id })
     .populate("sender")
@@ -306,6 +430,16 @@ const displayUserMadeRequests = async (req, res) => {
   res.send(request);
 };
 
+/**
+ * Retrieves all requests received by a user with the specified ID, where the state of the request is 0 (i.e., pending).
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} req.params - The URL parameters sent with the request.
+ * @param {string} req.params.id - The ID of the user whose received requests are being retrieved.
+ * @param {Object} res - The HTTP response object.
+ * @returns {Object} An array of Request objects received by the specified user, where the state of the request is 0 (i.e., pending).
+ * @throws {Error} If an error occurs while retrieving the requests.
+ */
 const displayUserRecievedRequests = async (req, res) => {
   const request = await Request.find({ recipient: req.params.id, state: 0})
     .populate("sender")
