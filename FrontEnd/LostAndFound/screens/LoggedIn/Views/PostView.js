@@ -200,9 +200,10 @@ This method is a good place to set up subscriptions or event listeners, or to pe
     console.log('validation:', JSON.stringify(validation));
   }
 
-  /**
- * Defines the view that will be displayed on the screen.
- * @returns {ReactElement} - A React element that is rendered to the screen.
+ /**
+ * Renders the component's view to the screen.
+ *
+ * @return {JSX.Element} A React component representing the rendered view.
  */
   render() {
     console.log('in post view');
