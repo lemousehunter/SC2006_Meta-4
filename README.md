@@ -1,11 +1,11 @@
 # SC2006_Meta-4
 ## Contributors
 <br />*Nanyang Technological University, A43 Team Meta-4*
-* Bernard Chiang @Kazurl
-* Cheong Jia Rong @jiarong12
-* Guo Yuan Lin @pratelagger
-* Wang Jie Rui, Jerome @lemousehunter
-* Rodmond Tan @rodmond
+* Bernard Chiang [@Kazurl](https://github.com/Kazurl)
+* Cheong Jia Rong [@jiarong12](https://github.com/jiarong12)
+* Guo Yuan Lin [@pratelagger](https://github.com/pratelagger)
+* Jerome Wang [@lemousehunter](https://github.com/lemousehunter)
+* Rodmond Tan [@rodmond](https://github.com/Kazurl)
 
 # Tech Stack
 ## MERN
