@@ -74,7 +74,7 @@ export default function App() {
     {name: 'RegisterPage', component: RegisterPage},
     {name: 'LoggedInScreen', component: LoggedInScreen},
     {name: 'PostView', component: PostView},
-    {name: 'GenericAccount', component: GenericAccountView},
+    {name: 'GenericAccountView', component: GenericAccountView},
     {name: 'ReportsView', component: ReportsView},
     {name: 'UpdatePostView', component: UpdatePostView},
   ];
