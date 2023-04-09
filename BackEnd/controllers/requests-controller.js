@@ -1,9 +1,17 @@
+
 const { Request } = require("../models/request");
 const { Post } = require("../models/post");
 const { User } = require("../models/user");
 const { findById } = require("../models/chat");
 
-//get all request details
+/**
+ * Retrieves details of all requests, including sender, recipient, and post information
+ * @function
+ * @async
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Array<Object>} Array of request objects
+ */
 const displayAllRequests = async (req, res) => {
   const request = await Request.find()
     .populate("sender")
@@ -15,7 +23,14 @@ const displayAllRequests = async (req, res) => {
   res.send(request);
 };
 
-//user making request
+/**
+ * Creates a new request for a given post, with specified sender and recipient
+ * @function
+ * @async
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} Request object
+ */
 const makeNewRequest = async (req, res) => {
   let post = await Post.findById(req.params.id);
   if (!post) {
@@ -48,7 +63,14 @@ const makeNewRequest = async (req, res) => {
   res.send(request);
 };
 
-//editing request ie changing the state
+/**
+ * Updates the status of a request with a new state value
+ * @function
+ * @async
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} Request object
+ */
 const updateRequestStatus = async (req, res) => {
   let oldrequest = await Request.findById(req.params.id);
   if (!oldrequest) {
@@ -141,6 +163,14 @@ const updateRequestStatus = async (req, res) => {
   res.send(newrequest);
 };
 
+/**
+ * Validates the user and post associated with a request
+ * @function
+ * @async
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} User object
+ */
 const validateUser = async (req, res) => {
   let userid = req.body.user;
   let user = await User.findById(userid);
@@ -172,7 +202,16 @@ const validateUser = async (req, res) => {
   res.send({ check });
 };
 
-//delete request
+/**
+Deletes a request with the specified ID from the database.
+@function
+@async
+@param {Object} req - The HTTP request object.
+@param {Object} res - The HTTP response object.
+@param {string} req.params.id - The ID of the request to be deleted.
+@returns {Object} The HTTP response object with a success status and message if the request is successfully deleted or an error status and message if there was an error.
+@throws {Object} An error object if an error occurred during the operation.
+*/
 const deleteRequest = async (req, res) => {
   Request.findByIdAndRemove(req.params.id)
     .then((request) => {
