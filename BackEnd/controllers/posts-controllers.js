@@ -1,3 +1,8 @@
+
+/**
+Requires the Post, Category, Request, and User models along with axios, mongoose, and onemapApiKey.
+@module controllers/postController
+*/
 const { Post } = require("../models/post");
 const { Category } = require("../models/category");
 const { Request } = require("../models/request");
@@ -7,7 +12,16 @@ const axios = require("axios");
 const { onemapApiKey } = require("../helpers/config");
 const { request } = require("express");
 
-// show all posts or filtered by category posts
+
+/**
+Retrieve all posts, optionally filtered by category.
+@function
+@async
+@param {Object} req - Express request object
+@param {Object} res - Express response object
+@param {string} req.query.categories - A comma-separated string of category IDs to filter by
+@returns {Object} - List of Post objects
+*/
 const showAllPosts = async (req, res) => {
   let filter = {};
   if (req.query.categories) {
@@ -22,7 +36,16 @@ const showAllPosts = async (req, res) => {
   }
   res.send(postList);
 };
-//show post found by id, can use .select(<attribute>) to show selected attribute
+
+/**
+Retrieve a Post object by ID.
+@function
+@async
+@param {Object} req - Express request object
+@param {Object} res - Express response object
+@param {string} req.params.id - ID of the Post object to retrieve
+@returns {Object} - A Post object
+*/
 const getPostById = async (req, res) => {
   const post = await Post.findById(req.params.id)
     .populate("category")
@@ -32,7 +55,24 @@ const getPostById = async (req, res) => {
   }
   res.send(post);
 };
-// upload new post
+
+/**
+Upload a new Post object to the database.
+@function
+@async
+@param {Object} req - Express request object
+@param {Object} res - Express response object
+@param {string} req.body.itemName - Name of the item being posted
+@param {boolean} req.body.isLost - Whether the item is lost or found
+@param {Array} req.files - Array of image files
+@param {string} req.body.listedBy - ID of the User who created the post
+@param {string} req.body.location - Location of the item
+@param {string} req.body.date - Date the item was lost or found
+@param {string} req.body.time - Time the item was lost or found
+@param {string} req.body.itemDescription - Description of the item
+@param {string} req.body.category - ID of the Category the item belongs to
+@returns {Object} - The created Post object
+*/
 const uploadPost = async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send({ message: "invalid Category" });
@@ -96,8 +136,21 @@ const uploadPost = async (req, res) => {
   res.send(post);
 };
 
-//update post found by id and if post has been resolved, remove pin from map
-//keep resolved post for history
+/**
+ * Updates a post by its ID.
+ *
+ * @param {Object} req - Express request object
+ * @param {Object} req.params - URL parameters, should contain the ID of the post to update
+ * @param {Object} req.body - Request body containing the updated post information
+ * @param {Array} req.files - Array of files uploaded with the request
+ * @param {Object} res - Express response object
+ *
+ * @throws {Error} If the post ID in the URL is invalid, a 400 Bad Request error is returned
+ * @throws {Error} If the provided category ID is invalid, a 400 Bad Request error is returned
+ * @throws {Error} If the specified post cannot be found, a 400 Bad Request error is returned
+ *
+ * @returns {Object} The updated post object
+ */
 const updatePostById = async (req, res) => {
   // check if the id in the url is valid
   if (!mongoose.isValidObjectId(req.params.id)) {
@@ -218,7 +271,13 @@ const updatePostById = async (req, res) => {
   }
 };
 
-//delete post found by id
+/**
+ * Deletes a post with the specified ID.
+ *
+ * @param {ObjectID} id - The ID of the post to delete.
+ * @returns {Promise} - A promise that resolves with the deleted post if the deletion is successful, or rejects with an error if not.
+ * @throws {Error} - If the ID parameter is not a valid ObjectId or if the post does not exist.
+ */
 const deletePostById = async (req, res, next) => {
   let post;
   try {
@@ -267,7 +326,12 @@ const deletePostById = async (req, res, next) => {
   });
 };
 
-// get the count of posts
+/**
+ * Retrieves the count of all posts in the database.
+ * @param req the request object
+ * @param res the response object
+ * @throws Error if there is a server error
+ */
 const getPostCount = async (req, res) => {
   let postCount;
   try {
@@ -283,7 +347,15 @@ const getPostCount = async (req, res) => {
   }
 };
 
-//display all unresolved posts
+
+/**
+ * Retrieves all unresolved posts from the database.
+ * 
+ * @param req the HTTP request object
+ * @param res the HTTP response object
+ * @return a list of unresolved posts
+ * @throws HTTP 500 error if the server encounters an error while processing the request
+ */
 const getUnresolvedPosts = async (req, res) => {
   const urgentPost = await Post.find({ isResolved: false })
     .populate("category")
@@ -294,7 +366,20 @@ const getUnresolvedPosts = async (req, res) => {
   res.send(urgentPost);
 };
 
-//display all found posts
+
+/**
+ * Retrieve all posts that are marked as found and unresolved.
+ * Populates the "category" and "listedBy" fields of each post with the corresponding documents.
+ * Sends the retrieved posts to the client as a response.
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * 
+ * @throws {Error} Will throw an error if an unexpected error occurs while retrieving the posts.
+ * 
+ * @return {Object} A JSON response containing the retrieved posts or an error message.
+ */
+
 const getFoundPosts = async (req, res) => {
   const foundPosts = await Post.find({ isResolved: false, isLost: false })
     .populate("category")
@@ -305,7 +390,16 @@ const getFoundPosts = async (req, res) => {
   res.send(foundPosts);
 };
 
-//display lost posts
+/**
+ * Retrieves all the lost posts that are currently unresolved from the database.
+ * Populates the category and listedBy fields of each post with the corresponding
+ * category and user documents. Sends the retrieved data as a response to the client.
+ * 
+ * @param req the HTTP request sent by the client
+ * @param res the HTTP response to be sent to the client
+ * @return the retrieved lost posts if successful, an error message if unsuccessful
+ * @throws Error if there is a server error while processing the request
+ */
 const getLostPosts = async (req, res) => {
   const lostPosts = await Post.find({ isResolved: false, isLost: true })
     .populate("category")
@@ -316,7 +410,13 @@ const getLostPosts = async (req, res) => {
   res.send(lostPosts);
 };
 
-//display user posts
+/**
+Retrieves userpost from the database and sends them as a response to the client.
+@param req - The request object representing the HTTP request.
+@param res - The response object representing the HTTP response.
+@returns An array of userpost or an error response.
+@throws An error response with status 500 if there is a server error.
+*/
 const getUserPosts = async (req, res) => {
   const userPosts = await Post.find({ listedBy: req.params.userid })
     .populate("category")
@@ -328,7 +428,13 @@ const getUserPosts = async (req, res) => {
   res.send(userPosts);
 };
 
-//display user unresolved  posts
+/**
+Retrieves all unresolved posts from the database and sends them as a response to the client.
+@param req - The request object representing the HTTP request.
+@param res - The response object representing the HTTP response.
+@returns An array of unresolved posts or an error response.
+@throws An error response with status 500 if there is a server error.
+*/
 const getUserUnresolvedPosts = async (req, res) => {
   const userUnresolvedPosts = await Post.find({
     listedBy: req.params.userid,
@@ -342,7 +448,13 @@ const getUserUnresolvedPosts = async (req, res) => {
   res.send(userUnresolvedPosts);
 };
 
-//display user resolved  posts
+/**
+Retrieves all resolved posts from the database and sends them as a response to the client.
+@param req - The request object representing the HTTP request.
+@param res - The response object representing the HTTP response.
+@returns An array of resolved posts or an error response.
+@throws An error response with status 500 if there is a server error.
+*/
 const getUserResolvedPosts = async (req, res) => {
   const userResolvedPosts = await Post.find({
     listedBy: req.params.userid,
@@ -356,7 +468,12 @@ const getUserResolvedPosts = async (req, res) => {
   res.send(userResolvedPosts);
 };
 
-// Search posts
+/**
+ * Search for posts by name and category.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} - The data of the found posts.
+ */
 const searchPosts = async (req, res) => {
   const { name } = req.params;
   const { category } = req.query;
