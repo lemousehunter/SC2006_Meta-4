@@ -160,7 +160,7 @@ React Native is an open-source mobile application framework created by Facebook 
 <br />
 <br />
 
-# Data items and messages coming into the system and going out include:
+## Data items and messages coming into the system and going out include:
 
 * User authentication and authorization data
 * Lost and found item data, including item descriptions, location data, and contact information for owners and finders
