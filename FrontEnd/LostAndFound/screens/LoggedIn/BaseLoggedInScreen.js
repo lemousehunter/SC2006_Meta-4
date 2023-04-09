@@ -1,22 +1,43 @@
 import BaseScreen from '../BaseScreen';
-import {Component} from 'react';
 
 export default class BaseLoggedInScreen extends BaseScreen {
   constructor(props) {
     super(props);
-    //console.log('props: ' + this.props);
-    this.user = this.props.route.params.user;
-    // console.log('u: ' + this.user);
-    this.screensArray = this.props.route.params.screensArray;
-    console.log('s: ');
-    console.log(this.props.route.params.screensArray);
+    // console.log(this.props);
   }
+
+  //static contextType = AppContext;
 
   getUser() {
-    return this.user;
+    return this.getLoginController().getUser();
   }
 
-  getScreensArray() {
-    return this.screensArray;
+  logOut() {
+    this.getLoginController().logOut();
+    this.navigate('PreLoginHomepage', this.getParams());
+  }
+
+  getPostsController = () => {
+    return this.getControllers().postsController;
+  };
+
+  getReportsController = () => {
+    return this.getControllers().reportsController;
+  };
+
+  getRequestsController = () => {
+    return this.getControllers().requestsController;
+  };
+
+  nav = (tabScreenName, params) => {
+    console.log('jumping to:', tabScreenName);
+    this.props.navigation.jumpTo(tabScreenName, params);
+  };
+
+  render() {
+    console.log('TabUser is:' + this.getLoginController().getUser());
+    //console.log('User is:' + this.getUser());
+    //this.getBottomNav();
+    //console.log('homeScreen user:' + this.getUser());
   }
 }

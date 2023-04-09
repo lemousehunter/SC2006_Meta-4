@@ -3,19 +3,12 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {Component} from 'react';
 import HomeScreen from '../screens/LoggedIn/tabbedScreens/Home/HomeScreen';
 import Search from '../screens/LoggedIn/tabbedScreens/Search/Search';
-import Post from '../screens/LoggedIn/tabbedScreens/Post/Post';
-import ChatScreen from '../screens/LoggedIn/tabbedScreens/Chat/Chat';
+import CreatePost from '../screens/LoggedIn/tabbedScreens/CreatePost/CreatePost';
+import Activity from '../screens/LoggedIn/tabbedScreens/Activity/Activity';
 import AccountScreen from '../screens/LoggedIn/tabbedScreens/Account/Account';
+import PostView from '../screens/LoggedIn/Views/PostView';
 
-let tab = createBottomTabNavigator();
-
-function HS() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
+let Tab = createBottomTabNavigator();
 
 export default class NavBar extends React.Component {
   constructor(props) {
@@ -25,11 +18,12 @@ export default class NavBar extends React.Component {
     this.normalColor = props.normalColor;
     this.screensArray = props.screensArray;
     this.initialParams = props.initialParams;
+    console.log('navBar initial params:' + JSON.stringify(this.initialParams));
     this.children = props.children;
-    console.log(this.navBarColor);
-    console.log(this.activeColor);
-    console.log(this.normalColor);
-    console.log(this.screensArray);
+    this.user = props.user;
+    // console.log(this.navBarColor);
+    // console.log(this.activeColor);
+    // console.log(this.normalColor);
     this.styleSheet = StyleSheet.create({
       shadows: {
         shadowColor: '#7F5DF0',
@@ -90,13 +84,13 @@ export default class NavBar extends React.Component {
   render() {
     return (
       // eslint-disable-next-line react/react-in-jsx-scope
-      <tab.Navigator
+      <Tab.Navigator
         screenOptions={{
           tabBarShowLabel: false,
           tabBarStyle: this.styleSheet.bottomNavStyle,
           headerShown: false,
         }}>
-        <tab.Screen
+        <Tab.Screen
           name={'Home'}
           component={HomeScreen}
           options={{
@@ -127,7 +121,7 @@ export default class NavBar extends React.Component {
           }}
           initialParams={this.initialParams}
         />
-        <tab.Screen
+        <Tab.Screen
           name={'Search'}
           component={Search}
           options={{
@@ -158,9 +152,9 @@ export default class NavBar extends React.Component {
           }}
           initialParams={this.initialParams}
         />
-        <tab.Screen
-          name={'Post'}
-          component={Post}
+        <Tab.Screen
+          name={'CreatePost'}
+          component={CreatePost}
           options={{
             tabBarIcon: ({focused}) => {
               return (
@@ -173,23 +167,23 @@ export default class NavBar extends React.Component {
                     tintColor: this.navBarColor,
                   }}
                 />
-              )
+              );
             },
             tabBarButton: props => <this.PlusButton {...props} />,
           }}
           initialParams={this.initialParams}
         />
-        <tab.Screen
-          name={'Chat'}
-          component={ChatScreen}
+        <Tab.Screen
+          name={'Activity'}
+          component={Activity}
           options={{
             tabBarIcon: ({focused}) => (
               <View style={this.styleSheet.tabView}>
                 <Image
                   source={
                     focused
-                      ? require('../assets/icons/chat_active.png')
-                      : require('../assets/icons/chat.png')
+                      ? require('../assets/icons/notification_active.png')
+                      : require('../assets/icons/notification.png')
                   }
                   resizeMode={'contain'}
                   style={{
@@ -203,14 +197,14 @@ export default class NavBar extends React.Component {
                     color: focused ? this.activeColor : this.normalColor,
                     fontSize: 12,
                   }}>
-                  {'Chat'}
+                  {'Activity'}
                 </Text>
               </View>
             ),
           }}
           initialParams={this.initialParams}
         />
-        <tab.Screen
+        <Tab.Screen
           name={'Account'}
           component={AccountScreen}
           options={{
@@ -241,7 +235,7 @@ export default class NavBar extends React.Component {
           }}
           initialParams={this.initialParams}
         />
-      </tab.Navigator>
+      </Tab.Navigator>
     );
   }
 }
