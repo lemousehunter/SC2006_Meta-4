@@ -1,10 +1,11 @@
 # SC2006_Meta-4
 ## Contributors
+<br />*Nanyang Technological University, A43 Team Meta-4*
 * Bernard Chiang 
 * Cheong Jia Rong
 * Guo Yuan Lin
 * Wang Jie Rui, Jerome
-* Rodmond Tan<br />*Nanyang Technological University, A43 Team Meta-4*
+* Rodmond Tan
 
 
 # Introduction
