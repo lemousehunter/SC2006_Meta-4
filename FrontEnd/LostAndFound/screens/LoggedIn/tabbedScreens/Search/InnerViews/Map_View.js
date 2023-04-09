@@ -142,6 +142,8 @@ export default class Map_View extends BaseInnerView {
               isResolved: post.isResolved,
               listedBy: post.listedBy,
               desc: post.itemDescription,
+              title: post.itemName,
+              postID: post.id,
             };
             console.log('dataImages:' + JSON.stringify(data.images));
             this.getNav().navigate('PostView', {data: data});
