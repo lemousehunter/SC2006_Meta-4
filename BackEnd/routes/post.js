@@ -11,6 +11,7 @@ const {
   getUserPosts,
   searchPosts,
   getUserUnresolvedPosts,
+  getUserResolvedPosts,
 } = require("../controllers/posts-controllers");
 const express = require("express");
 const multer = require("multer");
@@ -75,8 +76,10 @@ router.get("/userposts/:userid", getUserPosts);
 //get user unresolved post
 router.get("/get/UrgentPosts/:userid", getUserUnresolvedPosts);
 
+//get user resolved post
+router.get("/get/Resolved/:userid", getUserResolvedPosts);
+
 // Search posts
 router.get(`/search/:name`, searchPosts);
-
 
 module.exports = router;

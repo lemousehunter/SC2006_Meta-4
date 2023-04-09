@@ -321,7 +321,7 @@ const getUserPosts = async (req, res) => {
   res.send(userPosts);
 };
 
-//display user posts
+//display user unresolved  posts
 const getUserUnresolvedPosts = async (req, res) => {
   const userUnresolvedPosts = await Post.find({ listedBy: req.params.userid, isResolved:false })
     .populate("category")
@@ -329,7 +329,21 @@ const getUserUnresolvedPosts = async (req, res) => {
   if (!userPosts) {
     res.status(500).json({ success: false });
   }
-  res.send(userPosts);
+  res.send(userUnresolvedPosts);
+};
+
+//display user resolved  posts
+const getUserResolvedPosts = async (req, res) => {
+  const userResolvedPosts = await Post.find({
+    listedBy: req.params.userid,
+    isResolved: true,
+  })
+    .populate("category")
+    .sort({ date: -1 });
+  if (!userPosts) {
+    res.status(500).json({ success: false });
+  }
+  res.send(userResolvedPosts);
 };
 
 // Search posts
@@ -374,4 +388,5 @@ module.exports = {
   getUserPosts,
   searchPosts,
   getUserUnresolvedPosts,
+  getUserResolvedPosts,
 };
