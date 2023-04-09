@@ -1,3 +1,10 @@
+/**
+ * Calculates the luminance of a given color and returns the resulting color as a hexadecimal string.
+ *
+ * @param hex a hexadecimal string representing the original color
+ * @param lum the amount of luminance to apply, represented as a decimal number between -1 and 1. Positive values lighten the color, negative values darken the color, and 0 leaves the color unchanged. If omitted or set to 0, the color will be returned unchanged.
+ * @return a hexadecimal string representing the resulting color
+ */
 export default function ColorLuminance(hex, lum) {
   // validate hex string
   hex = String(hex).replace(/[^0-9a-f]/gi, '');
