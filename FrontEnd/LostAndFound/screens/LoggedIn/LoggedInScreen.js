@@ -1,7 +1,19 @@
 import NavBar from '../../components/NavBar';
 import {AppContext} from '../../contexts/Contexts';
 import BaseScreen from '../BaseScreen';
+
+/**
+ * Represents a screen that is shown to the user after they have logged in. 
+ * This screen includes a navigation bar and other information that is specific 
+ * to the logged-in user, such as their username and location.
+ */
 export default class LoggedInScreen extends BaseScreen {
+
+  /**
+   * Creates a new LoggedInScreen object.
+   * 
+   * @param props the props passed to this component
+   */
   constructor(props) {
     super(props);
     console.log('logged in props:');
@@ -25,6 +37,11 @@ export default class LoggedInScreen extends BaseScreen {
 
   static contextType = AppContext;
 
+  /**
+   * Gets the navigation bar for this screen.
+   * 
+   * @return a NavBar component
+   */
   getNavBar() {
     return (
       <NavBar
@@ -37,6 +54,11 @@ export default class LoggedInScreen extends BaseScreen {
     );
   }
 
+  /**
+   * Renders the component.
+   * 
+   * @return the navigation bar for this screen
+   */
   render() {
     //console.log('c:');
     //console.log('loggedIn user: ' + this.getLoginController().getUser());
