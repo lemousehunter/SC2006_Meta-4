@@ -115,9 +115,9 @@ OneMap API
 | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/homeScreen.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/mapView.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/activityScreen.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/accounts.png" height="500"> |
 
 ## Create & Edit Posts
-| Part 1                                                                                                            | Part 2                                                                                                            | Accounts page                                                                                              |
+| Part 1                                                                                                            | Part 2                                                                                                                                                                                                      |
 |-------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost1.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost2.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/accounts.png" height="500"> |
+| <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost1.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost2.png" height="500"> |
 
 
 ## Inner Screens
