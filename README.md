@@ -5,7 +5,7 @@
 * Guo Yuan Lin
 * Wang Jie Rui, Jerome
 * Rodmond Tan
-\n*Nanyang Technological University, A43 Team Meta-4*
+<br />*Nanyang Technological University, A43 Team Meta-4*
 
 
 # Introduction
