@@ -6,15 +6,17 @@
 * Guo Yuan Lin [@pratelagger](https://github.com/pratelagger)
 * Jerome Wang [@lemousehunter](https://github.com/lemousehunter)
 * Rodmond Tan [@rodmond](https://github.com/Kazurl)
+<br />
 
 # Tech Stack
 ## MERN
 [![My Tech Stack](https://github-readme-tech-stack.vercel.app/api/cards?title=Tech%20Stack&fontFamily=Quicksand&lineCount=4&theme=github_dark_green&line1=mongodb,MongoDB,47A248;&line2=express,ExpressJS,000000;&line3=react,React-Native,61DAFB;&line4=nodedotjs,NodeJS,339933;)](https://github-readme-tech-stack.vercel.app/api/cards?title=Tech%20Stack&fontFamily=Quicksand&lineCount=4&theme=github_dark_green&line1=mongodb,MongoDB,47A248;&line2=express,ExpressJS,000000;&line3=react,React-Native,61DAFB;&line4=nodedotjs,NodeJS,339933;)
+<br />
 
 # API Used
 ## OneMap API
 More information can be found here: https://www.onemap.gov.sg/docs/
-
+<br />
 
 # Introduction
 ## Purpose 
@@ -26,7 +28,7 @@ Product Scope
 The Lost & Found mobile application is created and designed to be a one stop place for people who have lost items or found items can go to exchange information, and acts as a social media platform for the facilitation of lost and found items.
 
 Lost items can be posted for users to help with the search or update people who have found said lost item. Found items can be posted for owners to come and identify their ownership.
-
+<br />
 
 # Overall Description
 ## Product Perspective
@@ -45,6 +47,7 @@ Product Functions
 * Users can report fake posts.
 * Reported users will have reputation decreased.
 * Verified lost/found requests will increase the finder’s reputation score.
+<br />
 
 # User Classes and Characteristics
 ## User
@@ -56,6 +59,7 @@ These are individuals who have found a lost item and are using the app to report
 
 *Regular Users:*
 These are individuals who use the app to browse lost and found items, search for specific items, and communicate with owners or finders of items.
+<br />
 
 # Operating Environment
 ## Development Environment
@@ -66,7 +70,6 @@ React Native is a User Interface(UI) Software Development Library that is create
 Authentication is handled by JsonWebToken
 All data is stored in MongoDB
 
-
 ## Design and Implementation Constraints
 * This application uses local storage for file storage which may be limited.
 * This application uses Mongo Atlas for database storage, which is limited at 512MB.
@@ -74,9 +77,11 @@ All data is stored in MongoDB
 * Authentication and Authorization Constraints: The app must be designed to ensure that only authorized users can access sensitive information about lost and found items, such as contact information for the owners.
 * Reporting Constraints: The app must be designed to allow users to report lost or found items, including the ability to attach photos and provide detailed descriptions of the items.
 * User Interface Constraints: The app must be designed with a user-friendly interface that allows users to easily report lost or found items, search for items, and view the status of their reports.
+<br />
 
 # User Documentation
 No user documentation needed as our app is interactive and intuitive to use, with good labelling to guide users around our app.
+<br />
 
 # Assumptions and Dependencies
 ## Dependencies: 
@@ -88,7 +93,7 @@ OneMap API
 * External Interface Requirements
 * User Interfaces
 * Login/Sign up Page
-
+<br />
 
 # Images of app GUI
 
@@ -113,8 +118,7 @@ OneMap API
 | PostView                                                                                                   | ReportView                                                                                               |
 |------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
 | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/postView.png" height="500"> | <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/report.png" height="500"> |
-
-
+<br />
 
 # Hardware Interfaces
 ## Mobile Device Interface
@@ -130,7 +134,7 @@ The app will utilize the device's camera and GPS hardware to capture images and 
 **Logical Characteristics**: Lost & Found utilizes OneMap APIs to display the item locations for a pictorial image of the locations hence increasing the chances of finding lost items.
 
 **Physical Characteristics**: The app will communicate with the OneMapAPI through REST APIs, using JSON data. 
-
+<br />
 
 # Software Interfaces
 **MongoDB - Version 4.0 or higher**
@@ -145,6 +149,7 @@ Express.js is a fast, minimalist web framework for Node.js that provides a set o
 
 **React Native - Version 0.64 or higher**
 React Native is an open-source mobile application framework created by Facebook that allows developers to build native mobile apps for iOS and Android using JavaScript and React. The app will use React Native to build the mobile user interface and logic for the app.
+<br />
 
 # Data items and messages coming into the system and going out include:
 
@@ -152,6 +157,7 @@ React Native is an open-source mobile application framework created by Facebook 
 Lost and found item data, including item descriptions, location data, and contact information for owners and finders
 Media files related to lost and found items, such as images 
 The purpose of each of these data items and requests is to provide users with the ability to report and search for lost and found items, as well as to manage the ownership and recovery process of these items.
+<br />
 
 # Services needed include:
 ## User authentication and authorization services
