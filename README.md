@@ -1,10 +1,10 @@
 # SC2006_Meta-4
 ## Contributors
-Bernard Chiang 
-Cheong Jia Rong
-Guo Yuan Lin
-Wang Jie Rui, Jerome
-Rodmond Tan
+* Bernard Chiang 
+* Cheong Jia Rong
+* Guo Yuan Lin
+* Wang Jie Rui, Jerome
+* Rodmond Tan
 *Nanyang Technological University, A43 Team Meta-4*
 
 
@@ -86,29 +86,35 @@ OneMap API
 
 ## Login Page 
 <img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/loginScreen.jpg" height="500">
-![](https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/loginScreen.jpg | height=500)
 
 ## Registration Page
+<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/registerScreen.png" height="500">
 
-HomePage
+## HomePage
+<img src="" height="500">
 
-Create post page
+## Create post page
+<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost1.png" height="500">
+<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/createEditPost2.png" height="500">
+
+## Post view page
+<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/postView.png" height="500">
+
+## Report page
+<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/report.png" height="500">
+
+## Map page
+<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/mapView.png" height="500">
+
+## Search page
+<img src="" height="500">
 
 
-Post view page
+## Accounts page
+<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/accounts.png" height="500">
 
-Report page
-
-map page
-
-search page
-
-
-
-accounts page
-
-activity page
-
+## Activity page
+<img src="https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/activityScreen.png" height="500">
 
 
 # Hardware Interfaces
