@@ -6,6 +6,8 @@ import PostItem from '../../../../components/PostItem';
 import BaseLoggedInScreen from '../../BaseLoggedInScreen';
 import {AppContext} from '../../../../contexts/Contexts';
 import Geolocation from '@react-native-community/geolocation';
+import NCard from '../../../../components/reusable/Neuromorphic/Cards/NCard';
+import {Dropdown} from 'react-native-element-dropdown';
 
 export default class AccountScreen extends BaseLoggedInScreen {
   constructor(props) {
@@ -19,9 +21,28 @@ export default class AccountScreen extends BaseLoggedInScreen {
       rerender: '',
     };
     this.createStylesheet();
+    this.getSettings();
+    this.state = {
+      postStatuses: [
+        {label: 'All', value: 0},
+        {label: 'Unresolved', value: 1},
+        {label: 'Resolved', value: 2},
+      ],
+      postStatus: 0,
+    };
   }
 
   static contextType = AppContext;
+
+  getSettings() {
+    this.nSettings = {
+      dropdownCard: {
+        color: this.getBgColor(),
+        width: this.getWinW() * 0.8,
+        height: this.getWinH() * 0.8 * 0.05,
+      },
+    };
+  }
 
   createStylesheet() {
     this.styles = StyleSheet.create({
@@ -36,12 +57,34 @@ export default class AccountScreen extends BaseLoggedInScreen {
         justifyContent: 'flex-end',
         alignItems: 'center',
       },
+      dropdownC: {
+        flex: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowRadius: 2,
+      },
       bottomContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         flex: 2,
         paddingTop: this.winW * 0.05,
         paddingBottom: 120,
+      },
+      dropdown: {
+        height: '100%',
+        width: '100%',
+        borderRadius: 22,
+        paddingHorizontal: 8,
+      },
+      dropdownListContainer: {
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+      },
+      styledText2: {
+        flex: 1,
+        textAlign: 'left',
+        fontFamily: 'Nunito-Light',
+        fontSize: 15,
       },
     });
   }
@@ -70,6 +113,7 @@ export default class AccountScreen extends BaseLoggedInScreen {
         !this.props.route.params.user
           ? this.getUser()
           : this.props.route.params.user,
+        this.state.postStatus,
       )
       .then(res => {
         this.setState({postData: res});
@@ -133,9 +177,36 @@ export default class AccountScreen extends BaseLoggedInScreen {
               console.log('logging out');
             }}
             currentUser={this.getUser()}
-            user={this.getUser()}
+            user={
+              !this.props.route.params.user ? this.getUser() : this.props.user
+            }
             contact={() => console.log('contact meeeee')}
           />
+        </View>
+        <View style={this.styles.dropdownC}>
+          <NCard settings={this.nSettings.dropdownCard}>
+            <Dropdown
+              itemContainerStyle={this.styles.dropdownListContainer}
+              containerStyle={this.styles.dropdownListContainer}
+              style={this.styles.dropdown}
+              data={this.state.postStatuses}
+              itemTextStyle={this.styles.styledText2}
+              selectedTextStyle={this.styles.styledText2}
+              placeholderStyle={this.styles.styledText2}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Post Status"
+              value={this.state.postStatus}
+              onChange={async item => {
+                this.setState({postStatus: item.value});
+                console.log('navigating to:' + item.value);
+                await this.onFocus().then(res => {
+                  return res;
+                });
+              }}
+            />
+          </NCard>
         </View>
         <View style={this.styles.bottomContainer}>
           <FlatList

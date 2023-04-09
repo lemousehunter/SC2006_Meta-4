@@ -152,8 +152,8 @@ export default class PostsController extends Component {
     return postItems;
   }
 
-  async getPostItemsByUserID(userID) {
-    const posts = await this.getPostsByUserID(userID).then(res => {
+  async getPostItemsByUserID(userID, postStatus) {
+    const posts = await this.getPostsByUserID(userID, postStatus).then(res => {
       return res;
     });
     console.log('getPostItemsByUserID:', JSON.stringify(posts));
@@ -165,16 +165,34 @@ export default class PostsController extends Component {
     return array;
   }
 
-  async getPostsByUserID(userID) {
-    // to replace with fetch function call
-    console.log('session token is:', this.dataController.sessionToken);
-    const response = await this.dataController
-      .get('posts/userposts/' + userID) // posts/get/Resolved/ // posts/get/UrgentPosts/
-      .then(res => {
-        console.log('res:');
-        return res;
-      })
-      .catch(error => console.log(error));
+  async getPostsByUserID(userID, postStatus) {
+    let response = null;
+    if (postStatus === 0) {
+      // console.log('session token is:', this.dataController.sessionToken);
+      response = await this.dataController
+        .get('posts/userposts/' + userID) // posts/get/Resolved/ // posts/get/UrgentPosts/
+        .then(res => {
+          console.log('res:');
+          return res;
+        })
+        .catch(error => console.log(error));
+    } else if (postStatus === 1) {
+      response = await this.dataController
+        .get('posts/get/UrgentPosts/' + userID) // posts/get/Resolved/ // posts/get/UrgentPosts/
+        .then(res => {
+          console.log('res:');
+          return res;
+        })
+        .catch(error => console.log(error));
+    } else {
+      response = await this.dataController
+        .get('posts/get/Resolved/' + userID) // posts/get/Resolved/ // posts/get/UrgentPosts/
+        .then(res => {
+          console.log('res:');
+          return res;
+        })
+        .catch(error => console.log(error));
+    }
     console.log('getPostsResponse' + JSON.stringify(response));
     if (response.status === 200) {
       return response.data;

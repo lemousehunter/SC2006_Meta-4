@@ -32,7 +32,7 @@ export default class ProfileCard extends React.Component {
   getStyleSheet() {
     this.styles = StyleSheet.create({
       mainContainer: {
-        paddingTop: this.winW * 0.2,
+        paddingTop: this.currentUser === this.user ? this.winW * 0.2 : 0,
         flex: 1,
         width: this.winW,
         flexDirection: 'column',
