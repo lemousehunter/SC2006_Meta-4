@@ -85,7 +85,7 @@ OneMap API
 # Images of app GUI
 
 ## Login Page 
-![alt text](https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/loginScreen.jpg?raw=true | width=100)
+![Login Page](https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/loginScreen.jpg | height=500)
 
 ## Registration Page
 
