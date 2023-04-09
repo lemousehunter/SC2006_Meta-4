@@ -50,9 +50,10 @@ export default class NButton extends React.PureComponent {
 
   render() {
     const Card = () => this.getCard();
-
+    console.log('button state:', this.props.disabled);
     return (
       <Pressable
+        disabled={this.props.disabled}
         onPress={() => {
           if (this.onPress != null) {
             this.onPress();

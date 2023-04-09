@@ -53,8 +53,9 @@ export default class ListView extends BaseInnerView {
             data={this.props.route.params.postLst}
             renderItem={({item}) => (
               <PostItem
+                fn={this.onFocus}
                 _data={item}
-                edit={this.edit}
+                //edit={this.edit}
                 currentUser={this.getUser()}
                 postStyle={this.getPostsStyle()}
                 nav={this.getNav()}

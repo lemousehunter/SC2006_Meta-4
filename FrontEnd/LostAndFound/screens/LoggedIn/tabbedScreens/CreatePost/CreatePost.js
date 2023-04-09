@@ -1,4 +1,5 @@
 import {
+  Alert,
   Keyboard,
   ScrollView,
   Text,
@@ -24,7 +25,6 @@ export default class CreatePost extends BaseLoggedInScreen {
     this.item = React.createRef(null);
     this.desc = React.createRef(null);
     this.location = React.createRef(null);
-    this.postID = this.props.route.params.postID;
     this.types = [
       {label: 'Found', value: 'found'},
       {label: 'Lost', value: 'lost'},
@@ -201,7 +201,7 @@ export default class CreatePost extends BaseLoggedInScreen {
   async setPost() {
     console.log('postC:' + JSON.stringify(this.getPostsController()));
     const post = await this.getPostsController()
-      .getPostByID(this.postID)
+      .getPostByID(this.props.route.params.postID)
       .then(_res => {
         return _res;
       });
@@ -219,8 +219,8 @@ export default class CreatePost extends BaseLoggedInScreen {
     this.location.current.setText(post.location);
     console.log('setting date', post.date);
     let date = new Date(post.date);
-    const time = moment(post.time, 'HH:mm:ss').toDate();
-    console.log('setting time', time);
+    const time = new Date(parseInt(post.time, 10));
+    console.log('setting time', time.getTime());
     date.setTime(time.getTime());
     console.log('setting datetime:', date);
     this.setState({date: date});
@@ -261,33 +261,60 @@ export default class CreatePost extends BaseLoggedInScreen {
         console.log('createPostRes:' + JSON.stringify(res));
         return res;
       });
-    this.nav('Account');
+    Alert.alert(
+      'Post Created',
+      'Successfully created ' + type + ' post.',
+      () => {
+        this.nav('Account');
+      },
+    );
   };
 
-  validateEdit = () => {
+  validateEdit = async () => {
     const photos = this.addImgList.current.getImageUris();
+    const photoTypes = this.addImgList.current.getPhotoTypes();
+    const photoNames = this.addImgList.current.getPhotoNames();
     const type = this.state.type;
     const date = this.state.date;
     const category = this.state.category;
     const item = this.item.current.getText();
     const desc = this.desc.current.getText();
-    const location = this.state.location;
-    this.getPostsController().editPost(
-      this.postID,
-      item,
-      type === 'lost' ? 1 : 0,
-      photos,
-      location,
-      date,
-      desc,
-      category,
-    );
+    const location = this.location.current.getText();
+    //await this.getLocation();
+    console.log('photos:' + JSON.stringify(photos));
+    console.log('type:' + JSON.stringify(type));
+    console.log('category:' + JSON.stringify(category));
+    console.log('item:' + JSON.stringify(item));
+    console.log('desc:' + JSON.stringify(desc));
+    console.log('date:' + JSON.stringify(date));
+    console.log('location: ' + this.location.current.getText());
+    const response = await this.getPostsController()
+      .editPost(
+        photos,
+        photoTypes,
+        photoNames,
+        type,
+        date,
+        category,
+        item,
+        desc,
+        location,
+        this.getUser(),
+        this.props.route.params.postID,
+      )
+      .then(res => {
+        console.log('updatePostRes:' + JSON.stringify(res));
+        return res;
+      });
+    Alert.alert('Post Edited', 'Successfully edited ' + type + ' post.', () => {
+      this.props.navigation.goBack();
+    });
   };
 
   async componentDidMount() {
     console.log('navProps:' + JSON.stringify(this.props.navigation));
     console.log('controllers:' + JSON.stringify(this.getControllers()));
-    console.log('postID: ' + this.postID);
+    console.log('postID: ' + this.props.route.params.postID);
     await this.getControllers()
       .categoriesController.getCategories()
       .then(categories =>
@@ -296,7 +323,7 @@ export default class CreatePost extends BaseLoggedInScreen {
         }),
       );
 
-    if (!(this.postID === undefined)) {
+    if (!(this.props.route.params.postID === undefined)) {
       console.log('edit mode');
       await this.setPost();
     } else {
@@ -304,10 +331,11 @@ export default class CreatePost extends BaseLoggedInScreen {
   }
 
   render() {
-    if (this.postID === undefined) {
+    if (this.props.route.params.postID === undefined) {
       console.log('postID is null');
     } else {
       console.log('postID is not null');
+      console.log('postID is:', this.props.route.params.postID);
     }
     console.log('User is:' + this.getLoginController().getUser());
     return (
@@ -441,8 +469,16 @@ export default class CreatePost extends BaseLoggedInScreen {
                 <NButton
                   style={{flex: 1}}
                   settings={this.nSettings.postBtn}
-                  onPress={!this.postID ? this.validatePost : this.validateEdit}
-                  label={!this.postID ? 'Post' : 'Save'}
+                  onPress={
+                    this.props.route.params.postID === undefined
+                      ? this.validatePost
+                      : this.validateEdit
+                  }
+                  label={
+                    this.props.route.params.postID === undefined
+                      ? 'Post'
+                      : 'Save'
+                  }
                   fontFamily={this.getButtonFont()}
                   textColor={this.getSecondaryColor()}
                 />

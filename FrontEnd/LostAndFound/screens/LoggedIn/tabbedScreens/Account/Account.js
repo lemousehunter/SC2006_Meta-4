@@ -76,7 +76,7 @@ export default class AccountScreen extends BaseLoggedInScreen {
       });
     console.log('setPostsData');
     console.log('setPostsData:' + JSON.stringify(this.state.postData));
-  }
+  };
 
   async componentDidMount() {
     console.log('component did mount');
@@ -94,19 +94,9 @@ export default class AccountScreen extends BaseLoggedInScreen {
     };
   }
 
-  edit = postID => {
-    console.log('postID____:', postID);
-    this.nav('CreatePost', {postID: postID});
-  };
-
-  // del = postID => {
-  //   console.log('deleting...');
-  //   this.getPostsController()
-  //     .deletePost(postID)
-  //     .then(res => {
-  //       console.log('deleteRes:', JSON.stringify(res));
-  //       return res;
-  //     });
+  // edit = postID => {
+  //   console.log('postID____:', postID);
+  //   this.nav('UpdatePost', {postID: postID});
   // };
 
   render() {
@@ -149,16 +139,14 @@ export default class AccountScreen extends BaseLoggedInScreen {
         </View>
         <View style={this.styles.bottomContainer}>
           <FlatList
-            contentContainerStyle={{}}
-            style={{padding: 10}}
             data={this.state.postData}
             renderItem={({item}) => (
               <PostItem
-                _data={item}
                 fn={this.onFocus}
-                edit={this.edit}
-                postStyle={this.getPostsStyle()}
+                _data={item}
+                //edit={this.edit}
                 currentUser={this.getUser()}
+                postStyle={this.getPostsStyle()}
                 nav={this.getNav()}
                 loginC={this.getLoginController()}
                 postC={this.getPostsController()}

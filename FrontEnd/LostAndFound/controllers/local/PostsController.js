@@ -64,6 +64,25 @@ export default class PostsController extends Component {
     };
   }
 
+  async searchPost(searchTerm, searchType, categoryID) {
+    const _category = categoryID === 'All' ? '' : '&category=' + categoryID;
+    const params =
+      '' + searchTerm + '?' + 'searchType=' + searchType + _category;
+    const posts = await this.dataController
+      .get('searchType/search/' + params)
+      .then(res => {
+        return res.data;
+      });
+    const postLst = [];
+    for (let i = 0; i < posts.length; i++) {
+      const post = await this.getPostByID(posts[i].id).then(_p => {
+        return _p;
+      });
+      postLst.push(this.convertPost2PostItem(post));
+    }
+    return postLst;
+  }
+
   async getPostByID(postID) {
     console.log('getting posts by id....');
     const posts = await this.dataController.get('posts/' + postID).then(_p => {
@@ -164,54 +183,7 @@ export default class PostsController extends Component {
     }
   }
 
-  editPost(
-    postID,
-    itemName,
-    isLost,
-    images,
-    location,
-    date,
-    time,
-    itemDesc,
-    category,
-    isResolved,
-  ) {
-    console.log(
-      'itemName: ' +
-        itemName +
-        ' isLost: ' +
-        isLost +
-        ' images: ' +
-        images +
-        ' postID: ' +
-        postID,
-    );
-  }
-
-  // getPostByID(postID) {
-  //   const Post = {
-  //     listedBy: 'testUser',
-  //     postID: postID,
-  //     itemName: 'testName',
-  //     isLost: 'Lost',
-  //     images: [null, null, null, null, null],
-  //     location: 'testLocation',
-  //     datetime: new Date('2023-05-04T07:46:51.000Z'),
-  //     itemDesc: 'testDesc',
-  //     category: 'e1',
-  //     isResolved: false,
-  //   };
-  //   return Post;
-  // }
-
-  async deletePost(postID) {
-    console.log('deleting....');
-    return await this.dataController.del('posts/' + postID).then(res => {
-      return res.data;
-    });
-  }
-
-  async createPost(
+  createFormData(
     photos,
     photoTypes,
     photoNames,
@@ -251,6 +223,74 @@ export default class PostsController extends Component {
     formdata.append('isResolved', false);
     console.log('formData:');
     console.log(formdata);
+    return formdata;
+  }
+
+  editPost(
+    photos,
+    photoTypes,
+    photoNames,
+    type,
+    date,
+    categoryID,
+    item,
+    desc,
+    location,
+    listedBy,
+    postID,
+  ) {
+    console.log('editing post:', postID);
+    const formData = this.createFormData(
+      photos,
+      photoTypes,
+      photoNames,
+      type,
+      date,
+      categoryID,
+      item,
+      desc,
+      location,
+      listedBy,
+    );
+    const response = this.dataController
+      .put('posts/' + postID, formData, 'multipart/form-data')
+      .then(res => {
+        return res.data;
+      });
+    return response;
+  }
+
+  async deletePost(postID) {
+    console.log('deleting....');
+    return await this.dataController.del('posts/' + postID).then(res => {
+      return res.data;
+    });
+  }
+
+  async createPost(
+    photos,
+    photoTypes,
+    photoNames,
+    type,
+    date,
+    categoryID,
+    item,
+    desc,
+    location,
+    listedBy,
+  ) {
+    const formdata = this.createFormData(
+      photos,
+      photoTypes,
+      photoNames,
+      type,
+      date,
+      categoryID,
+      item,
+      desc,
+      location,
+      listedBy,
+    );
     const response = await this.dataController
       .post('posts/', formdata, 'multipart/form-data')
       .then(res => {

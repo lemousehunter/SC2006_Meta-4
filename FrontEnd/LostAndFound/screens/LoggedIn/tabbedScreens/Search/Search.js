@@ -147,7 +147,11 @@ export default class Search extends BaseLoggedInScreen {
     const searchText = this.searchField.current.getText();
     console.log('viewType is:' + this.state.viewType);
     if (this.state.searchType === 'User') {
-      postLst = await this.getPostsController().getPostsFromUser(searchText);
+      postLst = await this.getPostsController().searchPost(
+        searchText,
+        this.state.searchType,
+        this.state.category,
+      );
       console.log('UserPosts__!' + JSON.stringify(postLst));
     }
     if (this.state.searchType === 'Item') {
@@ -264,9 +268,7 @@ export default class Search extends BaseLoggedInScreen {
   };
 
   async componentDidMount() {
-    this.focusSub = this.props.navigation.addListener('focus', () => {
-
-    });
+    this.focusSub = this.props.navigation.addListener('focus', () => {});
     const response = await this.getControllers()
       .categoriesController.getCategories()
       .then(result => {

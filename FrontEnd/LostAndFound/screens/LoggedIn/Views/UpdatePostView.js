@@ -1,12 +1,16 @@
 import React from 'react';
 import {Button, Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import BaseInnerView from './Search/InnerViews/BaseInnerView';
+import BaseInnerView from '../tabbedScreens/Search/InnerViews/BaseInnerView';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BaseLoggedInScreen from '../BaseLoggedInScreen';
 import Carousel from 'react-native-reanimated-carousel/src/Carousel';
 import ParallaxCarousel from '../../../components/imageCarousel/ParallaxCarousel';
+import NonTabbedScreenContainer from '../NonTabbedScreenContainer';
+import NCard from '../../../components/reusable/Neuromorphic/Cards/NCard';
+import NButton from '../../../components/reusable/Neuromorphic/Buttons/NButton';
+import CreatePost from '../tabbedScreens/CreatePost/CreatePost';
 
-export default class PostView extends BaseInnerView {
+export default class UpdatePostView extends BaseInnerView {
   constructor(props) {
     super(props);
     this.createStyleSheet();
@@ -29,14 +33,15 @@ export default class PostView extends BaseInnerView {
         width: this.getWinW(),
       },
       carouselC: {
+        //backgroundColor: 'red',
         height: this.getWinH() * 0.4,
         width: this.getWinW(),
         justifyContent: 'flex-start',
         alignItems: 'center',
       },
       bottomC: {
-        backgroundColor: 'yellow',
-        height: this.getWinH() * 0.4,
+        //backgroundColor: 'yellow',
+        height: this.getWinH() * 0.5,
         width: this.getWinW(),
       },
       title: {
@@ -80,7 +85,22 @@ export default class PostView extends BaseInnerView {
   }
 
   getNSettings() {
-    this.nSettings = {};
+    this.nSettings = {
+      contentCard: {
+        color: this.getBgColor(),
+        width: this.getWinW(),
+        height: this.getWinH() * 0.5,
+        blur: false,
+        shadowRadius: 4,
+      },
+      btn: {
+        color: this.getPrimaryColor(),
+        width: this.getWinW() * 0.9,
+        height: this.getWinH() * 0.05,
+        blur: false,
+        shadowRadius: 2,
+      },
+    };
   }
 
   formatDate(date) {
@@ -97,86 +117,45 @@ export default class PostView extends BaseInnerView {
     return [day, month, year].join('/');
   }
 
+  renderButton(isLost) {
+    if (
+      this.props.route.params.data.currentUser !==
+      this.props.route.params.data.listedBy.id
+    ) {
+      return (
+        <NButton
+          textColor={this.getSecondaryColor()}
+          settings={this.nSettings.btn}
+          label={'I ' + isLost + ' it'}
+        />
+      );
+    }
+  }
+
   render() {
-    console.log('in post view');
+    console.log('in update view');
     console.log('paramsData:' + JSON.stringify(this.props.route.params));
     console.log(
       'images::' + JSON.stringify(this.props.route.params.data.images),
     );
     console.log('postViewListedBy:', this.props.route.params.data.listedBy.id);
+    const isLost = this.props.route.params.data.isLost ? 'found' : 'lost';
     return (
-      <View style={this.styles.bg}>
-        <View style={this.styles.topC}>
-          <View
-            style={{
-              width: '40%',
-              height: '100%',
-              alignItems: 'flex-start',
-              paddingLeft: 20,
-              justifyContent: 'center',
-            }}>
-            <Button
-              style={{
-                alignSelf: 'center',
-                justifySelf: 'center',
-                flex: 1,
-              }}
-              title={'< Back'}
-              onPress={() => {
-                this.props.navigation.goBack();
-              }}
-            />
-          </View>
-          <Text style={this.styles.title}> Post </Text>
-        </View>
-        <View style={this.styles.carouselC}>
-          <ParallaxCarousel
-            width={this.getWinW()}
-            images={this.props.route.params.data.images}
-            height={this.getWinH() * 0.4}
-          />
-        </View>
-        <View style={this.styles.bottomC}>
-          <View style={this.styles.userC}>
-            <Pressable
-              onPress={() => {
-                console.log(
-                  'navigatingTo:',
-                  this.props.route.params.data.listedBy.id,
-                );
-                this.props.navigation.navigate('GenericAccount', {
-                  user: this.props.route.params.data.listedBy.id,
-                });
-              }}>
-              <Text style={this.styles.styledText}>
-                {this.props.route.params.data.listedBy.name}
-              </Text>
-            </Pressable>
-            <Text style={this.styles.styledText}>
-              {this.formatDate(this.props.route.params.data.date)}
-            </Text>
-          </View>
-          <View style={this.styles.bottomInnerC2}>
-            <Pressable>
-              <Text style={this.styles.styledText}>
-                {this.props.route.params.data.location}
-              </Text>
-            </Pressable>
-          </View>
-          <View style={this.styles.bottomInnerC}>
-            <Pressable>
-              <Text style={this.styles.styledText}>
-                {this.props.route.params.data.category}
-              </Text>
-            </Pressable>
-          </View>
-          <View style={this.styles.bottomInnerC}>
-            <Text style={this.styles.styledText}>
-              {this.props.route.params.data.desc}
-            </Text>
-          </View>
-        </View>
-      </View>
+      <NonTabbedScreenContainer
+        route={{params: this.getParams()}}
+        navigation={this.props.navigation}
+        fullWidth={true}
+        title={'Edit Post'}>
+        <CreatePost
+          route={{
+            params: {
+              ...this.getParams(),
+              postID: this.props.route.params.data.postID,
+            },
+          }}
+          navigation={this.props.navigation}
+        />
+      </NonTabbedScreenContainer>
     );
   }
 }

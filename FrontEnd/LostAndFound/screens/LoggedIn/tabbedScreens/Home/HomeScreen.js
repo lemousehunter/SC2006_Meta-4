@@ -34,7 +34,7 @@ export default class HomeScreen extends BaseLoggedInScreen {
     };
   }
 
-  async componentDidMount() {
+  onFocus = async () => {
     const postList = await this.getPostsController()
       .getAllPosts()
       .then(res => {
@@ -42,6 +42,14 @@ export default class HomeScreen extends BaseLoggedInScreen {
         return res;
       });
     this.setState({postList: postList});
+  }
+
+  async componentDidMount() {
+    console.log('component did mount');
+    this.focusSub = this.props.navigation.addListener('focus', () => {
+      this.onFocus();
+    });
+    await this.onFocus();
   }
 
   createStylesheet() {
@@ -55,7 +63,7 @@ export default class HomeScreen extends BaseLoggedInScreen {
       },
       topContainer: {
         flex: 1,
-      }
+      },
     };
   }
   getPostsStyle() {
@@ -76,9 +84,7 @@ export default class HomeScreen extends BaseLoggedInScreen {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={this.styles.mainContainer}>
           <View style={this.styles.topContainer}>
-            <Text>
-              All Items
-            </Text>
+            <Text>All Items</Text>
           </View>
           <FlatList
             contentContainerStyle={{}}
@@ -86,8 +92,9 @@ export default class HomeScreen extends BaseLoggedInScreen {
             data={this.state.postList}
             renderItem={({item}) => (
               <PostItem
+                fn={this.onFocus}
                 _data={item}
-                edit={this.edit}
+                //edit={this.edit}
                 currentUser={this.getUser()}
                 postStyle={this.getPostsStyle()}
                 nav={this.getNav()}

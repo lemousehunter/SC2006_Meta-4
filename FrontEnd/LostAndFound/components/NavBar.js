@@ -4,9 +4,9 @@ import React, {Component} from 'react';
 import HomeScreen from '../screens/LoggedIn/tabbedScreens/Home/HomeScreen';
 import Search from '../screens/LoggedIn/tabbedScreens/Search/Search';
 import CreatePost from '../screens/LoggedIn/tabbedScreens/CreatePost/CreatePost';
-import ChatScreen from '../screens/LoggedIn/tabbedScreens/Chat/Chat';
+import Activity from '../screens/LoggedIn/tabbedScreens/Activity/Activity';
 import AccountScreen from '../screens/LoggedIn/tabbedScreens/Account/Account';
-import PostView from '../screens/LoggedIn/tabbedScreens/PostView';
+import PostView from '../screens/LoggedIn/Views/PostView';
 
 let Tab = createBottomTabNavigator();
 
@@ -174,16 +174,16 @@ export default class NavBar extends React.Component {
           initialParams={this.initialParams}
         />
         <Tab.Screen
-          name={'Chat'}
-          component={ChatScreen}
+          name={'Activity'}
+          component={Activity}
           options={{
             tabBarIcon: ({focused}) => (
               <View style={this.styleSheet.tabView}>
                 <Image
                   source={
                     focused
-                      ? require('../assets/icons/chat_active.png')
-                      : require('../assets/icons/chat.png')
+                      ? require('../assets/icons/notification_active.png')
+                      : require('../assets/icons/notification.png')
                   }
                   resizeMode={'contain'}
                   style={{
@@ -197,7 +197,7 @@ export default class NavBar extends React.Component {
                     color: focused ? this.activeColor : this.normalColor,
                     fontSize: 12,
                   }}>
-                  {'Chat'}
+                  {'Activity'}
                 </Text>
               </View>
             ),

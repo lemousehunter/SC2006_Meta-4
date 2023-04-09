@@ -12,9 +12,14 @@ import {MenuProvider} from 'react-native-popup-menu';
 import PostsController from './controllers/local/PostsController';
 import CategoriesController from './controllers/local/CategoriesController';
 import DataController from './controllers/remote/DataController';
-import PostView from './screens/LoggedIn/tabbedScreens/PostView';
+import PostView from './screens/LoggedIn/Views/PostView';
 import 'react-native-gesture-handler';
-import Account from './screens/LoggedIn/tabbedScreens/Account/Account'
+import Account from './screens/LoggedIn/tabbedScreens/Account/Account';
+import GenericAccountView from './screens/LoggedIn/Views/GenericAccountView';
+import ReportsController from './controllers/local/ReportsController';
+import ReportsView from './screens/LoggedIn/ReportsView';
+import UpdatePostView from './screens/LoggedIn/Views/UpdatePostView';
+import RequestsController from './controllers/local/requestsController';
 
 const Stack = createNativeStackNavigator();
 const winH = Dimensions.get('window').height;
@@ -33,12 +38,23 @@ export default function App() {
   const dataController = new DataController(url);
   const loginController = new LoginController(dataController);
   const postController = new PostsController(dataController, loginController);
+  const reportsController = new ReportsController(
+    dataController,
+    postController,
+  );
   const categoriesController = new CategoriesController(dataController);
+  const requestsController = new RequestsController(
+    dataController,
+    postController,
+    loginController,
+  );
   const controllers = {
     nav: nav,
     postsController: postController,
     loginController: loginController,
     categoriesController: categoriesController,
+    reportsController: reportsController,
+    requestsController: requestsController,
   };
 
   const params = {
@@ -58,7 +74,9 @@ export default function App() {
     {name: 'RegisterPage', component: RegisterPage},
     {name: 'LoggedInScreen', component: LoggedInScreen},
     {name: 'PostView', component: PostView},
-    {name: 'GenericAccount', component: Account},
+    {name: 'GenericAccount', component: GenericAccountView},
+    {name: 'ReportsView', component: ReportsView},
+    {name: 'UpdatePostView', component: UpdatePostView},
   ];
   // const Screens = screenDetails.map(s => {
   //   return (
@@ -103,6 +121,16 @@ export default function App() {
                 <Stack.Screen
                   name={screenDetails[4].name}
                   component={screenDetails[4].component}
+                  initialParams={params}
+                />
+                <Stack.Screen
+                  name={screenDetails[5].name}
+                  component={screenDetails[5].component}
+                  initialParams={params}
+                />
+                <Stack.Screen
+                  name={screenDetails[6].name}
+                  component={screenDetails[6].component}
                   initialParams={params}
                 />
               </Stack.Navigator>

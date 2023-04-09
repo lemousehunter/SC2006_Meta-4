@@ -105,6 +105,22 @@ export default class DataController extends React.Component {
       });
   }
 
+  async put(route, data, contentType, boundary) {
+    return await this.baseRequest(
+      route,
+      'Put',
+      data,
+      undefined,
+      contentType,
+      boundary,
+    )
+      .then(res => {
+        console.log('putRes:' + JSON.stringify(res));
+        return res;
+      })
+      .catch(error => console.log('putError' + JSON.stringify(error)));
+  }
+
   async del(route) {
     console.log('dataC post del called');
     return await this.baseRequest(route, 'Delete')

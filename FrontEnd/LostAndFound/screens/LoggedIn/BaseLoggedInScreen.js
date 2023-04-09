@@ -21,7 +21,16 @@ export default class BaseLoggedInScreen extends BaseScreen {
     return this.getControllers().postsController;
   };
 
+  getReportsController = () => {
+    return this.getControllers().reportsController;
+  };
+
+  getRequestsController = () => {
+    return this.getControllers().requestsController;
+  };
+
   nav = (tabScreenName, params) => {
+    console.log('jumping to:', tabScreenName);
     this.props.navigation.jumpTo(tabScreenName, params);
   };
 

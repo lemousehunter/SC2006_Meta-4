@@ -125,7 +125,7 @@ export default class Map_View extends BaseInnerView {
           coordinate={marker.coordinates}
           title={marker.name}
           description={marker.description}
-          pinColor={marker.type === 'Lost' ? 'red' : 'found'}
+          pinColor={marker.type === 'Lost' ? 'red' : 'green'}
           onCalloutPress={async () => {
             const post = await this.getPostsController()
               .getPostByID(marker.postID)

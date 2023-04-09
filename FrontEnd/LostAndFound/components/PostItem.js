@@ -144,6 +144,16 @@ export default class PostItem extends React.Component {
     };
   }
 
+  edit = () => {
+    console.log('postID____:', this.props._data.postID);
+    this.props.nav.navigate('UpdatePostView', {
+      data: {
+        ...this.props._data,
+        postID: this.props._data.postID,
+      },
+    });
+  };
+
   renderMenu() {
     console.log('currentUser!!:', JSON.stringify(this.props.currentUser));
     console.log('listedBy:', JSON.stringify(this.props._data.listedBy.id));
@@ -170,7 +180,13 @@ export default class PostItem extends React.Component {
             optionsContainer: this.styles.options,
             optionText: this.styles.text,
           }}>
-          <MenuOption onSelect={() => alert('Report')}>
+          <MenuOption
+            onSelect={() =>
+              this.props.nav.navigate('ReportsView', {
+                postID: this.postID,
+                currentUser: this.props.currentUser,
+              })
+            }>
             <Text style={{color: 'red', fontFamily: 'Nunito-Light'}}>
               Report
             </Text>
@@ -196,7 +212,8 @@ export default class PostItem extends React.Component {
           }}>
           <MenuOption
             onSelect={() => {
-              this.props.edit(this.props._data.postID);
+              console.log('this.props._data.postID:', this.props._data.postID);
+              this.edit(this.props._data.postID);
             }}
             text="Edit"
           />
@@ -227,6 +244,7 @@ export default class PostItem extends React.Component {
               return res;
             });
           const data = {
+            title: post.itemName,
             images: post.images,
             date: post.date,
             categoryID: post.category.id,
@@ -235,6 +253,9 @@ export default class PostItem extends React.Component {
             isResolved: post.isResolved,
             listedBy: post.listedBy,
             desc: post.itemDescription,
+            isLost: post.isLost,
+            currentUser: this.props.currentUser,
+            postID: this.postID,
           };
           console.log('dataImages:' + JSON.stringify(data.images));
           this.props.nav.navigate('PostView', {data: data});
