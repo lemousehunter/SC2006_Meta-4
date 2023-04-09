@@ -82,14 +82,12 @@ OneMap API
 * Login/Sign up Page
 
 
-Registration Page
+# Images of app GUI
 
+## Login Page 
+![alt text](https://github.com/lemousehunter/SC2006_Meta-4/blob/main/UI%20Images/loginScreen.jpg?raw=true)
 
-
-
-
-
-
+## Registration Page
 
 HomePage
 
