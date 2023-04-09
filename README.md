@@ -19,12 +19,13 @@ More information can be found here: https://www.onemap.gov.sg/docs/
 <br />
 
 # Introduction
-## Purpose 
+## Purpose
 The purpose of this document is to build a mobile application for people to exchange information about lost items.
 
 ## Intended Audience and Reading Suggestions
 This project is a prototype of a lost and found system and it’s intended to be used within NTU’s premises. This has been implemented under the tutelage of Lab assistants and professors. This project will be useful for all users who uses the system, particularly people to tend to lose things.
-Product Scope
+
+## Product Scope
 The Lost & Found mobile application is created and designed to be a one stop place for people who have lost items or found items can go to exchange information, and acts as a social media platform for the facilitation of lost and found items.
 
 Lost items can be posted for users to help with the search or update people who have found said lost item. Found items can be posted for owners to come and identify their ownership.
@@ -161,9 +162,10 @@ React Native is an open-source mobile application framework created by Facebook 
 
 # Data items and messages coming into the system and going out include:
 
-## User authentication and authorization data
-Lost and found item data, including item descriptions, location data, and contact information for owners and finders
-Media files related to lost and found items, such as images 
+* User authentication and authorization data
+* Lost and found item data, including item descriptions, location data, and contact information for owners and finders
+* Media files related to lost and found items, such as images <br /><br />
+
 The purpose of each of these data items and requests is to provide users with the ability to report and search for lost and found items, as well as to manage the ownership and recovery process of these items.
 <br />
 <br />
